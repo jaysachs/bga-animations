@@ -77,13 +77,14 @@ interface IBgaAnimation<T extends BgaAnimationSettings> {
  * Animation function signature. Will return a promise after animation is ended. The promise returns the result of the animation, if any
  */
 type BgaAnimationFunction = (animationManager: AnimationManager, animation: IBgaAnimation<BgaAnimationSettings>) => Promise<any>;
-declare class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnimation<BgaAnimationSettings> {
+declare abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnimation<BgaAnimationSettings> {
     protected animationFunction: BgaAnimationFunction;
     settings: T;
     played: boolean | null;
     result: any | null;
     playWhenNoAnimation: boolean;
     constructor(animationFunction: BgaAnimationFunction, settings: T);
+    protected doAnimate(animationManager: AnimationManager): Promise<void>;
     play(animationManager: AnimationManager): Promise<void>;
 }
 declare function shouldAnimate(settings?: BgaAnimationSettings): boolean;
@@ -116,9 +117,11 @@ declare class BgaSlideAnimation<BgaAnimationWithAttachAndOriginSettings> extends
  * @param animation a `BgaAnimation` object
  * @returns a promise when animation ends
  */
-declare function slideToAnimation(animationManager: AnimationManager, animation: IBgaAnimation<BgaElementAnimationSettings>): Promise<void>;
 declare class BgaSlideToAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAnimation<any> {
     constructor(settings: BgaAnimationWithAttachAndOriginSettings);
+    private timeoutId;
+    private wireUp;
+    protected doAnimate(animationManager: AnimationManager): Promise<void>;
 }
 /**
  * Show the element at the center of the screen

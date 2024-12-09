@@ -53,6 +53,9 @@ var BgaAnimation = /** @class */ (function () {
         this.result = null;
         this.playWhenNoAnimation = false;
     }
+    BgaAnimation.prototype.doAnimate = function (animationManager) {
+        return this.animationFunction(animationManager, this);
+    };
     BgaAnimation.prototype.play = function (animationManager) {
         return __awaiter(this, void 0, void 0, function () {
             var settings, _a;
@@ -67,7 +70,7 @@ var BgaAnimation = /** @class */ (function () {
                         (_c = settings.element) === null || _c === void 0 ? void 0 : _c.classList.add((_d = settings.animationClass) !== null && _d !== void 0 ? _d : 'bga-animations_animated');
                         this.settings = __assign({ duration: (_h = (_f = (_e = this.settings) === null || _e === void 0 ? void 0 : _e.duration) !== null && _f !== void 0 ? _f : (_g = animationManager.getSettings()) === null || _g === void 0 ? void 0 : _g.duration) !== null && _h !== void 0 ? _h : 500, scale: (_m = (_k = (_j = this.settings) === null || _j === void 0 ? void 0 : _j.scale) !== null && _k !== void 0 ? _k : (_l = animationManager.getZoomManager()) === null || _l === void 0 ? void 0 : _l.zoom) !== null && _m !== void 0 ? _m : undefined }, this.settings);
                         _a = this;
-                        return [4 /*yield*/, this.animationFunction(animationManager, this)];
+                        return [4 /*yield*/, this.doAnimate(animationManager)];
                     case 1:
                         _a.result = _s.sent();
                         (_p = (_o = this.settings).animationEnd) === null || _p === void 0 ? void 0 : _p.call(_o, this);
@@ -210,18 +213,15 @@ var BgaSlideAnimation = /** @class */ (function (_super) {
  * @param animation a `BgaAnimation` object
  * @returns a promise when animation ends
  */
-function slideToAnimation(animationManager, animation) {
-    var promise = new Promise(function (success) {
-        var _a, _b, _c, _d, _e;
-        var settings = animation.settings;
-        var element = settings.element;
-        var _f = getDeltaCoordinates(element, settings, animationManager), x = _f.x, y = _f.y;
-        var duration = (_a = settings === null || settings === void 0 ? void 0 : settings.duration) !== null && _a !== void 0 ? _a : 500;
+var BgaSlideToAnimation = /** @class */ (function (_super) {
+    __extends(BgaSlideToAnimation, _super);
+    function BgaSlideToAnimation(settings) {
+        return _super.call(this, null, settings) || this;
+    }
+    BgaSlideToAnimation.prototype.wireUp = function (element, duration, success) {
+        var _this = this;
         var originalZIndex = element.style.zIndex;
         var originalTransition = element.style.transition;
-        var transitionTimingFunction = (_b = settings.transitionTimingFunction) !== null && _b !== void 0 ? _b : 'linear';
-        element.style.zIndex = "".concat((_c = settings === null || settings === void 0 ? void 0 : settings.zIndex) !== null && _c !== void 0 ? _c : 10);
-        var timeoutId = null;
         var cleanOnTransitionEnd = function () {
             element.style.zIndex = originalZIndex;
             element.style.transition = originalTransition;
@@ -229,35 +229,37 @@ function slideToAnimation(animationManager, animation) {
             element.removeEventListener('transitioncancel', cleanOnTransitionEnd);
             element.removeEventListener('transitionend', cleanOnTransitionEnd);
             document.removeEventListener('visibilitychange', cleanOnTransitionEnd);
-            if (timeoutId) {
-                clearTimeout(timeoutId);
+            if (_this.timeoutId) {
+                clearTimeout(_this.timeoutId);
             }
         };
         var cleanOnTransitionCancel = function () {
             var _a;
             element.style.transition = "";
-            element.offsetHeight;
-            element.style.transform = (_a = settings === null || settings === void 0 ? void 0 : settings.finalTransform) !== null && _a !== void 0 ? _a : null;
-            element.offsetHeight;
+            element.style.transform = (_a = _this.settings.finalTransform) !== null && _a !== void 0 ? _a : null;
             cleanOnTransitionEnd();
         };
         element.addEventListener('transitioncancel', cleanOnTransitionEnd);
         element.addEventListener('transitionend', cleanOnTransitionEnd);
         document.addEventListener('visibilitychange', cleanOnTransitionCancel);
-        element.offsetHeight;
-        element.style.transition = "transform ".concat(duration, "ms ").concat(transitionTimingFunction);
-        element.offsetHeight;
-        element.style.transform = "translate(".concat(-x, "px, ").concat(-y, "px) rotate(").concat((_d = settings === null || settings === void 0 ? void 0 : settings.rotationDelta) !== null && _d !== void 0 ? _d : 0, "deg) scale(").concat((_e = settings.scale) !== null && _e !== void 0 ? _e : 1, ")");
         // safety in case transitionend and transitioncancel are not called
-        timeoutId = setTimeout(cleanOnTransitionEnd, duration + 100);
-    });
-    return promise;
-}
-var BgaSlideToAnimation = /** @class */ (function (_super) {
-    __extends(BgaSlideToAnimation, _super);
-    function BgaSlideToAnimation(settings) {
-        return _super.call(this, slideToAnimation, settings) || this;
-    }
+        this.timeoutId = setTimeout(cleanOnTransitionEnd, duration + 100);
+    };
+    BgaSlideToAnimation.prototype.doAnimate = function (animationManager) {
+        var _this = this;
+        var promise = new Promise(function (success) {
+            var _a, _b, _c, _d, _e, _f, _g, _h;
+            var element = _this.settings.element;
+            var transitionTimingFunction = (_a = _this.settings.transitionTimingFunction) !== null && _a !== void 0 ? _a : 'linear';
+            var duration = (_c = (_b = _this.settings) === null || _b === void 0 ? void 0 : _b.duration) !== null && _c !== void 0 ? _c : 500;
+            _this.wireUp(element, duration, success);
+            var _j = getDeltaCoordinates(element, _this.settings, animationManager), x = _j.x, y = _j.y;
+            element.style.transition = "transform ".concat(duration, "ms ").concat(transitionTimingFunction);
+            element.style.zIndex = "".concat((_e = (_d = _this.settings) === null || _d === void 0 ? void 0 : _d.zIndex) !== null && _e !== void 0 ? _e : 10);
+            element.style.transform = "translate(".concat(-x, "px, ").concat(-y, "px) rotate(").concat((_g = (_f = _this.settings) === null || _f === void 0 ? void 0 : _f.rotationDelta) !== null && _g !== void 0 ? _g : 0, "deg) scale(").concat((_h = _this.settings.scale) !== null && _h !== void 0 ? _h : 1, ")");
+        });
+        return promise;
+    };
     return BgaSlideToAnimation;
 }(BgaAnimation));
 /**

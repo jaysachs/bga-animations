@@ -93,7 +93,7 @@ interface IBgaAnimation<T extends BgaAnimationSettings> {
  */
 type BgaAnimationFunction = (animationManager: AnimationManager, animation: IBgaAnimation<BgaAnimationSettings>) => Promise<any>;
 
-class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnimation<BgaAnimationSettings> {
+abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnimation<BgaAnimationSettings> {
     public played: boolean | null = null;
     public result: any | null = null;
 
@@ -103,6 +103,10 @@ class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnimation<BgaA
         protected animationFunction: BgaAnimationFunction,
         public settings: T,
     ) {}
+
+    protected doAnimate(animationManager: AnimationManager): Promise<void> {
+        return this.animationFunction(animationManager, this);
+    }
 
     public async play(animationManager: AnimationManager) {
 
@@ -119,7 +123,7 @@ class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnimation<BgaA
                 ...this.settings,
             };
  
-            this.result = await this.animationFunction(animationManager, this);
+            this.result = await this.doAnimate(animationManager);
 
             this.settings.animationEnd?.(this);
             settings.element?.classList.remove(settings.animationClass ?? 'bga-animations_animated');

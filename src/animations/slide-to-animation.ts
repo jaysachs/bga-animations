@@ -5,21 +5,21 @@
  * @param animation a `BgaAnimation` object
  * @returns a promise when animation ends
  */
-function slideToAnimation(animationManager: AnimationManager, animation: IBgaAnimation<BgaElementAnimationSettings>): Promise<void> {
-    const promise = new Promise<void>((success) => {
-        const settings = animation.settings;
-        const element = settings.element;
+class BgaSlideToAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAnimation<any> {
+    constructor(
+        settings: BgaAnimationWithAttachAndOriginSettings,
+    ) {
+        super(
+            null,
+            settings,
+        );
+    }
 
-        let {x, y} = getDeltaCoordinates(element, settings, animationManager);
+    private timeoutId: number | null;
 
-        const duration = settings?.duration ?? 500;
+    private wireUp(element: HTMLElement, duration: number, success: (a: void) => any): void {
         const originalZIndex = element.style.zIndex;
         const originalTransition = element.style.transition;
-        const transitionTimingFunction = settings.transitionTimingFunction ?? 'linear';
-
-        element.style.zIndex = `${settings?.zIndex ?? 10}`;
-
-        let timeoutId = null;
 
         const cleanOnTransitionEnd = () => {
             element.style.zIndex = originalZIndex;
@@ -28,16 +28,14 @@ function slideToAnimation(animationManager: AnimationManager, animation: IBgaAni
             element.removeEventListener('transitioncancel', cleanOnTransitionEnd);
             element.removeEventListener('transitionend', cleanOnTransitionEnd);
             document.removeEventListener('visibilitychange', cleanOnTransitionEnd);
-            if (timeoutId) {
-                clearTimeout(timeoutId);
+            if (this.timeoutId) {
+                clearTimeout(this.timeoutId);
             }
         };
 
         const cleanOnTransitionCancel = () => {
             element.style.transition = ``;
-            element.offsetHeight;
-            element.style.transform = settings?.finalTransform ?? null;
-            element.offsetHeight;
+            element.style.transform = this.settings.finalTransform ?? null;
             cleanOnTransitionEnd();
         }
 
@@ -45,23 +43,25 @@ function slideToAnimation(animationManager: AnimationManager, animation: IBgaAni
         element.addEventListener('transitionend', cleanOnTransitionEnd);
         document.addEventListener('visibilitychange', cleanOnTransitionCancel);
 
-        element.offsetHeight;
-        element.style.transition = `transform ${duration}ms ${transitionTimingFunction}`;
-        element.offsetHeight;
-        element.style.transform = `translate(${-x}px, ${-y}px) rotate(${settings?.rotationDelta ?? 0}deg) scale(${settings.scale ?? 1})`;
         // safety in case transitionend and transitioncancel are not called
-        timeoutId = setTimeout(cleanOnTransitionEnd, duration + 100);
-    });
-    return promise;
+        this.timeoutId = setTimeout(cleanOnTransitionEnd, duration + 100);
 }
 
-class BgaSlideToAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAnimation<any> {
-    constructor(
-        settings: BgaAnimationWithAttachAndOriginSettings,
-    ) {
-        super(
-            slideToAnimation,
-            settings,
-        );
+    protected doAnimate(animationManager: AnimationManager): Promise<void> {
+        const promise = new Promise<void>((success) => {
+            const element = this.settings.element;
+
+            const transitionTimingFunction = this.settings.transitionTimingFunction ?? 'linear';
+            const duration = this.settings?.duration ?? 500;
+
+            this.wireUp(element, duration, success);
+
+            let {x, y} = getDeltaCoordinates(element, this.settings, animationManager);    
+
+            element.style.transition = `transform ${duration}ms ${transitionTimingFunction}`;
+            element.style.zIndex = `${this.settings?.zIndex ?? 10}`;    
+            element.style.transform = `translate(${-x}px, ${-y}px) rotate(${this.settings?.rotationDelta ?? 0}deg) scale(${this.settings.scale ?? 1})`;
+        });
+        return promise;            
     }
 }
