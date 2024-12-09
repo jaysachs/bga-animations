@@ -1,3 +1,14 @@
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -44,15 +55,25 @@ var BgaAnimation = /** @class */ (function () {
     }
     BgaAnimation.prototype.play = function (animationManager) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var settings, _a;
+            var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r;
+            return __generator(this, function (_s) {
+                switch (_s.label) {
                     case 0:
+                        this.played = this.playWhenNoAnimation || animationManager.animationsActive();
+                        if (!this.played) return [3 /*break*/, 2];
+                        settings = this.settings;
+                        (_b = settings.animationStart) === null || _b === void 0 ? void 0 : _b.call(settings, this);
+                        (_c = settings.element) === null || _c === void 0 ? void 0 : _c.classList.add((_d = settings.animationClass) !== null && _d !== void 0 ? _d : 'bga-animations_animated');
+                        this.settings = __assign({ duration: (_h = (_f = (_e = this.settings) === null || _e === void 0 ? void 0 : _e.duration) !== null && _f !== void 0 ? _f : (_g = animationManager.getSettings()) === null || _g === void 0 ? void 0 : _g.duration) !== null && _h !== void 0 ? _h : 500, scale: (_m = (_k = (_j = this.settings) === null || _j === void 0 ? void 0 : _j.scale) !== null && _k !== void 0 ? _k : (_l = animationManager.getZoomManager()) === null || _l === void 0 ? void 0 : _l.zoom) !== null && _m !== void 0 ? _m : undefined }, this.settings);
                         _a = this;
                         return [4 /*yield*/, this.animationFunction(animationManager, this)];
                     case 1:
-                        _a.result = _b.sent();
-                        return [2 /*return*/];
+                        _a.result = _s.sent();
+                        (_p = (_o = this.settings).animationEnd) === null || _p === void 0 ? void 0 : _p.call(_o, this);
+                        (_q = settings.element) === null || _q === void 0 ? void 0 : _q.classList.remove((_r = settings.animationClass) !== null && _r !== void 0 ? _r : 'bga-animations_animated');
+                        _s.label = 2;
+                    case 2: return [2 /*return*/];
                 }
             });
         });
@@ -368,17 +389,6 @@ var BgaCumulatedAnimation = /** @class */ (function (_super) {
     }
     return BgaCumulatedAnimation;
 }(BgaAnimation));
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
         if (ar || !(i in from)) {
@@ -431,24 +441,12 @@ var AnimationManager = /** @class */ (function () {
      */
     AnimationManager.prototype.play = function (animation) {
         return __awaiter(this, void 0, void 0, function () {
-            var settings;
-            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
-            return __generator(this, function (_r) {
-                switch (_r.label) {
-                    case 0:
-                        animation.played = animation.playWhenNoAnimation || this.animationsActive();
-                        if (!animation.played) return [3 /*break*/, 2];
-                        settings = animation.settings;
-                        (_a = settings.animationStart) === null || _a === void 0 ? void 0 : _a.call(settings, animation);
-                        (_b = settings.element) === null || _b === void 0 ? void 0 : _b.classList.add((_c = settings.animationClass) !== null && _c !== void 0 ? _c : 'bga-animations_animated');
-                        animation.settings = __assign({ duration: (_g = (_e = (_d = animation.settings) === null || _d === void 0 ? void 0 : _d.duration) !== null && _e !== void 0 ? _e : (_f = this.settings) === null || _f === void 0 ? void 0 : _f.duration) !== null && _g !== void 0 ? _g : 500, scale: (_l = (_j = (_h = animation.settings) === null || _h === void 0 ? void 0 : _h.scale) !== null && _j !== void 0 ? _j : (_k = this.zoomManager) === null || _k === void 0 ? void 0 : _k.zoom) !== null && _l !== void 0 ? _l : undefined }, animation.settings);
-                        return [4 /*yield*/, animation.play(this)];
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, animation.play(this)];
                     case 1:
-                        _r.sent();
-                        (_o = (_m = animation.settings).animationEnd) === null || _o === void 0 ? void 0 : _o.call(_m, animation);
-                        (_p = settings.element) === null || _p === void 0 ? void 0 : _p.classList.remove((_q = settings.animationClass) !== null && _q !== void 0 ? _q : 'bga-animations_animated');
-                        _r.label = 2;
-                    case 2: return [2 /*return*/, Promise.resolve(animation)];
+                        _a.sent();
+                        return [2 /*return*/, Promise.resolve(animation)];
                 }
             });
         });

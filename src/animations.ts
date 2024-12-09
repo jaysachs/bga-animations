@@ -105,6 +105,24 @@ class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnimation<BgaA
     ) {}
 
     public async play(animationManager: AnimationManager) {
-        this.result = await this.animationFunction(animationManager, this);
+
+        this.played = this.playWhenNoAnimation || animationManager.animationsActive();
+        if (this.played) {
+            const settings = this.settings;
+
+            settings.animationStart?.(this);
+            settings.element?.classList.add(settings.animationClass ?? 'bga-animations_animated');
+
+            this.settings = {
+                duration: this.settings?.duration ?? animationManager.getSettings()?.duration ?? 500,
+                scale: this.settings?.scale ?? animationManager.getZoomManager()?.zoom ?? undefined,
+                ...this.settings,
+            };
+ 
+            this.result = await this.animationFunction(animationManager, this);
+
+            this.settings.animationEnd?.(this);
+            settings.element?.classList.remove(settings.animationClass ?? 'bga-animations_animated');
+        }
     }
 }

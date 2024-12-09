@@ -56,7 +56,7 @@ function slideToScreenCenterThen(toElement) {
     ), 1);
 }
 
-function slideToScreenCenter() {
+function slideToScreenCenter(toElement) {
     applyToMovedSquares(element => animationManager.attachWithAnimation(
         new BgaShowScreenCenterAnimation({ element }),
         toElement
@@ -76,7 +76,8 @@ function slideToHereThenDelete(toElement) {
     applyToMovedSquares(element => animationManager.play(
         new BgaSlideAnimation({
             element,
-            fromElement: toElement, scale: 1
+            fromElement: toElement, 
+            scale: 1
         })
     ).then(() => element.remove()), 1);
 }

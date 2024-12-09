@@ -69,23 +69,7 @@ class AnimationManager {
      * @returns the animation promise.
      */
     async play(animation: BgaAnimation<BgaAnimationSettings>): Promise<BgaAnimation<BgaAnimationSettings>> {
-        animation.played = animation.playWhenNoAnimation || this.animationsActive();
-        if (animation.played) {
-            const settings = animation.settings;
-
-            settings.animationStart?.(animation);
-            settings.element?.classList.add(settings.animationClass ?? 'bga-animations_animated');
-
-            animation.settings = {
-                duration: animation.settings?.duration ?? this.settings?.duration ?? 500,
-                scale: animation.settings?.scale ?? this.zoomManager?.zoom ?? undefined,
-                ...animation.settings,
-            };
-            await animation.play(this);
-
-            animation.settings.animationEnd?.(animation);
-            settings.element?.classList.remove(settings.animationClass ?? 'bga-animations_animated');
-        }
+        await animation.play(this);
         return Promise.resolve(animation);
     }
 
