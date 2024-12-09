@@ -78,12 +78,13 @@ interface IBgaAnimation<T extends BgaAnimationSettings> {
  */
 type BgaAnimationFunction = (animationManager: AnimationManager, animation: IBgaAnimation<BgaAnimationSettings>) => Promise<any>;
 declare class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnimation<BgaAnimationSettings> {
-    animationFunction: BgaAnimationFunction;
+    protected animationFunction: BgaAnimationFunction;
     settings: T;
     played: boolean | null;
     result: any | null;
     playWhenNoAnimation: boolean;
     constructor(animationFunction: BgaAnimationFunction, settings: T);
+    play(animationManager: AnimationManager): Promise<void>;
 }
 declare function shouldAnimate(settings?: BgaAnimationSettings): boolean;
 /**

@@ -100,7 +100,11 @@ class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnimation<BgaA
     public playWhenNoAnimation: boolean = false;
 
     constructor(
-        public animationFunction: BgaAnimationFunction,
+        protected animationFunction: BgaAnimationFunction,
         public settings: T,
     ) {}
+
+    public async play(animationManager: AnimationManager) {
+        this.result = await this.animationFunction(animationManager, this);
+    }
 }

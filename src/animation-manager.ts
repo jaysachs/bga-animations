@@ -81,13 +81,12 @@ class AnimationManager {
                 scale: animation.settings?.scale ?? this.zoomManager?.zoom ?? undefined,
                 ...animation.settings,
             };
-            animation.result = await animation.animationFunction(this, animation);
+            await animation.play(this);
 
             animation.settings.animationEnd?.(animation);
             settings.element?.classList.remove(settings.animationClass ?? 'bga-animations_animated');
-        } else {
-            return Promise.resolve(animation);
         }
+        return Promise.resolve(animation);
     }
 
     /**
