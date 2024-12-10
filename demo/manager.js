@@ -57,9 +57,8 @@ function slideToScreenCenterThen(toElement) {
 }
 
 function slideToScreenCenter(toElement) {
-    applyToMovedSquares(element => animationManager.attachWithAnimation(
-        new BgaShowScreenCenterAnimation({ element }),
-        toElement
+    applyToMovedSquares(element => animationManager.play(
+        new BgaShowScreenCenterAnimation({ element })
     ));
 }
 
