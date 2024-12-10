@@ -321,8 +321,18 @@ function pauseAnimation(animationManager, animation) {
 var BgaPauseAnimation = /** @class */ (function (_super) {
     __extends(BgaPauseAnimation, _super);
     function BgaPauseAnimation(settings) {
-        return _super.call(this, pauseAnimation, settings) || this;
+        return _super.call(this, null, settings) || this;
     }
+    BgaPauseAnimation.prototype.doAnimate = function (animationManager) {
+        var _this = this;
+        var promise = new Promise(function (success) {
+            var _a;
+            var settings = _this.settings;
+            var duration = (_a = settings === null || settings === void 0 ? void 0 : settings.duration) !== null && _a !== void 0 ? _a : 500;
+            setTimeout(function () { return success(); }, duration);
+        });
+        return promise;
+    };
     BgaPauseAnimation.prototype.play2 = function (animationManager) {
         var _a;
         console.log("play: ", this);

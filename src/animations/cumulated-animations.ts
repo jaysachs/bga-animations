@@ -4,10 +4,6 @@ interface BgaCumulatedAnimationsSettings extends BgaAnimationSettings {
 
 /**
  * Just use playSequence from animationManager
- * 
- * @param animationManager the animation manager
- * @param animation a `BgaAnimation` object
- * @returns a promise when animation ends
  */
 
 class BgaCumulatedAnimation<BgaCumulatedAnimationsSettings> extends BgaAnimation<any> {

@@ -30,7 +30,7 @@ function initManager() {
 }
 
 function applyToMovedSquares(fn, max = 4) {
-    for (i=1; i<=max; i++) {
+    for (let i=1; i<=max; i++) {
         const element = document.getElementById(`moved-square-${i}`);
         setTimeout(() => fn(element), 200 * (i - 1));
     } 

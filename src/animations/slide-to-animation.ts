@@ -1,9 +1,5 @@
 /**
  * Slide of the element from destination to origin.
- * 
- * @param animationManager the animation manager
- * @param animation a `BgaAnimation` object
- * @returns a promise when animation ends
  */
 class BgaSlideToAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAnimation<any> {
     constructor(
@@ -15,7 +11,7 @@ class BgaSlideToAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAn
         );
     }
 
-    protected doAnimate(animationManager: AnimationManager): Promise<void> {
+    protected doAnimate(animationManager: AnimationManager): Promise<any> {
         return new Promise<void>((success) => {
             console.log("doAnimate:", this);
             const element = this.settings.element;

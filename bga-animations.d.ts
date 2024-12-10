@@ -144,6 +144,7 @@ declare class BgaShowScreenCenterAnimation<BgaAnimation> extends BgaAnimation<an
 declare function pauseAnimation(animationManager: AnimationManager, animation: IBgaAnimation<BgaAnimationSettings>): Promise<void>;
 declare class BgaPauseAnimation<BgaAnimation> extends BgaAnimation<any> {
     constructor(settings: BgaAnimation);
+    protected doAnimate(animationManager: AnimationManager): Promise<void>;
     play2(animationManager: AnimationManager): Promise<any>;
 }
 interface BgaAttachWithAnimationSettings extends BgaElementAnimationSettings {

@@ -1,9 +1,5 @@
 /**
  * Show the element at the center of the screen
- * 
- * @param animationManager the animation manager
- * @param animation a `BgaAnimation` object
- * @returns a promise when animation ends
  */
 class BgaShowScreenCenterAnimation<BgaAnimation> extends BgaAnimation<any> {
     constructor(
@@ -16,7 +12,7 @@ class BgaShowScreenCenterAnimation<BgaAnimation> extends BgaAnimation<any> {
     }
 
     protected doAnimate(animationManager: AnimationManager): Promise<void> {
-        const promise = new Promise<void>((success) => {
+        return new Promise<void>((success) => {
             const element = this.settings.element;
 
             const elementBR = animationManager.game.getBoundingClientRectIgnoreZoom(element);
@@ -36,7 +32,6 @@ class BgaShowScreenCenterAnimation<BgaAnimation> extends BgaAnimation<any> {
             element.style.zIndex = `${this.settings?.zIndex ?? 10}`;    
             element.style.transform = `translate(${-x}px, ${-y}px) rotate(${this.settings?.rotationDelta ?? 0}deg) scale(${this.settings.scale ?? 1})`;
         });
-        return promise;
     }
 }
 
