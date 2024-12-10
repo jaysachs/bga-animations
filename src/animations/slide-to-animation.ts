@@ -13,7 +13,6 @@ class BgaSlideToAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAn
 
     protected doAnimate(animationManager: AnimationManager): Promise<any> {
         return new Promise<void>((success) => {
-            console.log("doAnimate:", this);
             const element = this.settings.element;
 
             const transitionTimingFunction = this.settings.transitionTimingFunction ?? 'linear';
