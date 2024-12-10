@@ -19,6 +19,7 @@ function showScreenCenterAnimation(animationManager: AnimationManager, animation
         const y = yCenter - (window.innerHeight / 2);
 
         const duration = settings?.duration ?? 500;
+        console.log("duration in center show is ", duration);
         const originalZIndex = element.style.zIndex;
         const originalTransition = element.style.transition;
         const transitionTimingFunction = settings.transitionTimingFunction ?? 'linear';
@@ -28,6 +29,7 @@ function showScreenCenterAnimation(animationManager: AnimationManager, animation
         let timeoutId = null;
 
         const cleanOnTransitionEnd = () => {
+            console.log("cleanOnEnd", this);
             element.style.zIndex = originalZIndex;
             element.style.transition = originalTransition;
             success();
@@ -40,6 +42,7 @@ function showScreenCenterAnimation(animationManager: AnimationManager, animation
         };
 
         const cleanOnTransitionCancel = () => {
+            console.log("cleanOnCancel", this);
             element.style.transition = ``;
             element.offsetHeight;
             element.style.transform = settings?.finalTransform ?? null;

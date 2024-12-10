@@ -19,26 +19,25 @@ interface BgaAttachWithAnimationSettings extends BgaElementAnimationSettings {
  * @param animation a `BgaAnimation` object
  * @returns a promise when animation ends
  */
-function attachWithAnimation(animationManager: AnimationManager, animation: IBgaAnimation<BgaAttachWithAnimationSettings>): Promise<any> {
-    const settings = animation.settings as BgaAttachWithAnimationSettings;
-    const element = settings.animation.settings.element;
-
-    const fromRect = animationManager.game.getBoundingClientRectIgnoreZoom(element);
-    settings.animation.settings.fromRect = fromRect;
-    settings.attachElement.appendChild(element);
-    settings.afterAttach?.(element, settings.attachElement);
-    return animationManager.play(settings.animation);
-}
-
-
 class BgaAttachWithAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAnimation<any> {
     constructor(
         settings: BgaAnimationWithAttachAndOriginSettings,
     ) {
         super(
-            attachWithAnimation,
+            null,
             settings,
         );
         this.playWhenNoAnimation = true;
     }
+
+    protected async doAnimate(animationManager: AnimationManager, success: (a: void) => any) {
+        const settings = this.settings;
+        const element = settings.animation.settings.element;
+    
+        const fromRect = animationManager.game.getBoundingClientRectIgnoreZoom(element);
+        settings.animation.settings.fromRect = fromRect;
+        settings.attachElement.appendChild(element);
+        settings.afterAttach?.(element, settings.attachElement);
+        await animationManager.play(settings.animation);
+     }
 }

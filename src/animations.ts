@@ -102,14 +102,50 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
     constructor(
         protected animationFunction: BgaAnimationFunction,
         public settings: T,
-    ) {}
-
-    protected doAnimate(animationManager: AnimationManager): Promise<void> {
-        return this.animationFunction(animationManager, this);
+    ) {
     }
 
-    public async play(animationManager: AnimationManager) {
+    private timeoutId: number | null;
 
+    protected wireUp(element: HTMLElement, duration: number, success: (a: void) => any): void {
+        console.log("wireUp", this, element, duration);
+        const originalZIndex = element.style.zIndex;
+        const originalTransition = element.style.transition;
+
+        const cleanOnTransitionEnd = () => {
+            console.log("cleanOnEnd", this);
+            element.style.zIndex = originalZIndex;
+            element.style.transition = originalTransition;
+            success();
+            element.removeEventListener('transitioncancel', cleanOnTransitionEnd);
+            element.removeEventListener('transitionend', cleanOnTransitionEnd);
+            document.removeEventListener('visibilitychange', cleanOnTransitionEnd);
+            if (this.timeoutId) {
+                clearTimeout(this.timeoutId);
+            }
+        };
+
+        const cleanOnTransitionCancel = () => {
+            console.log("cleanOnCancel", this);
+            element.style.transition = ``;
+            element.style.transform = null; // this.settings.finalTransform ?? null;
+            cleanOnTransitionEnd();
+        }
+
+        element.addEventListener('transitioncancel', cleanOnTransitionEnd);
+        element.addEventListener('transitionend', cleanOnTransitionEnd);
+        document.addEventListener('visibilitychange', cleanOnTransitionCancel);
+
+        // safety in case transitionend and transitioncancel are not called
+        this.timeoutId = setTimeout(cleanOnTransitionEnd, duration + 100);
+}
+
+    protected doAnimate(animationManager: AnimationManager, success: (a: void) => any): void { // Promise<void> {
+        this.animationFunction(animationManager, this);
+    }
+
+    public async play(animationManager: AnimationManager): Promise<any> {
+        console.log("play: ", this);
         this.played = this.playWhenNoAnimation || animationManager.animationsActive();
         if (this.played) {
             const settings = this.settings;
@@ -122,11 +158,15 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
                 scale: this.settings?.scale ?? animationManager.getZoomManager()?.zoom ?? undefined,
                 ...this.settings,
             };
- 
-            this.result = await this.doAnimate(animationManager);
+            console.log("awaiting: ", this);
+            this.result = await new Promise<void>((success) =>
+                 { console.log("doAnimate:", this); this.doAnimate(animationManager, success); console.log("doneAnimate: ", this); });
 
             this.settings.animationEnd?.(this);
             settings.element?.classList.remove(settings.animationClass ?? 'bga-animations_animated');
+        } else {
+            return Promise.resolve(this);
         }
+        console.log("playeD:", this);
     }
 }

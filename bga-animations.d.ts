@@ -84,8 +84,10 @@ declare abstract class BgaAnimation<T extends BgaAnimationSettings> implements I
     result: any | null;
     playWhenNoAnimation: boolean;
     constructor(animationFunction: BgaAnimationFunction, settings: T);
-    protected doAnimate(animationManager: AnimationManager): Promise<void>;
-    play(animationManager: AnimationManager): Promise<void>;
+    private timeoutId;
+    protected wireUp(element: HTMLElement, duration: number, success: (a: void) => any): void;
+    protected doAnimate(animationManager: AnimationManager, success: (a: void) => any): void;
+    play(animationManager: AnimationManager): Promise<any>;
 }
 declare function shouldAnimate(settings?: BgaAnimationSettings): boolean;
 /**
@@ -119,9 +121,7 @@ declare class BgaSlideAnimation<BgaAnimationWithAttachAndOriginSettings> extends
  */
 declare class BgaSlideToAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAnimation<any> {
     constructor(settings: BgaAnimationWithAttachAndOriginSettings);
-    private timeoutId;
-    private wireUp;
-    protected doAnimate(animationManager: AnimationManager): Promise<void>;
+    protected doAnimate(animationManager: AnimationManager, success: (a: void) => any): void;
 }
 /**
  * Show the element at the center of the screen
@@ -141,9 +141,9 @@ declare class BgaShowScreenCenterAnimation<BgaAnimation> extends BgaAnimation<an
  * @param animation a `BgaAnimation` object
  * @returns a promise when animation ends
  */
-declare function pauseAnimation(animationManager: AnimationManager, animation: IBgaAnimation<BgaAnimationSettings>): Promise<void>;
 declare class BgaPauseAnimation<BgaAnimation> extends BgaAnimation<any> {
     constructor(settings: BgaAnimation);
+    play(animationManager: AnimationManager): Promise<any>;
 }
 interface BgaAttachWithAnimationSettings extends BgaElementAnimationSettings {
     animation: BgaAnimation<BgaAnimationWithOriginSettings>;
@@ -163,9 +163,9 @@ interface BgaAttachWithAnimationSettings extends BgaElementAnimationSettings {
  * @param animation a `BgaAnimation` object
  * @returns a promise when animation ends
  */
-declare function attachWithAnimation(animationManager: AnimationManager, animation: IBgaAnimation<BgaAttachWithAnimationSettings>): Promise<any>;
 declare class BgaAttachWithAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAnimation<any> {
     constructor(settings: BgaAnimationWithAttachAndOriginSettings);
+    protected doAnimate(animationManager: AnimationManager, success: (a: void) => any): Promise<void>;
 }
 interface BgaCumulatedAnimationsSettings extends BgaAnimationSettings {
     animations: IBgaAnimation<BgaAnimationSettings>[];
@@ -177,9 +177,9 @@ interface BgaCumulatedAnimationsSettings extends BgaAnimationSettings {
  * @param animation a `BgaAnimation` object
  * @returns a promise when animation ends
  */
-declare function cumulatedAnimations(animationManager: AnimationManager, animation: IBgaAnimation<BgaCumulatedAnimationsSettings>): Promise<any>;
 declare class BgaCumulatedAnimation<BgaCumulatedAnimationsSettings> extends BgaAnimation<any> {
     constructor(settings: BgaCumulatedAnimationsSettings);
+    protected doAnimate(animationManager: AnimationManager, success: (a: void) => any): Promise<this>;
 }
 interface IZoomManager {
     /**

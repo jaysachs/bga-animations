@@ -9,19 +9,21 @@ interface BgaCumulatedAnimationsSettings extends BgaAnimationSettings {
  * @param animation a `BgaAnimation` object
  * @returns a promise when animation ends
  */
-function cumulatedAnimations(animationManager: AnimationManager, animation: IBgaAnimation<BgaCumulatedAnimationsSettings>): Promise<any> {
-    return animationManager.playSequence((animation.settings as any).animations);
-}
-
 
 class BgaCumulatedAnimation<BgaCumulatedAnimationsSettings> extends BgaAnimation<any> {
     constructor(
         settings: BgaCumulatedAnimationsSettings,
     ) {
         super(
-            cumulatedAnimations,
+            null,
             settings,
         );
         this.playWhenNoAnimation = true;
+    }
+
+    protected async doAnimate(animationManager: AnimationManager, success: (a: void) => any) {
+        await animationManager.playSequence(this.settings.animations);
+        success();
+        return Promise.resolve(this);
     }
 }

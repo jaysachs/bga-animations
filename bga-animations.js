@@ -53,30 +53,65 @@ var BgaAnimation = /** @class */ (function () {
         this.result = null;
         this.playWhenNoAnimation = false;
     }
-    BgaAnimation.prototype.doAnimate = function (animationManager) {
-        return this.animationFunction(animationManager, this);
+    BgaAnimation.prototype.wireUp = function (element, duration, success) {
+        var _this = this;
+        console.log("wireUp", this, element, duration);
+        var originalZIndex = element.style.zIndex;
+        var originalTransition = element.style.transition;
+        var cleanOnTransitionEnd = function () {
+            console.log("cleanOnEnd", _this);
+            element.style.zIndex = originalZIndex;
+            element.style.transition = originalTransition;
+            success();
+            element.removeEventListener('transitioncancel', cleanOnTransitionEnd);
+            element.removeEventListener('transitionend', cleanOnTransitionEnd);
+            document.removeEventListener('visibilitychange', cleanOnTransitionEnd);
+            if (_this.timeoutId) {
+                clearTimeout(_this.timeoutId);
+            }
+        };
+        var cleanOnTransitionCancel = function () {
+            console.log("cleanOnCancel", _this);
+            element.style.transition = "";
+            element.style.transform = null; // this.settings.finalTransform ?? null;
+            cleanOnTransitionEnd();
+        };
+        element.addEventListener('transitioncancel', cleanOnTransitionEnd);
+        element.addEventListener('transitionend', cleanOnTransitionEnd);
+        document.addEventListener('visibilitychange', cleanOnTransitionCancel);
+        // safety in case transitionend and transitioncancel are not called
+        this.timeoutId = setTimeout(cleanOnTransitionEnd, duration + 100);
+    };
+    BgaAnimation.prototype.doAnimate = function (animationManager, success) {
+        this.animationFunction(animationManager, this);
     };
     BgaAnimation.prototype.play = function (animationManager) {
         return __awaiter(this, void 0, void 0, function () {
             var settings, _a;
+            var _this = this;
             var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r;
             return __generator(this, function (_s) {
                 switch (_s.label) {
                     case 0:
+                        console.log("play: ", this);
                         this.played = this.playWhenNoAnimation || animationManager.animationsActive();
                         if (!this.played) return [3 /*break*/, 2];
                         settings = this.settings;
                         (_b = settings.animationStart) === null || _b === void 0 ? void 0 : _b.call(settings, this);
                         (_c = settings.element) === null || _c === void 0 ? void 0 : _c.classList.add((_d = settings.animationClass) !== null && _d !== void 0 ? _d : 'bga-animations_animated');
                         this.settings = __assign({ duration: (_h = (_f = (_e = this.settings) === null || _e === void 0 ? void 0 : _e.duration) !== null && _f !== void 0 ? _f : (_g = animationManager.getSettings()) === null || _g === void 0 ? void 0 : _g.duration) !== null && _h !== void 0 ? _h : 500, scale: (_m = (_k = (_j = this.settings) === null || _j === void 0 ? void 0 : _j.scale) !== null && _k !== void 0 ? _k : (_l = animationManager.getZoomManager()) === null || _l === void 0 ? void 0 : _l.zoom) !== null && _m !== void 0 ? _m : undefined }, this.settings);
+                        console.log("awaiting: ", this);
                         _a = this;
-                        return [4 /*yield*/, this.doAnimate(animationManager)];
+                        return [4 /*yield*/, new Promise(function (success) { console.log("doAnimate:", _this); _this.doAnimate(animationManager, success); console.log("doneAnimate: ", _this); })];
                     case 1:
                         _a.result = _s.sent();
                         (_p = (_o = this.settings).animationEnd) === null || _p === void 0 ? void 0 : _p.call(_o, this);
                         (_q = settings.element) === null || _q === void 0 ? void 0 : _q.classList.remove((_r = settings.animationClass) !== null && _r !== void 0 ? _r : 'bga-animations_animated');
-                        _s.label = 2;
-                    case 2: return [2 /*return*/];
+                        return [3 /*break*/, 3];
+                    case 2: return [2 /*return*/, Promise.resolve(this)];
+                    case 3:
+                        console.log("playeD:", this);
+                        return [2 /*return*/];
                 }
             });
         });
@@ -218,47 +253,17 @@ var BgaSlideToAnimation = /** @class */ (function (_super) {
     function BgaSlideToAnimation(settings) {
         return _super.call(this, null, settings) || this;
     }
-    BgaSlideToAnimation.prototype.wireUp = function (element, duration, success) {
-        var _this = this;
-        var originalZIndex = element.style.zIndex;
-        var originalTransition = element.style.transition;
-        var cleanOnTransitionEnd = function () {
-            element.style.zIndex = originalZIndex;
-            element.style.transition = originalTransition;
-            success();
-            element.removeEventListener('transitioncancel', cleanOnTransitionEnd);
-            element.removeEventListener('transitionend', cleanOnTransitionEnd);
-            document.removeEventListener('visibilitychange', cleanOnTransitionEnd);
-            if (_this.timeoutId) {
-                clearTimeout(_this.timeoutId);
-            }
-        };
-        var cleanOnTransitionCancel = function () {
-            var _a;
-            element.style.transition = "";
-            element.style.transform = (_a = _this.settings.finalTransform) !== null && _a !== void 0 ? _a : null;
-            cleanOnTransitionEnd();
-        };
-        element.addEventListener('transitioncancel', cleanOnTransitionEnd);
-        element.addEventListener('transitionend', cleanOnTransitionEnd);
-        document.addEventListener('visibilitychange', cleanOnTransitionCancel);
-        // safety in case transitionend and transitioncancel are not called
-        this.timeoutId = setTimeout(cleanOnTransitionEnd, duration + 100);
-    };
-    BgaSlideToAnimation.prototype.doAnimate = function (animationManager) {
-        var _this = this;
-        var promise = new Promise(function (success) {
-            var _a, _b, _c, _d, _e, _f, _g, _h;
-            var element = _this.settings.element;
-            var transitionTimingFunction = (_a = _this.settings.transitionTimingFunction) !== null && _a !== void 0 ? _a : 'linear';
-            var duration = (_c = (_b = _this.settings) === null || _b === void 0 ? void 0 : _b.duration) !== null && _c !== void 0 ? _c : 500;
-            _this.wireUp(element, duration, success);
-            var _j = getDeltaCoordinates(element, _this.settings, animationManager), x = _j.x, y = _j.y;
-            element.style.transition = "transform ".concat(duration, "ms ").concat(transitionTimingFunction);
-            element.style.zIndex = "".concat((_e = (_d = _this.settings) === null || _d === void 0 ? void 0 : _d.zIndex) !== null && _e !== void 0 ? _e : 10);
-            element.style.transform = "translate(".concat(-x, "px, ").concat(-y, "px) rotate(").concat((_g = (_f = _this.settings) === null || _f === void 0 ? void 0 : _f.rotationDelta) !== null && _g !== void 0 ? _g : 0, "deg) scale(").concat((_h = _this.settings.scale) !== null && _h !== void 0 ? _h : 1, ")");
-        });
-        return promise;
+    BgaSlideToAnimation.prototype.doAnimate = function (animationManager, success) {
+        var _a, _b, _c, _d, _e, _f, _g, _h;
+        console.log("doAnimate:", this);
+        var element = this.settings.element;
+        var transitionTimingFunction = (_a = this.settings.transitionTimingFunction) !== null && _a !== void 0 ? _a : 'linear';
+        var duration = (_c = (_b = this.settings) === null || _b === void 0 ? void 0 : _b.duration) !== null && _c !== void 0 ? _c : 500;
+        this.wireUp(element, duration, success);
+        var _j = getDeltaCoordinates(element, this.settings, animationManager), x = _j.x, y = _j.y;
+        element.style.transition = "transform ".concat(duration, "ms ").concat(transitionTimingFunction);
+        element.style.zIndex = "".concat((_e = (_d = this.settings) === null || _d === void 0 ? void 0 : _d.zIndex) !== null && _e !== void 0 ? _e : 10);
+        element.style.transform = "translate(".concat(-x, "px, ").concat(-y, "px) rotate(").concat((_g = (_f = this.settings) === null || _f === void 0 ? void 0 : _f.rotationDelta) !== null && _g !== void 0 ? _g : 0, "deg) scale(").concat((_h = this.settings.scale) !== null && _h !== void 0 ? _h : 1, ")");
     };
     return BgaSlideToAnimation;
 }(BgaAnimation));
@@ -270,6 +275,7 @@ var BgaSlideToAnimation = /** @class */ (function (_super) {
  * @returns a promise when animation ends
  */
 function showScreenCenterAnimation(animationManager, animation) {
+    var _this = this;
     var promise = new Promise(function (success) {
         var _a, _b, _c, _d;
         var settings = animation.settings;
@@ -280,12 +286,14 @@ function showScreenCenterAnimation(animationManager, animation) {
         var x = xCenter - (window.innerWidth / 2);
         var y = yCenter - (window.innerHeight / 2);
         var duration = (_a = settings === null || settings === void 0 ? void 0 : settings.duration) !== null && _a !== void 0 ? _a : 500;
+        console.log("duration in center show is ", duration);
         var originalZIndex = element.style.zIndex;
         var originalTransition = element.style.transition;
         var transitionTimingFunction = (_b = settings.transitionTimingFunction) !== null && _b !== void 0 ? _b : 'linear';
         element.style.zIndex = "".concat((_c = settings === null || settings === void 0 ? void 0 : settings.zIndex) !== null && _c !== void 0 ? _c : 10);
         var timeoutId = null;
         var cleanOnTransitionEnd = function () {
+            console.log("cleanOnEnd", _this);
             element.style.zIndex = originalZIndex;
             element.style.transition = originalTransition;
             success();
@@ -298,6 +306,7 @@ function showScreenCenterAnimation(animationManager, animation) {
         };
         var cleanOnTransitionCancel = function () {
             var _a;
+            console.log("cleanOnCancel", _this);
             element.style.transition = "";
             element.offsetHeight;
             element.style.transform = (_a = settings === null || settings === void 0 ? void 0 : settings.finalTransform) !== null && _a !== void 0 ? _a : null;
@@ -330,20 +339,25 @@ var BgaShowScreenCenterAnimation = /** @class */ (function (_super) {
  * @param animation a `BgaAnimation` object
  * @returns a promise when animation ends
  */
-function pauseAnimation(animationManager, animation) {
-    var promise = new Promise(function (success) {
-        var _a;
-        var settings = animation.settings;
-        var duration = (_a = settings === null || settings === void 0 ? void 0 : settings.duration) !== null && _a !== void 0 ? _a : 500;
-        setTimeout(function () { return success(); }, duration);
-    });
-    return promise;
-}
 var BgaPauseAnimation = /** @class */ (function (_super) {
     __extends(BgaPauseAnimation, _super);
     function BgaPauseAnimation(settings) {
-        return _super.call(this, pauseAnimation, settings) || this;
+        return _super.call(this, null, settings) || this;
     }
+    BgaPauseAnimation.prototype.play = function (animationManager) {
+        var _a;
+        console.log("play: ", this);
+        // this.played = this.playWhenNoAnimation || animationManager.animationsActive();
+        // if (this.played) {
+        console.log("in pause play");
+        var settings = this.settings;
+        var duration = (_a = settings === null || settings === void 0 ? void 0 : settings.duration) !== null && _a !== void 0 ? _a : 500;
+        var p = new Promise(function (success) {
+            setTimeout(function () { success(); }, duration);
+        });
+        return p;
+        // console.log("timeout done");
+    };
     return BgaPauseAnimation;
 }(BgaAnimation));
 /**
@@ -353,23 +367,34 @@ var BgaPauseAnimation = /** @class */ (function (_super) {
  * @param animation a `BgaAnimation` object
  * @returns a promise when animation ends
  */
-function attachWithAnimation(animationManager, animation) {
-    var _a;
-    var settings = animation.settings;
-    var element = settings.animation.settings.element;
-    var fromRect = animationManager.game.getBoundingClientRectIgnoreZoom(element);
-    settings.animation.settings.fromRect = fromRect;
-    settings.attachElement.appendChild(element);
-    (_a = settings.afterAttach) === null || _a === void 0 ? void 0 : _a.call(settings, element, settings.attachElement);
-    return animationManager.play(settings.animation);
-}
 var BgaAttachWithAnimation = /** @class */ (function (_super) {
     __extends(BgaAttachWithAnimation, _super);
     function BgaAttachWithAnimation(settings) {
-        var _this = _super.call(this, attachWithAnimation, settings) || this;
+        var _this = _super.call(this, null, settings) || this;
         _this.playWhenNoAnimation = true;
         return _this;
     }
+    BgaAttachWithAnimation.prototype.doAnimate = function (animationManager, success) {
+        return __awaiter(this, void 0, void 0, function () {
+            var settings, element, fromRect;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        settings = this.settings;
+                        element = settings.animation.settings.element;
+                        fromRect = animationManager.game.getBoundingClientRectIgnoreZoom(element);
+                        settings.animation.settings.fromRect = fromRect;
+                        settings.attachElement.appendChild(element);
+                        (_a = settings.afterAttach) === null || _a === void 0 ? void 0 : _a.call(settings, element, settings.attachElement);
+                        return [4 /*yield*/, animationManager.play(settings.animation)];
+                    case 1:
+                        _b.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     return BgaAttachWithAnimation;
 }(BgaAnimation));
 /**
@@ -379,27 +404,28 @@ var BgaAttachWithAnimation = /** @class */ (function (_super) {
  * @param animation a `BgaAnimation` object
  * @returns a promise when animation ends
  */
-function cumulatedAnimations(animationManager, animation) {
-    return animationManager.playSequence(animation.settings.animations);
-}
 var BgaCumulatedAnimation = /** @class */ (function (_super) {
     __extends(BgaCumulatedAnimation, _super);
     function BgaCumulatedAnimation(settings) {
-        var _this = _super.call(this, cumulatedAnimations, settings) || this;
+        var _this = _super.call(this, null, settings) || this;
         _this.playWhenNoAnimation = true;
         return _this;
     }
+    BgaCumulatedAnimation.prototype.doAnimate = function (animationManager, success) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, animationManager.playSequence(this.settings.animations)];
+                    case 1:
+                        _a.sent();
+                        success();
+                        return [2 /*return*/, Promise.resolve(this)];
+                }
+            });
+        });
+    };
     return BgaCumulatedAnimation;
 }(BgaAnimation));
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
 var AnimationManager = /** @class */ (function () {
     /**
      * @param game the BGA game class, usually it will be `this`
@@ -445,9 +471,12 @@ var AnimationManager = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, animation.play(this)];
+                    case 0:
+                        console.log("manager play: ", animation);
+                        return [4 /*yield*/, animation.play(this)];
                     case 1:
                         _a.sent();
+                        console.log("manager played: ", animation);
                         return [2 /*return*/, Promise.resolve(animation)];
                 }
             });
@@ -475,19 +504,27 @@ var AnimationManager = /** @class */ (function () {
      */
     AnimationManager.prototype.playSequence = function (animations) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, others;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var result, _i, animations_1, a, _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
-                        if (!animations.length) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.play(animations[0])];
+                        console.log("manager playSequence:", animations);
+                        result = [];
+                        _i = 0, animations_1 = animations;
+                        _c.label = 1;
                     case 1:
-                        result = _a.sent();
-                        return [4 /*yield*/, this.playSequence(animations.slice(1))];
+                        if (!(_i < animations_1.length)) return [3 /*break*/, 4];
+                        a = animations_1[_i];
+                        console.log("manager seq play ", a);
+                        _b = (_a = result).push;
+                        return [4 /*yield*/, this.play(a)];
                     case 2:
-                        others = _a.sent();
-                        return [2 /*return*/, __spreadArray([result], others, true)];
-                    case 3: return [2 /*return*/, Promise.resolve([])];
+                        _b.apply(_a, [_c.sent()]);
+                        _c.label = 3;
+                    case 3:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 4: return [2 /*return*/, Promise.resolve(result)];
                 }
             });
         });
