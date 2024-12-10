@@ -10,16 +10,6 @@ interface BgaAnimationSettings {
     duration?: number;
 
     /**
-     * The animation CSS timing function, 'linear', 'ease-in-out' (default: linear).
-     */
-    transitionTimingFunction?: string;
-
-    /**
-     * The cumulated scale of the element to animate (default: 1).
-     */
-    scale?: number;
-
-    /**
      * A function called when animation starts (for example to add a zoom effect on a card during a reveal animation).
      */
     animationStart?: (animation: IBgaAnimation<BgaAnimationSettings>) => any;
@@ -31,6 +21,16 @@ interface BgaAnimationSettings {
 }
 
 interface BgaElementAnimationSettings extends BgaAnimationSettings {  
+     /**
+     * The animation CSS timing function, 'linear', 'ease-in-out' (default: linear).
+     */
+     transitionTimingFunction?: string;
+
+     /**
+     * The cumulated scale of the element to animate (default: 1).
+     */
+    scale?: number;
+
     /**
      * The element to animate.
      */
@@ -77,16 +77,10 @@ interface BgaAnimationWithOriginSettings extends BgaElementAnimationSettings {
 
 interface IBgaAnimation<T extends BgaAnimationSettings> {
     settings: T;
-    // played: boolean | null;
-    // result: any | null;
-
-    // playWhenNoAnimation: boolean;
-
     play(animationManager: AnimationManager): Promise<any>;
 }
 
 abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnimation<T> {
-    public played: boolean | null = null;
     public result: any | null = null;
 
     public playWhenNoAnimation: boolean = false;
@@ -100,15 +94,14 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
     protected abstract doAnimate(animationManager: AnimationManager): Promise<void>;
 
     public async play(animationManager: AnimationManager): Promise<any> {
-        this.played = this.playWhenNoAnimation || animationManager.animationsActive();
-        if (this.played) {
+        const shouldPlay = this.playWhenNoAnimation || animationManager.animationsActive();
+        if (shouldPlay) {
             const settings = this.settings;
 
             settings.animationStart?.(this);
 
             this.settings = {
                 duration: this.settings?.duration ?? animationManager.getSettings()?.duration ?? 500,
-                scale: this.settings?.scale ?? animationManager.getZoomManager()?.zoom ?? undefined,
                 ...this.settings,
             };
 
@@ -128,6 +121,10 @@ abstract class BgaElementAnimation<T extends BgaElementAnimationSettings> extend
     private timeoutId: number | null;
 
     protected preAnimate(animationManager: AnimationManager): void { 
+        this.settings = {
+            scale: this.settings?.scale ?? animationManager.getZoomManager()?.zoom ?? undefined,
+            ...this.settings,
+        };
         this.settings.element.classList.add(this.settings.animationClass ?? 'bga-animations_animated');
     }
     protected postAnimate(animationManager: AnimationManager): void { 

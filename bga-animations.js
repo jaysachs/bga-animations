@@ -63,7 +63,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var BgaAnimation = /** @class */ (function () {
     function BgaAnimation(settings) {
         this.settings = settings;
-        this.played = null;
         this.result = null;
         this.playWhenNoAnimation = false;
     }
@@ -71,23 +70,23 @@ var BgaAnimation = /** @class */ (function () {
     BgaAnimation.prototype.postAnimate = function (animationManager) { };
     BgaAnimation.prototype.play = function (animationManager) {
         return __awaiter(this, void 0, void 0, function () {
-            var settings, _a;
-            var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
-            return __generator(this, function (_o) {
-                switch (_o.label) {
+            var shouldPlay, settings, _a;
+            var _b, _c, _d, _e, _f, _g, _h;
+            return __generator(this, function (_j) {
+                switch (_j.label) {
                     case 0:
-                        this.played = this.playWhenNoAnimation || animationManager.animationsActive();
-                        if (!this.played) return [3 /*break*/, 2];
+                        shouldPlay = this.playWhenNoAnimation || animationManager.animationsActive();
+                        if (!shouldPlay) return [3 /*break*/, 2];
                         settings = this.settings;
                         (_b = settings.animationStart) === null || _b === void 0 ? void 0 : _b.call(settings, this);
-                        this.settings = __assign({ duration: (_f = (_d = (_c = this.settings) === null || _c === void 0 ? void 0 : _c.duration) !== null && _d !== void 0 ? _d : (_e = animationManager.getSettings()) === null || _e === void 0 ? void 0 : _e.duration) !== null && _f !== void 0 ? _f : 500, scale: (_k = (_h = (_g = this.settings) === null || _g === void 0 ? void 0 : _g.scale) !== null && _h !== void 0 ? _h : (_j = animationManager.getZoomManager()) === null || _j === void 0 ? void 0 : _j.zoom) !== null && _k !== void 0 ? _k : undefined }, this.settings);
+                        this.settings = __assign({ duration: (_f = (_d = (_c = this.settings) === null || _c === void 0 ? void 0 : _c.duration) !== null && _d !== void 0 ? _d : (_e = animationManager.getSettings()) === null || _e === void 0 ? void 0 : _e.duration) !== null && _f !== void 0 ? _f : 500 }, this.settings);
                         this.preAnimate(animationManager);
                         _a = this;
                         return [4 /*yield*/, this.doAnimate(animationManager)];
                     case 1:
-                        _a.result = _o.sent();
+                        _a.result = _j.sent();
                         this.postAnimate(animationManager);
-                        (_m = (_l = this.settings).animationEnd) === null || _m === void 0 ? void 0 : _m.call(_l, this);
+                        (_h = (_g = this.settings).animationEnd) === null || _h === void 0 ? void 0 : _h.call(_g, this);
                         return [3 /*break*/, 3];
                     case 2: return [2 /*return*/, Promise.resolve(this)];
                     case 3: return [2 /*return*/];
@@ -103,8 +102,9 @@ var BgaElementAnimation = /** @class */ (function (_super) {
         return _super.call(this, settings) || this;
     }
     BgaElementAnimation.prototype.preAnimate = function (animationManager) {
-        var _a;
-        this.settings.element.classList.add((_a = this.settings.animationClass) !== null && _a !== void 0 ? _a : 'bga-animations_animated');
+        var _a, _b, _c, _d, _e;
+        this.settings = __assign({ scale: (_d = (_b = (_a = this.settings) === null || _a === void 0 ? void 0 : _a.scale) !== null && _b !== void 0 ? _b : (_c = animationManager.getZoomManager()) === null || _c === void 0 ? void 0 : _c.zoom) !== null && _d !== void 0 ? _d : undefined }, this.settings);
+        this.settings.element.classList.add((_e = this.settings.animationClass) !== null && _e !== void 0 ? _e : 'bga-animations_animated');
     };
     BgaElementAnimation.prototype.postAnimate = function (animationManager) {
         var _a;

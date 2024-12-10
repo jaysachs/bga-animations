@@ -8,14 +8,6 @@ interface BgaAnimationSettings {
      */
     duration?: number;
     /**
-     * The animation CSS timing function, 'linear', 'ease-in-out' (default: linear).
-     */
-    transitionTimingFunction?: string;
-    /**
-     * The cumulated scale of the element to animate (default: 1).
-     */
-    scale?: number;
-    /**
      * A function called when animation starts (for example to add a zoom effect on a card during a reveal animation).
      */
     animationStart?: (animation: IBgaAnimation<BgaAnimationSettings>) => any;
@@ -25,6 +17,14 @@ interface BgaAnimationSettings {
     animationEnd?: (animation: IBgaAnimation<BgaAnimationSettings>) => any;
 }
 interface BgaElementAnimationSettings extends BgaAnimationSettings {
+    /**
+    * The animation CSS timing function, 'linear', 'ease-in-out' (default: linear).
+    */
+    transitionTimingFunction?: string;
+    /**
+    * The cumulated scale of the element to animate (default: 1).
+    */
+    scale?: number;
     /**
      * The element to animate.
      */
@@ -69,7 +69,6 @@ interface IBgaAnimation<T extends BgaAnimationSettings> {
 }
 declare abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnimation<T> {
     settings: T;
-    played: boolean | null;
     result: any | null;
     playWhenNoAnimation: boolean;
     constructor(settings: T);
