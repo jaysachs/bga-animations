@@ -68,7 +68,7 @@ class AnimationManager {
      * @param animation the animation to play
      * @returns the animation promise.
      */
-    async play(animation: BgaAnimation<BgaAnimationSettings>): Promise<BgaAnimation<BgaAnimationSettings>> {
+    async play(animation: IBgaAnimation<BgaAnimationSettings>): Promise<IBgaAnimation<BgaAnimationSettings>> {
         return animation.play(this);
     }
 
@@ -78,7 +78,7 @@ class AnimationManager {
      * @param animations the animations to play
      * @returns a promise for all animations.
      */
-    async playParallel(animations: BgaAnimation<BgaAnimationSettings>[]): Promise<BgaAnimation<BgaAnimationSettings>[]> {
+    async playParallel(animations: IBgaAnimation<BgaAnimationSettings>[]): Promise<IBgaAnimation<BgaAnimationSettings>[]> {
         return Promise.all(animations.map(animation => this.play(animation)));
     }
 
@@ -88,7 +88,7 @@ class AnimationManager {
      * @param animations the animations to play
      * @returns a promise for all animations.
      */
-    async playSequence(animations: BgaAnimation<BgaAnimationSettings>[]): Promise<BgaAnimation<BgaAnimationSettings>[]> {
+    async playSequence(animations: IBgaAnimation<BgaAnimationSettings>[]): Promise<IBgaAnimation<BgaAnimationSettings>[]> {
         const result = [];
         for (const a of animations) {
             result.push(await this.play(a));
@@ -103,9 +103,9 @@ class AnimationManager {
      * @param delay the delay (in ms)
      * @returns a promise for all animations.
      */
-    async playWithDelay(animations: BgaAnimation<BgaAnimationSettings>[], delay: number): Promise<BgaAnimation<BgaAnimationSettings>[]> {
-        const promise = new Promise<BgaAnimation<BgaAnimationSettings>[]>((success) => {
-            let promises: Promise<BgaAnimation<BgaAnimationSettings>>[] = [];
+    async playWithDelay(animations: IBgaAnimation<BgaAnimationSettings>[], delay: number): Promise<IBgaAnimation<BgaAnimationSettings>[]> {
+        const promise = new Promise<IBgaAnimation<BgaAnimationSettings>[]>((success) => {
+            let promises: Promise<IBgaAnimation<BgaAnimationSettings>>[] = [];
             for (let i=0; i<animations.length; i++) {
                 setTimeout(() => {
                     promises.push(this.play(animations[i]));
@@ -128,9 +128,10 @@ class AnimationManager {
      * @param attachElement the destination parent
      * @returns a promise when animation ends
      */
-    public attachWithAnimation(animation: BgaAnimation<BgaAnimationSettings>, attachElement: HTMLElement): Promise<BgaAnimation<any>> {
+    public attachWithAnimation(animation: IBgaAnimation<BgaAnimationWithOriginSettings>, attachElement: HTMLElement): Promise<IBgaAnimation<any>> {
         const attachWithAnimation = new BgaAttachWithAnimation({
             animation,
+            duration: null,
             attachElement
         });
         return this.play(attachWithAnimation);

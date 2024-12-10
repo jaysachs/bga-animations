@@ -1,9 +1,9 @@
 /**
  * Show the element at the center of the screen
  */
-class BgaShowScreenCenterAnimation<BgaAnimation> extends BgaElementAnimation<any> {
+class BgaShowScreenCenterAnimation<T extends BgaElementAnimationSettings> extends BgaElementAnimation<T> {
     constructor(
-        settings: BgaAnimation,
+        settings: T,
     ) {
         super(
             settings,

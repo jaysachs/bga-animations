@@ -1,10 +1,5 @@
 interface BgaAnimationSettings {
     /**
-     * The element to animate.
-     */
-    element?: HTMLElement;
-
-    /**
      * The game class. Used to know if the game is in instantaneous mode (replay) becausewe don't want animations in this case.
      */
     game?: Game;
@@ -25,11 +20,6 @@ interface BgaAnimationSettings {
     scale?: number;
 
     /**
-     * The class to add to the animated element.
-     */
-    animationClass?: string;
-
-    /**
      * A function called when animation starts (for example to add a zoom effect on a card during a reveal animation).
      */
     animationStart?: (animation: IBgaAnimation<BgaAnimationSettings>) => any;
@@ -45,6 +35,11 @@ interface BgaElementAnimationSettings extends BgaAnimationSettings {
      * The element to animate.
      */
     element: HTMLElement;
+
+    /**
+     * The class to add to the animated element.
+     */
+    animationClass?: string;
 
     /**
      * The zIndex to apply during animation (default: 10).
@@ -82,13 +77,15 @@ interface BgaAnimationWithOriginSettings extends BgaElementAnimationSettings {
 
 interface IBgaAnimation<T extends BgaAnimationSettings> {
     settings: T;
-    played: boolean | null;
-    result: any | null;
+    // played: boolean | null;
+    // result: any | null;
 
-    playWhenNoAnimation: boolean;
+    // playWhenNoAnimation: boolean;
+
+    play(animationManager: AnimationManager): Promise<any>;
 }
 
-abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnimation<BgaAnimationSettings> {
+abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnimation<T> {
     public played: boolean | null = null;
     public result: any | null = null;
 
@@ -96,9 +93,10 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
 
     constructor(
         public settings: T,
-    ) {
-    }
+    ) {}
 
+    protected preAnimate(animationManager: AnimationManager): void { }
+    protected postAnimate(animationManager: AnimationManager): void { }
     protected abstract doAnimate(animationManager: AnimationManager): Promise<void>;
 
     public async play(animationManager: AnimationManager): Promise<any> {
@@ -107,17 +105,18 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
             const settings = this.settings;
 
             settings.animationStart?.(this);
-            settings.element?.classList.add(settings.animationClass ?? 'bga-animations_animated');
 
             this.settings = {
                 duration: this.settings?.duration ?? animationManager.getSettings()?.duration ?? 500,
                 scale: this.settings?.scale ?? animationManager.getZoomManager()?.zoom ?? undefined,
                 ...this.settings,
             };
+
+            this.preAnimate(animationManager);
             this.result = await this.doAnimate(animationManager);
+            this.postAnimate(animationManager);
 
             this.settings.animationEnd?.(this);
-            settings.element?.classList.remove(settings.animationClass ?? 'bga-animations_animated');
         } else {
             return Promise.resolve(this);
         }
@@ -127,6 +126,13 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
 abstract class BgaElementAnimation<T extends BgaElementAnimationSettings> extends BgaAnimation<T> {
     constructor(settings: T) { super(settings); }
     private timeoutId: number | null;
+
+    protected preAnimate(animationManager: AnimationManager): void { 
+        this.settings.element.classList.add(this.settings.animationClass ?? 'bga-animations_animated');
+    }
+    protected postAnimate(animationManager: AnimationManager): void { 
+        this.settings.element.classList.remove(this.settings.animationClass ?? 'bga-animations_animated');
+    }
 
     protected wireUp(element: HTMLElement, duration: number, success: (a: void) => any): void {
         const originalZIndex = element.style.zIndex;

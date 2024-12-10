@@ -67,25 +67,27 @@ var BgaAnimation = /** @class */ (function () {
         this.result = null;
         this.playWhenNoAnimation = false;
     }
+    BgaAnimation.prototype.preAnimate = function (animationManager) { };
+    BgaAnimation.prototype.postAnimate = function (animationManager) { };
     BgaAnimation.prototype.play = function (animationManager) {
         return __awaiter(this, void 0, void 0, function () {
             var settings, _a;
-            var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r;
-            return __generator(this, function (_s) {
-                switch (_s.label) {
+            var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+            return __generator(this, function (_o) {
+                switch (_o.label) {
                     case 0:
                         this.played = this.playWhenNoAnimation || animationManager.animationsActive();
                         if (!this.played) return [3 /*break*/, 2];
                         settings = this.settings;
                         (_b = settings.animationStart) === null || _b === void 0 ? void 0 : _b.call(settings, this);
-                        (_c = settings.element) === null || _c === void 0 ? void 0 : _c.classList.add((_d = settings.animationClass) !== null && _d !== void 0 ? _d : 'bga-animations_animated');
-                        this.settings = __assign({ duration: (_h = (_f = (_e = this.settings) === null || _e === void 0 ? void 0 : _e.duration) !== null && _f !== void 0 ? _f : (_g = animationManager.getSettings()) === null || _g === void 0 ? void 0 : _g.duration) !== null && _h !== void 0 ? _h : 500, scale: (_m = (_k = (_j = this.settings) === null || _j === void 0 ? void 0 : _j.scale) !== null && _k !== void 0 ? _k : (_l = animationManager.getZoomManager()) === null || _l === void 0 ? void 0 : _l.zoom) !== null && _m !== void 0 ? _m : undefined }, this.settings);
+                        this.settings = __assign({ duration: (_f = (_d = (_c = this.settings) === null || _c === void 0 ? void 0 : _c.duration) !== null && _d !== void 0 ? _d : (_e = animationManager.getSettings()) === null || _e === void 0 ? void 0 : _e.duration) !== null && _f !== void 0 ? _f : 500, scale: (_k = (_h = (_g = this.settings) === null || _g === void 0 ? void 0 : _g.scale) !== null && _h !== void 0 ? _h : (_j = animationManager.getZoomManager()) === null || _j === void 0 ? void 0 : _j.zoom) !== null && _k !== void 0 ? _k : undefined }, this.settings);
+                        this.preAnimate(animationManager);
                         _a = this;
                         return [4 /*yield*/, this.doAnimate(animationManager)];
                     case 1:
-                        _a.result = _s.sent();
-                        (_p = (_o = this.settings).animationEnd) === null || _p === void 0 ? void 0 : _p.call(_o, this);
-                        (_q = settings.element) === null || _q === void 0 ? void 0 : _q.classList.remove((_r = settings.animationClass) !== null && _r !== void 0 ? _r : 'bga-animations_animated');
+                        _a.result = _o.sent();
+                        this.postAnimate(animationManager);
+                        (_m = (_l = this.settings).animationEnd) === null || _m === void 0 ? void 0 : _m.call(_l, this);
                         return [3 /*break*/, 3];
                     case 2: return [2 /*return*/, Promise.resolve(this)];
                     case 3: return [2 /*return*/];
@@ -100,6 +102,14 @@ var BgaElementAnimation = /** @class */ (function (_super) {
     function BgaElementAnimation(settings) {
         return _super.call(this, settings) || this;
     }
+    BgaElementAnimation.prototype.preAnimate = function (animationManager) {
+        var _a;
+        this.settings.element.classList.add((_a = this.settings.animationClass) !== null && _a !== void 0 ? _a : 'bga-animations_animated');
+    };
+    BgaElementAnimation.prototype.postAnimate = function (animationManager) {
+        var _a;
+        this.settings.element.classList.remove((_a = this.settings.animationClass) !== null && _a !== void 0 ? _a : 'bga-animations_animated');
+    };
     BgaElementAnimation.prototype.wireUp = function (element, duration, success) {
         var _this = this;
         var originalZIndex = element.style.zIndex;
@@ -332,7 +342,7 @@ var BgaAttachWithAnimation = /** @class */ (function (_super) {
         // return settings.animation.play(animationManager);
     };
     return BgaAttachWithAnimation;
-}(BgaElementAnimation));
+}(BgaAnimation));
 /**
  * Just use playSequence from animationManager
  */
@@ -483,6 +493,7 @@ var AnimationManager = /** @class */ (function () {
     AnimationManager.prototype.attachWithAnimation = function (animation, attachElement) {
         var attachWithAnimation = new BgaAttachWithAnimation({
             animation: animation,
+            duration: null,
             attachElement: attachElement
         });
         return this.play(attachWithAnimation);

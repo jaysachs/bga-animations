@@ -1,5 +1,5 @@
-interface BgaAttachWithAnimationSettings extends BgaElementAnimationSettings {
-    animation: BgaAnimation<BgaAnimationWithOriginSettings>;
+interface BgaAttachWithAnimationSettings extends BgaAnimationSettings {
+    animation: IBgaAnimation<BgaAnimationWithOriginSettings>;
 
     /**
      * The target to attach the element to.
@@ -15,9 +15,9 @@ interface BgaAttachWithAnimationSettings extends BgaElementAnimationSettings {
 /**
  * Just use playSequence from animationManager
  */
-class BgaAttachWithAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaElementAnimation<any> {
+class BgaAttachWithAnimation<T extends BgaAttachWithAnimationSettings> extends BgaAnimation<T> {
     constructor(
-        settings: BgaAnimationWithAttachAndOriginSettings,
+        settings: T,
     ) {
         super(
             settings,

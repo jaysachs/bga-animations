@@ -1,9 +1,9 @@
 /**
  * Just does nothing for the duration
  */
-class BgaPauseAnimation<BgaAnimation> extends BgaAnimation<any> {
+class BgaPauseAnimation<T extends BgaAnimationSettings> extends BgaAnimation<T> {
     constructor(
-        settings: BgaAnimation,
+        settings: T,
     ) {
         super(
             settings,

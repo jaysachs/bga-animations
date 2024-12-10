@@ -2,9 +2,9 @@
  * Slide of the element from origin to destination.
  */
 
-class BgaSlideAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaElementAnimation<any> {
+class BgaSlideAnimation<T extends BgaElementAnimationSettings> extends BgaElementAnimation<T> {
     constructor(
-        settings: BgaAnimationWithAttachAndOriginSettings,
+        settings: T,
     ) {
         super(
             settings,

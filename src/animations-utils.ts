@@ -41,8 +41,8 @@ function getDeltaCoordinates(element: HTMLElement, settings: BgaAnimationWithOri
 }
 
 function logAnimation(animationManager: AnimationManager, animation: IBgaAnimation<BgaCumulatedAnimationsSettings>): Promise<any> {
-    const settings = animation.settings;
-    const element = settings.element;
+    const settings = (animation as any).settings;
+    const element = (settings as any).element;
     if (element) {
         console.log(animation, settings, element, element.getBoundingClientRect(), animationManager.game.getBoundingClientRectIgnoreZoom(element), element.style.transform);
     } else {

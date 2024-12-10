@@ -1,9 +1,5 @@
 interface BgaAnimationSettings {
     /**
-     * The element to animate.
-     */
-    element?: HTMLElement;
-    /**
      * The game class. Used to know if the game is in instantaneous mode (replay) becausewe don't want animations in this case.
      */
     game?: Game;
@@ -20,10 +16,6 @@ interface BgaAnimationSettings {
      */
     scale?: number;
     /**
-     * The class to add to the animated element.
-     */
-    animationClass?: string;
-    /**
      * A function called when animation starts (for example to add a zoom effect on a card during a reveal animation).
      */
     animationStart?: (animation: IBgaAnimation<BgaAnimationSettings>) => any;
@@ -37,6 +29,10 @@ interface BgaElementAnimationSettings extends BgaAnimationSettings {
      * The element to animate.
      */
     element: HTMLElement;
+    /**
+     * The class to add to the animated element.
+     */
+    animationClass?: string;
     /**
      * The zIndex to apply during animation (default: 10).
      */
@@ -69,22 +65,24 @@ interface BgaAnimationWithOriginSettings extends BgaElementAnimationSettings {
 }
 interface IBgaAnimation<T extends BgaAnimationSettings> {
     settings: T;
-    played: boolean | null;
-    result: any | null;
-    playWhenNoAnimation: boolean;
+    play(animationManager: AnimationManager): Promise<any>;
 }
-declare abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnimation<BgaAnimationSettings> {
+declare abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnimation<T> {
     settings: T;
     played: boolean | null;
     result: any | null;
     playWhenNoAnimation: boolean;
     constructor(settings: T);
+    protected preAnimate(animationManager: AnimationManager): void;
+    protected postAnimate(animationManager: AnimationManager): void;
     protected abstract doAnimate(animationManager: AnimationManager): Promise<void>;
     play(animationManager: AnimationManager): Promise<any>;
 }
 declare abstract class BgaElementAnimation<T extends BgaElementAnimationSettings> extends BgaAnimation<T> {
     constructor(settings: T);
     private timeoutId;
+    protected preAnimate(animationManager: AnimationManager): void;
+    protected postAnimate(animationManager: AnimationManager): void;
     protected wireUp(element: HTMLElement, duration: number, success: (a: void) => any): void;
 }
 declare function shouldAnimate(settings?: BgaAnimationSettings): boolean;
@@ -102,33 +100,33 @@ declare function logAnimation(animationManager: AnimationManager, animation: IBg
 /**
  * Slide of the element from origin to destination.
  */
-declare class BgaSlideAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaElementAnimation<any> {
-    constructor(settings: BgaAnimationWithAttachAndOriginSettings);
+declare class BgaSlideAnimation<T extends BgaElementAnimationSettings> extends BgaElementAnimation<T> {
+    constructor(settings: T);
     protected doAnimate(animationManager: AnimationManager): Promise<any>;
 }
 /**
  * Slide of the element from destination to origin.
  */
-declare class BgaSlideToAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaElementAnimation<any> {
-    constructor(settings: BgaAnimationWithAttachAndOriginSettings);
+declare class BgaSlideToAnimation<T extends BgaElementAnimationSettings> extends BgaElementAnimation<T> {
+    constructor(settings: T);
     protected doAnimate(animationManager: AnimationManager): Promise<any>;
 }
 /**
  * Show the element at the center of the screen
  */
-declare class BgaShowScreenCenterAnimation<BgaAnimation> extends BgaElementAnimation<any> {
-    constructor(settings: BgaAnimation);
+declare class BgaShowScreenCenterAnimation<T extends BgaElementAnimationSettings> extends BgaElementAnimation<T> {
+    constructor(settings: T);
     protected doAnimate(animationManager: AnimationManager): Promise<void>;
 }
 /**
  * Just does nothing for the duration
  */
-declare class BgaPauseAnimation<BgaAnimation> extends BgaAnimation<any> {
-    constructor(settings: BgaAnimation);
+declare class BgaPauseAnimation<T extends BgaAnimationSettings> extends BgaAnimation<T> {
+    constructor(settings: T);
     protected doAnimate(animationManager: AnimationManager): Promise<any>;
 }
-interface BgaAttachWithAnimationSettings extends BgaElementAnimationSettings {
-    animation: BgaAnimation<BgaAnimationWithOriginSettings>;
+interface BgaAttachWithAnimationSettings extends BgaAnimationSettings {
+    animation: IBgaAnimation<BgaAnimationWithOriginSettings>;
     /**
      * The target to attach the element to.
      */
@@ -141,8 +139,8 @@ interface BgaAttachWithAnimationSettings extends BgaElementAnimationSettings {
 /**
  * Just use playSequence from animationManager
  */
-declare class BgaAttachWithAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaElementAnimation<any> {
-    constructor(settings: BgaAnimationWithAttachAndOriginSettings);
+declare class BgaAttachWithAnimation<T extends BgaAttachWithAnimationSettings> extends BgaAnimation<T> {
+    constructor(settings: T);
     protected doAnimate(animationManager: AnimationManager): Promise<any>;
 }
 interface BgaCumulatedAnimationsSettings extends BgaAnimationSettings {
@@ -151,8 +149,8 @@ interface BgaCumulatedAnimationsSettings extends BgaAnimationSettings {
 /**
  * Just use playSequence from animationManager
  */
-declare class BgaCumulatedAnimation<BgaCumulatedAnimationsSettings> extends BgaAnimation<any> {
-    constructor(settings: BgaCumulatedAnimationsSettings);
+declare class BgaCumulatedAnimation<T extends BgaCumulatedAnimationsSettings> extends BgaAnimation<T> {
+    constructor(settings: T);
     protected doAnimate(animationManager: AnimationManager): Promise<any>;
 }
 interface IZoomManager {
@@ -203,21 +201,21 @@ declare class AnimationManager {
      * @param animation the animation to play
      * @returns the animation promise.
      */
-    play(animation: BgaAnimation<BgaAnimationSettings>): Promise<BgaAnimation<BgaAnimationSettings>>;
+    play(animation: IBgaAnimation<BgaAnimationSettings>): Promise<IBgaAnimation<BgaAnimationSettings>>;
     /**
      * Plays multiple animations in parallel.
      *
      * @param animations the animations to play
      * @returns a promise for all animations.
      */
-    playParallel(animations: BgaAnimation<BgaAnimationSettings>[]): Promise<BgaAnimation<BgaAnimationSettings>[]>;
+    playParallel(animations: IBgaAnimation<BgaAnimationSettings>[]): Promise<IBgaAnimation<BgaAnimationSettings>[]>;
     /**
      * Plays multiple animations in sequence (the second when the first ends, ...).
      *
      * @param animations the animations to play
      * @returns a promise for all animations.
      */
-    playSequence(animations: BgaAnimation<BgaAnimationSettings>[]): Promise<BgaAnimation<BgaAnimationSettings>[]>;
+    playSequence(animations: IBgaAnimation<BgaAnimationSettings>[]): Promise<IBgaAnimation<BgaAnimationSettings>[]>;
     /**
      * Plays multiple animations with a delay between each animation start.
      *
@@ -225,7 +223,7 @@ declare class AnimationManager {
      * @param delay the delay (in ms)
      * @returns a promise for all animations.
      */
-    playWithDelay(animations: BgaAnimation<BgaAnimationSettings>[], delay: number): Promise<BgaAnimation<BgaAnimationSettings>[]>;
+    playWithDelay(animations: IBgaAnimation<BgaAnimationSettings>[], delay: number): Promise<IBgaAnimation<BgaAnimationSettings>[]>;
     /**
      * Attach an element to a parent, then play animation from element's origin to its new position.
      *
@@ -233,6 +231,6 @@ declare class AnimationManager {
      * @param attachElement the destination parent
      * @returns a promise when animation ends
      */
-    attachWithAnimation(animation: BgaAnimation<BgaAnimationSettings>, attachElement: HTMLElement): Promise<BgaAnimation<any>>;
+    attachWithAnimation(animation: IBgaAnimation<BgaAnimationWithOriginSettings>, attachElement: HTMLElement): Promise<IBgaAnimation<any>>;
 }
 declare const define: any;

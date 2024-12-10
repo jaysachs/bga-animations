@@ -6,9 +6,9 @@ interface BgaCumulatedAnimationsSettings extends BgaAnimationSettings {
  * Just use playSequence from animationManager
  */
 
-class BgaCumulatedAnimation<BgaCumulatedAnimationsSettings> extends BgaAnimation<any> {
+class BgaCumulatedAnimation<T extends BgaCumulatedAnimationsSettings> extends BgaAnimation<T> {
     constructor(
-        settings: BgaCumulatedAnimationsSettings,
+        settings: T,
     ) {
         super(
             settings,
