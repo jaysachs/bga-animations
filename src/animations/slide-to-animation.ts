@@ -20,8 +20,6 @@ class BgaSlideToAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAn
             console.log("doAnimate:", this);
             const element = this.settings.element;
 
-            // , success: (a: void) => any
-
             const transitionTimingFunction = this.settings.transitionTimingFunction ?? 'linear';
             const duration = this.settings?.duration ?? 500;
 

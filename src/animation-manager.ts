@@ -69,10 +69,7 @@ class AnimationManager {
      * @returns the animation promise.
      */
     async play(animation: BgaAnimation<BgaAnimationSettings>): Promise<BgaAnimation<BgaAnimationSettings>> {
-        console.log("manager play: ", animation);
         return animation.play(this);
-        // console.log("manager played: ", animation);
-        // return Promise.resolve(animation);
     }
 
     /**
@@ -92,10 +89,8 @@ class AnimationManager {
      * @returns a promise for all animations.
      */
     async playSequence(animations: BgaAnimation<BgaAnimationSettings>[]): Promise<BgaAnimation<BgaAnimationSettings>[]> {
-        console.log("manager playSequence:", animations);
         const result = [];
         for (const a of animations) {
-            console.log("manager seq play ", a);
             result.push(await this.play(a));
         }
         return Promise.resolve(result);
