@@ -130,9 +130,9 @@ declare class BgaSlideToAnimation<BgaAnimationWithAttachAndOriginSettings> exten
  * @param animation a `BgaAnimation` object
  * @returns a promise when animation ends
  */
-declare function showScreenCenterAnimation(animationManager: AnimationManager, animation: IBgaAnimation<BgaElementAnimationSettings>): Promise<void>;
 declare class BgaShowScreenCenterAnimation<BgaAnimation> extends BgaAnimation<any> {
     constructor(settings: BgaAnimation);
+    protected doAnimate(animationManager: AnimationManager): Promise<void>;
 }
 /**
  * Just does nothing for the duration
