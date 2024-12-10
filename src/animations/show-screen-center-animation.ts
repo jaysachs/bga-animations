@@ -6,7 +6,6 @@ class BgaShowScreenCenterAnimation<BgaAnimation> extends BgaAnimation<any> {
         settings: BgaAnimation,
     ) {
         super(
-            null,
             settings,
         );
     }

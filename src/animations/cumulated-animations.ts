@@ -11,7 +11,6 @@ class BgaCumulatedAnimation<BgaCumulatedAnimationsSettings> extends BgaAnimation
         settings: BgaCumulatedAnimationsSettings,
     ) {
         super(
-            null,
             settings,
         );
         this.playWhenNoAnimation = true;

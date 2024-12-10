@@ -20,7 +20,6 @@ class BgaAttachWithAnimation<BgaAnimationWithAttachAndOriginSettings> extends Bg
         settings: BgaAnimationWithAttachAndOriginSettings,
     ) {
         super(
-            null,
             settings,
         );
         this.playWhenNoAnimation = true;

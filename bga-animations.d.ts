@@ -73,20 +73,15 @@ interface IBgaAnimation<T extends BgaAnimationSettings> {
     result: any | null;
     playWhenNoAnimation: boolean;
 }
-/**
- * Animation function signature. Will return a promise after animation is ended. The promise returns the result of the animation, if any
- */
-type BgaAnimationFunction = (animationManager: AnimationManager, animation: IBgaAnimation<BgaAnimationSettings>) => Promise<any>;
 declare abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnimation<BgaAnimationSettings> {
-    protected animationFunction: BgaAnimationFunction;
     settings: T;
     played: boolean | null;
     result: any | null;
     playWhenNoAnimation: boolean;
-    constructor(animationFunction: BgaAnimationFunction, settings: T);
+    constructor(settings: T);
     private timeoutId;
     protected wireUp(element: HTMLElement, duration: number, success: (a: void) => any): void;
-    protected doAnimate(animationManager: AnimationManager): Promise<void>;
+    protected abstract doAnimate(animationManager: AnimationManager): Promise<void>;
     play(animationManager: AnimationManager): Promise<any>;
 }
 declare function shouldAnimate(settings?: BgaAnimationSettings): boolean;

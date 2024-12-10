@@ -6,7 +6,6 @@ class BgaPauseAnimation<BgaAnimation> extends BgaAnimation<any> {
         settings: BgaAnimation,
     ) {
         super(
-            null,
             settings,
         );
     }

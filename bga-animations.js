@@ -46,8 +46,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var BgaAnimation = /** @class */ (function () {
-    function BgaAnimation(animationFunction, settings) {
-        this.animationFunction = animationFunction;
+    function BgaAnimation(settings) {
         this.settings = settings;
         this.played = null;
         this.result = null;
@@ -55,11 +54,9 @@ var BgaAnimation = /** @class */ (function () {
     }
     BgaAnimation.prototype.wireUp = function (element, duration, success) {
         var _this = this;
-        console.log("wireUp", this, element, duration);
         var originalZIndex = element.style.zIndex;
         var originalTransition = element.style.transition;
         var cleanOnTransitionEnd = function () {
-            console.log("cleanOnEnd", _this);
             element.style.zIndex = originalZIndex;
             element.style.transition = originalTransition;
             success();
@@ -71,7 +68,6 @@ var BgaAnimation = /** @class */ (function () {
             }
         };
         var cleanOnTransitionCancel = function () {
-            console.log("cleanOnCancel", _this);
             element.style.transition = "";
             element.style.transform = null; // this.settings.finalTransform ?? null;
             cleanOnTransitionEnd();
@@ -82,9 +78,6 @@ var BgaAnimation = /** @class */ (function () {
         // safety in case transitionend and transitioncancel are not called
         this.timeoutId = setTimeout(cleanOnTransitionEnd, duration + 100);
     };
-    BgaAnimation.prototype.doAnimate = function (animationManager) {
-        return this.animationFunction(animationManager, this);
-    };
     BgaAnimation.prototype.play = function (animationManager) {
         return __awaiter(this, void 0, void 0, function () {
             var settings, _a;
@@ -92,14 +85,12 @@ var BgaAnimation = /** @class */ (function () {
             return __generator(this, function (_s) {
                 switch (_s.label) {
                     case 0:
-                        console.log("play: ", this);
                         this.played = this.playWhenNoAnimation || animationManager.animationsActive();
                         if (!this.played) return [3 /*break*/, 2];
                         settings = this.settings;
                         (_b = settings.animationStart) === null || _b === void 0 ? void 0 : _b.call(settings, this);
                         (_c = settings.element) === null || _c === void 0 ? void 0 : _c.classList.add((_d = settings.animationClass) !== null && _d !== void 0 ? _d : 'bga-animations_animated');
                         this.settings = __assign({ duration: (_h = (_f = (_e = this.settings) === null || _e === void 0 ? void 0 : _e.duration) !== null && _f !== void 0 ? _f : (_g = animationManager.getSettings()) === null || _g === void 0 ? void 0 : _g.duration) !== null && _h !== void 0 ? _h : 500, scale: (_m = (_k = (_j = this.settings) === null || _j === void 0 ? void 0 : _j.scale) !== null && _k !== void 0 ? _k : (_l = animationManager.getZoomManager()) === null || _l === void 0 ? void 0 : _l.zoom) !== null && _m !== void 0 ? _m : undefined }, this.settings);
-                        console.log("awaiting: ", this);
                         _a = this;
                         return [4 /*yield*/, this.doAnimate(animationManager)];
                     case 1:
@@ -108,9 +99,7 @@ var BgaAnimation = /** @class */ (function () {
                         (_q = settings.element) === null || _q === void 0 ? void 0 : _q.classList.remove((_r = settings.animationClass) !== null && _r !== void 0 ? _r : 'bga-animations_animated');
                         return [3 /*break*/, 3];
                     case 2: return [2 /*return*/, Promise.resolve(this)];
-                    case 3:
-                        console.log("playeD:", this);
-                        return [2 /*return*/];
+                    case 3: return [2 /*return*/];
                 }
             });
         });
@@ -186,7 +175,7 @@ var __extends = (this && this.__extends) || (function () {
 var BgaSlideAnimation = /** @class */ (function (_super) {
     __extends(BgaSlideAnimation, _super);
     function BgaSlideAnimation(settings) {
-        return _super.call(this, null, settings) || this;
+        return _super.call(this, settings) || this;
     }
     BgaSlideAnimation.prototype.doAnimate = function (animationManager) {
         var _this = this;
@@ -243,7 +232,7 @@ var BgaSlideAnimation = /** @class */ (function (_super) {
 var BgaSlideToAnimation = /** @class */ (function (_super) {
     __extends(BgaSlideToAnimation, _super);
     function BgaSlideToAnimation(settings) {
-        return _super.call(this, null, settings) || this;
+        return _super.call(this, settings) || this;
     }
     BgaSlideToAnimation.prototype.doAnimate = function (animationManager) {
         var _this = this;
@@ -267,7 +256,7 @@ var BgaSlideToAnimation = /** @class */ (function (_super) {
 var BgaShowScreenCenterAnimation = /** @class */ (function (_super) {
     __extends(BgaShowScreenCenterAnimation, _super);
     function BgaShowScreenCenterAnimation(settings) {
-        return _super.call(this, null, settings) || this;
+        return _super.call(this, settings) || this;
     }
     BgaShowScreenCenterAnimation.prototype.doAnimate = function (animationManager) {
         var _this = this;
@@ -295,7 +284,7 @@ var BgaShowScreenCenterAnimation = /** @class */ (function (_super) {
 var BgaPauseAnimation = /** @class */ (function (_super) {
     __extends(BgaPauseAnimation, _super);
     function BgaPauseAnimation(settings) {
-        return _super.call(this, null, settings) || this;
+        return _super.call(this, settings) || this;
     }
     BgaPauseAnimation.prototype.doAnimate = function (animationManager) {
         var _this = this;
@@ -313,7 +302,7 @@ var BgaPauseAnimation = /** @class */ (function (_super) {
 var BgaAttachWithAnimation = /** @class */ (function (_super) {
     __extends(BgaAttachWithAnimation, _super);
     function BgaAttachWithAnimation(settings) {
-        var _this = _super.call(this, null, settings) || this;
+        var _this = _super.call(this, settings) || this;
         _this.playWhenNoAnimation = true;
         return _this;
     }
@@ -336,7 +325,7 @@ var BgaAttachWithAnimation = /** @class */ (function (_super) {
 var BgaCumulatedAnimation = /** @class */ (function (_super) {
     __extends(BgaCumulatedAnimation, _super);
     function BgaCumulatedAnimation(settings) {
-        var _this = _super.call(this, null, settings) || this;
+        var _this = _super.call(this, settings) || this;
         _this.playWhenNoAnimation = true;
         return _this;
     }

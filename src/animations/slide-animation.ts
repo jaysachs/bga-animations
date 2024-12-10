@@ -7,7 +7,6 @@ class BgaSlideAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAnim
         settings: BgaAnimationWithAttachAndOriginSettings,
     ) {
         super(
-            null,
             settings,
         );
     }

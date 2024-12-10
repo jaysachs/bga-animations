@@ -88,11 +88,6 @@ interface IBgaAnimation<T extends BgaAnimationSettings> {
     playWhenNoAnimation: boolean;
 }
 
-/**
- * Animation function signature. Will return a promise after animation is ended. The promise returns the result of the animation, if any
- */
-type BgaAnimationFunction = (animationManager: AnimationManager, animation: IBgaAnimation<BgaAnimationSettings>) => Promise<any>;
-
 abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnimation<BgaAnimationSettings> {
     public played: boolean | null = null;
     public result: any | null = null;
@@ -100,7 +95,6 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
     public playWhenNoAnimation: boolean = false;
 
     constructor(
-        protected animationFunction: BgaAnimationFunction,
         public settings: T,
     ) {
     }
@@ -108,12 +102,10 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
     private timeoutId: number | null;
 
     protected wireUp(element: HTMLElement, duration: number, success: (a: void) => any): void {
-        console.log("wireUp", this, element, duration);
         const originalZIndex = element.style.zIndex;
         const originalTransition = element.style.transition;
 
         const cleanOnTransitionEnd = () => {
-            console.log("cleanOnEnd", this);
             element.style.zIndex = originalZIndex;
             element.style.transition = originalTransition;
             success();
@@ -126,7 +118,6 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
         };
 
         const cleanOnTransitionCancel = () => {
-            console.log("cleanOnCancel", this);
             element.style.transition = ``;
             element.style.transform = null; // this.settings.finalTransform ?? null;
             cleanOnTransitionEnd();
@@ -140,12 +131,9 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
         this.timeoutId = setTimeout(cleanOnTransitionEnd, duration + 100);
 }
 
-    protected doAnimate(animationManager: AnimationManager): Promise<void> {
-        return this.animationFunction(animationManager, this);
-    }
+    protected abstract doAnimate(animationManager: AnimationManager): Promise<void>;
 
     public async play(animationManager: AnimationManager): Promise<any> {
-        console.log("play: ", this);
         this.played = this.playWhenNoAnimation || animationManager.animationsActive();
         if (this.played) {
             const settings = this.settings;
@@ -158,7 +146,6 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
                 scale: this.settings?.scale ?? animationManager.getZoomManager()?.zoom ?? undefined,
                 ...this.settings,
             };
-            console.log("awaiting: ", this);
             this.result = await this.doAnimate(animationManager);
 
             this.settings.animationEnd?.(this);
@@ -166,6 +153,5 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
         } else {
             return Promise.resolve(this);
         }
-        console.log("playeD:", this);
     }
 }
