@@ -103,32 +103,20 @@ declare function getDeltaCoordinates(element: HTMLElement, settings: BgaAnimatio
 declare function logAnimation(animationManager: AnimationManager, animation: IBgaAnimation<BgaCumulatedAnimationsSettings>): Promise<any>;
 /**
  * Slide of the element from origin to destination.
- *
- * @param animationManager the animation manager
- * @param animation a `BgaAnimation` object
- * @returns a promise when animation ends
  */
-declare function slideAnimation(animationManager: AnimationManager, animation: IBgaAnimation<BgaElementAnimationSettings>): Promise<void>;
 declare class BgaSlideAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAnimation<any> {
     constructor(settings: BgaAnimationWithAttachAndOriginSettings);
+    protected doAnimate(animationManager: AnimationManager): Promise<any>;
 }
 /**
  * Slide of the element from destination to origin.
- *
- * @param animationManager the animation manager
- * @param animation a `BgaAnimation` object
- * @returns a promise when animation ends
  */
 declare class BgaSlideToAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAnimation<any> {
     constructor(settings: BgaAnimationWithAttachAndOriginSettings);
-    protected doAnimate(animationManager: AnimationManager): Promise<void>;
+    protected doAnimate(animationManager: AnimationManager): Promise<any>;
 }
 /**
  * Show the element at the center of the screen
- *
- * @param animationManager the animation manager
- * @param animation a `BgaAnimation` object
- * @returns a promise when animation ends
  */
 declare class BgaShowScreenCenterAnimation<BgaAnimation> extends BgaAnimation<any> {
     constructor(settings: BgaAnimation);
@@ -136,16 +124,10 @@ declare class BgaShowScreenCenterAnimation<BgaAnimation> extends BgaAnimation<an
 }
 /**
  * Just does nothing for the duration
- *
- * @param animationManager the animation manager
- * @param animation a `BgaAnimation` object
- * @returns a promise when animation ends
  */
-declare function pauseAnimation(animationManager: AnimationManager, animation: IBgaAnimation<BgaAnimationSettings>): Promise<void>;
 declare class BgaPauseAnimation<BgaAnimation> extends BgaAnimation<any> {
     constructor(settings: BgaAnimation);
-    protected doAnimate(animationManager: AnimationManager): Promise<void>;
-    play2(animationManager: AnimationManager): Promise<any>;
+    protected doAnimate(animationManager: AnimationManager): Promise<any>;
 }
 interface BgaAttachWithAnimationSettings extends BgaElementAnimationSettings {
     animation: BgaAnimation<BgaAnimationWithOriginSettings>;
@@ -160,10 +142,6 @@ interface BgaAttachWithAnimationSettings extends BgaElementAnimationSettings {
 }
 /**
  * Just use playSequence from animationManager
- *
- * @param animationManager the animation manager
- * @param animation a `BgaAnimation` object
- * @returns a promise when animation ends
  */
 declare class BgaAttachWithAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAnimation<any> {
     constructor(settings: BgaAnimationWithAttachAndOriginSettings);
@@ -174,10 +152,6 @@ interface BgaCumulatedAnimationsSettings extends BgaAnimationSettings {
 }
 /**
  * Just use playSequence from animationManager
- *
- * @param animationManager the animation manager
- * @param animation a `BgaAnimation` object
- * @returns a promise when animation ends
  */
 declare class BgaCumulatedAnimation<BgaCumulatedAnimationsSettings> extends BgaAnimation<any> {
     constructor(settings: BgaCumulatedAnimationsSettings);

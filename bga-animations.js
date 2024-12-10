@@ -165,6 +165,9 @@ function logAnimation(animationManager, animation) {
     }
     return Promise.resolve(false);
 }
+/**
+ * Slide of the element from origin to destination.
+ */
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -180,72 +183,62 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-/**
- * Slide of the element from origin to destination.
- *
- * @param animationManager the animation manager
- * @param animation a `BgaAnimation` object
- * @returns a promise when animation ends
- */
-function slideAnimation(animationManager, animation) {
-    var promise = new Promise(function (success) {
-        var _a, _b, _c, _d, _e;
-        var settings = animation.settings;
-        var element = settings.element;
-        var _f = getDeltaCoordinates(element, settings, animationManager), x = _f.x, y = _f.y;
-        var duration = (_a = settings.duration) !== null && _a !== void 0 ? _a : 500;
-        var originalZIndex = element.style.zIndex;
-        var originalTransition = element.style.transition;
-        var transitionTimingFunction = (_b = settings.transitionTimingFunction) !== null && _b !== void 0 ? _b : 'linear';
-        element.style.zIndex = "".concat((_c = settings === null || settings === void 0 ? void 0 : settings.zIndex) !== null && _c !== void 0 ? _c : 10);
-        element.style.transition = null;
-        element.offsetHeight;
-        element.style.transform = "translate(".concat(-x, "px, ").concat(-y, "px) rotate(").concat((_d = settings === null || settings === void 0 ? void 0 : settings.rotationDelta) !== null && _d !== void 0 ? _d : 0, "deg)");
-        var timeoutId = null;
-        var cleanOnTransitionEnd = function () {
-            element.style.zIndex = originalZIndex;
-            element.style.transition = originalTransition;
-            success();
-            element.removeEventListener('transitioncancel', cleanOnTransitionEnd);
-            element.removeEventListener('transitionend', cleanOnTransitionEnd);
-            document.removeEventListener('visibilitychange', cleanOnTransitionEnd);
-            if (timeoutId) {
-                clearTimeout(timeoutId);
-            }
-        };
-        var cleanOnTransitionCancel = function () {
-            var _a;
-            element.style.transition = "";
-            element.offsetHeight;
-            element.style.transform = (_a = settings === null || settings === void 0 ? void 0 : settings.finalTransform) !== null && _a !== void 0 ? _a : null;
-            element.offsetHeight;
-            cleanOnTransitionEnd();
-        };
-        element.addEventListener('transitioncancel', cleanOnTransitionCancel);
-        element.addEventListener('transitionend', cleanOnTransitionEnd);
-        document.addEventListener('visibilitychange', cleanOnTransitionCancel);
-        element.offsetHeight;
-        element.style.transition = "transform ".concat(duration, "ms ").concat(transitionTimingFunction);
-        element.offsetHeight;
-        element.style.transform = (_e = settings === null || settings === void 0 ? void 0 : settings.finalTransform) !== null && _e !== void 0 ? _e : null;
-        // safety in case transitionend and transitioncancel are not called
-        timeoutId = setTimeout(cleanOnTransitionEnd, duration + 100);
-    });
-    return promise;
-}
 var BgaSlideAnimation = /** @class */ (function (_super) {
     __extends(BgaSlideAnimation, _super);
     function BgaSlideAnimation(settings) {
-        return _super.call(this, slideAnimation, settings) || this;
+        return _super.call(this, null, settings) || this;
     }
+    BgaSlideAnimation.prototype.doAnimate = function (animationManager) {
+        var _this = this;
+        var promise = new Promise(function (success) {
+            var _a, _b, _c, _d, _e;
+            var settings = _this.settings;
+            var element = settings.element;
+            var _f = getDeltaCoordinates(element, settings, animationManager), x = _f.x, y = _f.y;
+            var duration = (_a = settings.duration) !== null && _a !== void 0 ? _a : 500;
+            var originalZIndex = element.style.zIndex;
+            var originalTransition = element.style.transition;
+            var transitionTimingFunction = (_b = settings.transitionTimingFunction) !== null && _b !== void 0 ? _b : 'linear';
+            element.style.zIndex = "".concat((_c = settings === null || settings === void 0 ? void 0 : settings.zIndex) !== null && _c !== void 0 ? _c : 10);
+            element.style.transition = null;
+            element.offsetHeight;
+            element.style.transform = "translate(".concat(-x, "px, ").concat(-y, "px) rotate(").concat((_d = settings === null || settings === void 0 ? void 0 : settings.rotationDelta) !== null && _d !== void 0 ? _d : 0, "deg)");
+            var timeoutId = null;
+            var cleanOnTransitionEnd = function () {
+                element.style.zIndex = originalZIndex;
+                element.style.transition = originalTransition;
+                success();
+                element.removeEventListener('transitioncancel', cleanOnTransitionEnd);
+                element.removeEventListener('transitionend', cleanOnTransitionEnd);
+                document.removeEventListener('visibilitychange', cleanOnTransitionEnd);
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                }
+            };
+            var cleanOnTransitionCancel = function () {
+                var _a;
+                element.style.transition = "";
+                element.offsetHeight;
+                element.style.transform = (_a = settings === null || settings === void 0 ? void 0 : settings.finalTransform) !== null && _a !== void 0 ? _a : null;
+                element.offsetHeight;
+                cleanOnTransitionEnd();
+            };
+            element.addEventListener('transitioncancel', cleanOnTransitionCancel);
+            element.addEventListener('transitionend', cleanOnTransitionEnd);
+            document.addEventListener('visibilitychange', cleanOnTransitionCancel);
+            element.offsetHeight;
+            element.style.transition = "transform ".concat(duration, "ms ").concat(transitionTimingFunction);
+            element.offsetHeight;
+            element.style.transform = (_e = settings === null || settings === void 0 ? void 0 : settings.finalTransform) !== null && _e !== void 0 ? _e : null;
+            // safety in case transitionend and transitioncancel are not called
+            timeoutId = setTimeout(cleanOnTransitionEnd, duration + 100);
+        });
+        return promise;
+    };
     return BgaSlideAnimation;
 }(BgaAnimation));
 /**
  * Slide of the element from destination to origin.
- *
- * @param animationManager the animation manager
- * @param animation a `BgaAnimation` object
- * @returns a promise when animation ends
  */
 var BgaSlideToAnimation = /** @class */ (function (_super) {
     __extends(BgaSlideToAnimation, _super);
@@ -256,7 +249,6 @@ var BgaSlideToAnimation = /** @class */ (function (_super) {
         var _this = this;
         return new Promise(function (success) {
             var _a, _b, _c, _d, _e, _f, _g, _h;
-            console.log("doAnimate:", _this);
             var element = _this.settings.element;
             var transitionTimingFunction = (_a = _this.settings.transitionTimingFunction) !== null && _a !== void 0 ? _a : 'linear';
             var duration = (_c = (_b = _this.settings) === null || _b === void 0 ? void 0 : _b.duration) !== null && _c !== void 0 ? _c : 500;
@@ -271,10 +263,6 @@ var BgaSlideToAnimation = /** @class */ (function (_super) {
 }(BgaAnimation));
 /**
  * Show the element at the center of the screen
- *
- * @param animationManager the animation manager
- * @param animation a `BgaAnimation` object
- * @returns a promise when animation ends
  */
 var BgaShowScreenCenterAnimation = /** @class */ (function (_super) {
     __extends(BgaShowScreenCenterAnimation, _super);
@@ -283,7 +271,7 @@ var BgaShowScreenCenterAnimation = /** @class */ (function (_super) {
     }
     BgaShowScreenCenterAnimation.prototype.doAnimate = function (animationManager) {
         var _this = this;
-        var promise = new Promise(function (success) {
+        return new Promise(function (success) {
             var _a, _b, _c, _d, _e, _f, _g, _h;
             var element = _this.settings.element;
             var elementBR = animationManager.game.getBoundingClientRectIgnoreZoom(element);
@@ -298,26 +286,12 @@ var BgaShowScreenCenterAnimation = /** @class */ (function (_super) {
             element.style.zIndex = "".concat((_e = (_d = _this.settings) === null || _d === void 0 ? void 0 : _d.zIndex) !== null && _e !== void 0 ? _e : 10);
             element.style.transform = "translate(".concat(-x, "px, ").concat(-y, "px) rotate(").concat((_g = (_f = _this.settings) === null || _f === void 0 ? void 0 : _f.rotationDelta) !== null && _g !== void 0 ? _g : 0, "deg) scale(").concat((_h = _this.settings.scale) !== null && _h !== void 0 ? _h : 1, ")");
         });
-        return promise;
     };
     return BgaShowScreenCenterAnimation;
 }(BgaAnimation));
 /**
  * Just does nothing for the duration
- *
- * @param animationManager the animation manager
- * @param animation a `BgaAnimation` object
- * @returns a promise when animation ends
  */
-function pauseAnimation(animationManager, animation) {
-    var promise = new Promise(function (success) {
-        var _a;
-        var settings = animation.settings;
-        var duration = (_a = settings === null || settings === void 0 ? void 0 : settings.duration) !== null && _a !== void 0 ? _a : 500;
-        setTimeout(function () { return success(); }, duration);
-    });
-    return promise;
-}
 var BgaPauseAnimation = /** @class */ (function (_super) {
     __extends(BgaPauseAnimation, _super);
     function BgaPauseAnimation(settings) {
@@ -325,36 +299,16 @@ var BgaPauseAnimation = /** @class */ (function (_super) {
     }
     BgaPauseAnimation.prototype.doAnimate = function (animationManager) {
         var _this = this;
-        var promise = new Promise(function (success) {
-            var _a;
-            var settings = _this.settings;
-            var duration = (_a = settings === null || settings === void 0 ? void 0 : settings.duration) !== null && _a !== void 0 ? _a : 500;
+        return new Promise(function (success) {
+            var _a, _b;
+            var duration = (_b = (_a = _this.settings) === null || _a === void 0 ? void 0 : _a.duration) !== null && _b !== void 0 ? _b : 500;
             setTimeout(function () { return success(); }, duration);
         });
-        return promise;
-    };
-    BgaPauseAnimation.prototype.play2 = function (animationManager) {
-        var _a;
-        console.log("play: ", this);
-        // this.played = this.playWhenNoAnimation || animationManager.animationsActive();
-        // if (this.played) {
-        console.log("in pause play");
-        var settings = this.settings;
-        var duration = (_a = settings === null || settings === void 0 ? void 0 : settings.duration) !== null && _a !== void 0 ? _a : 500;
-        var p = new Promise(function (success) {
-            setTimeout(function () { success(); }, duration);
-        });
-        return p;
-        // console.log("timeout done");
     };
     return BgaPauseAnimation;
 }(BgaAnimation));
 /**
  * Just use playSequence from animationManager
- *
- * @param animationManager the animation manager
- * @param animation a `BgaAnimation` object
- * @returns a promise when animation ends
  */
 var BgaAttachWithAnimation = /** @class */ (function (_super) {
     __extends(BgaAttachWithAnimation, _super);
@@ -378,10 +332,6 @@ var BgaAttachWithAnimation = /** @class */ (function (_super) {
 }(BgaAnimation));
 /**
  * Just use playSequence from animationManager
- *
- * @param animationManager the animation manager
- * @param animation a `BgaAnimation` object
- * @returns a promise when animation ends
  */
 var BgaCumulatedAnimation = /** @class */ (function (_super) {
     __extends(BgaCumulatedAnimation, _super);
