@@ -102,6 +102,7 @@ declare function logAnimation(animationManager: AnimationManager, animation: IBg
 declare class BgaSlideAnimation<T extends BgaElementAnimationSettings> extends BgaElementAnimation<T> {
     constructor(settings: T);
     protected doAnimate(animationManager: AnimationManager): Promise<any>;
+    protected doAnimate2(animationManager: AnimationManager): Promise<any>;
 }
 /**
  * Slide of the element from destination to origin.

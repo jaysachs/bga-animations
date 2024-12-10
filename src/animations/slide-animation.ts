@@ -10,57 +10,28 @@ class BgaSlideAnimation<T extends BgaElementAnimationSettings> extends BgaElemen
             settings,
         );
     }
+
     protected doAnimate(animationManager: AnimationManager): Promise<any> {
-        const promise = new Promise<void>((success) => {
-            const settings = this.settings;
-            const element = settings.element;
+        return new Promise<void>((success) => {
+            const element = this.settings.element;
 
-            let {x, y} = getDeltaCoordinates(element, settings, animationManager);
+            const transitionTimingFunction = this.settings.transitionTimingFunction ?? 'linear';
+            const duration = this.settings?.duration ?? 500;
 
-            const duration = settings.duration ?? 500;
-            const originalZIndex = element.style.zIndex;
-            const originalTransition = element.style.transition;
-            const transitionTimingFunction = settings.transitionTimingFunction ?? 'linear';
+            let {x, y} = getDeltaCoordinates(element, this.settings, animationManager);
 
-            element.style.zIndex = `${settings?.zIndex ?? 10}`;
+            element.style.zIndex = `${this.settings?.zIndex ?? 10}`;
+            element.offsetHeight;
             element.style.transition = null;
             element.offsetHeight;
-            element.style.transform = `translate(${-x}px, ${-y}px) rotate(${settings?.rotationDelta ?? 0}deg)`;
+            element.style.transform = `translate(${-x}px, ${-y}px) rotate(${this.settings?.rotationDelta ?? 0}deg) scale(${this.settings.scale ?? 1})`;
 
-            let timeoutId = null;
-
-            const cleanOnTransitionEnd = () => {
-                element.style.zIndex = originalZIndex;
-                element.style.transition = originalTransition;
-                success();
-                element.removeEventListener('transitioncancel', cleanOnTransitionEnd);
-                element.removeEventListener('transitionend', cleanOnTransitionEnd);
-                document.removeEventListener('visibilitychange', cleanOnTransitionEnd);
-                if (timeoutId) {
-                    clearTimeout(timeoutId);
-                }
-            };
-
-            const cleanOnTransitionCancel = () => {
-                element.style.transition = ``;
-                element.offsetHeight;
-                element.style.transform = settings?.finalTransform ?? null;
-                element.offsetHeight;
-                cleanOnTransitionEnd();
-            }
-
-            element.addEventListener('transitioncancel', cleanOnTransitionCancel);
-            element.addEventListener('transitionend', cleanOnTransitionEnd);
-            document.addEventListener('visibilitychange', cleanOnTransitionCancel);
+            this.wireUp(element, duration, success);
 
             element.offsetHeight;
             element.style.transition = `transform ${duration}ms ${transitionTimingFunction}`;
             element.offsetHeight;
-            element.style.transform = settings?.finalTransform ?? null;
-            // safety in case transitionend and transitioncancel are not called
-            timeoutId = setTimeout(cleanOnTransitionEnd, duration + 100);
+            element.style.transform = this.settings?.finalTransform ?? null;
         });
-
-        return promise;
     }
 }

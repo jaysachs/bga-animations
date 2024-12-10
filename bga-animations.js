@@ -199,6 +199,26 @@ var BgaSlideAnimation = /** @class */ (function (_super) {
     }
     BgaSlideAnimation.prototype.doAnimate = function (animationManager) {
         var _this = this;
+        return new Promise(function (success) {
+            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+            var element = _this.settings.element;
+            var transitionTimingFunction = (_a = _this.settings.transitionTimingFunction) !== null && _a !== void 0 ? _a : 'linear';
+            var duration = (_c = (_b = _this.settings) === null || _b === void 0 ? void 0 : _b.duration) !== null && _c !== void 0 ? _c : 500;
+            var _l = getDeltaCoordinates(element, _this.settings, animationManager), x = _l.x, y = _l.y;
+            element.style.zIndex = "".concat((_e = (_d = _this.settings) === null || _d === void 0 ? void 0 : _d.zIndex) !== null && _e !== void 0 ? _e : 10);
+            element.offsetHeight;
+            element.style.transition = null;
+            element.offsetHeight;
+            element.style.transform = "translate(".concat(-x, "px, ").concat(-y, "px) rotate(").concat((_g = (_f = _this.settings) === null || _f === void 0 ? void 0 : _f.rotationDelta) !== null && _g !== void 0 ? _g : 0, "deg) scale(").concat((_h = _this.settings.scale) !== null && _h !== void 0 ? _h : 1, ")");
+            _this.wireUp(element, duration, success);
+            element.offsetHeight;
+            element.style.transition = "transform ".concat(duration, "ms ").concat(transitionTimingFunction);
+            element.offsetHeight;
+            element.style.transform = (_k = (_j = _this.settings) === null || _j === void 0 ? void 0 : _j.finalTransform) !== null && _k !== void 0 ? _k : null;
+        });
+    };
+    BgaSlideAnimation.prototype.doAnimate2 = function (animationManager) {
+        var _this = this;
         var promise = new Promise(function (success) {
             var _a, _b, _c, _d, _e;
             var settings = _this.settings;
