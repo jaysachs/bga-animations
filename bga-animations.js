@@ -69,7 +69,10 @@ var BgaAnimation = /** @class */ (function () {
         };
         var cleanOnTransitionCancel = function () {
             element.style.transition = "";
-            element.style.transform = null; // this.settings.finalTransform ?? null;
+            element.offsetHeight;
+            // TODO: fix this.
+            element.style.transform = null; // this.settings?.finalTransform ?? null;
+            element.offsetHeight;
             cleanOnTransitionEnd();
         };
         element.addEventListener('transitioncancel', cleanOnTransitionEnd);
@@ -243,8 +246,11 @@ var BgaSlideToAnimation = /** @class */ (function (_super) {
             var duration = (_c = (_b = _this.settings) === null || _b === void 0 ? void 0 : _b.duration) !== null && _c !== void 0 ? _c : 500;
             _this.wireUp(element, duration, success);
             var _j = getDeltaCoordinates(element, _this.settings, animationManager), x = _j.x, y = _j.y;
+            element.offsetHeight;
             element.style.transition = "transform ".concat(duration, "ms ").concat(transitionTimingFunction);
+            element.offsetHeight;
             element.style.zIndex = "".concat((_e = (_d = _this.settings) === null || _d === void 0 ? void 0 : _d.zIndex) !== null && _e !== void 0 ? _e : 10);
+            element.offsetHeight;
             element.style.transform = "translate(".concat(-x, "px, ").concat(-y, "px) rotate(").concat((_g = (_f = _this.settings) === null || _f === void 0 ? void 0 : _f.rotationDelta) !== null && _g !== void 0 ? _g : 0, "deg) scale(").concat((_h = _this.settings.scale) !== null && _h !== void 0 ? _h : 1, ")");
         });
     };

@@ -119,7 +119,10 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
 
         const cleanOnTransitionCancel = () => {
             element.style.transition = ``;
-            element.style.transform = null; // this.settings.finalTransform ?? null;
+            element.offsetHeight;
+            // TODO: fix this.
+            element.style.transform = null; // this.settings?.finalTransform ?? null;
+            element.offsetHeight;
             cleanOnTransitionEnd();
         }
 

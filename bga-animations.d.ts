@@ -69,9 +69,6 @@ interface BgaAnimationWithOriginSettings extends BgaElementAnimationSettings {
 }
 interface IBgaAnimation<T extends BgaAnimationSettings> {
     settings: T;
-    played: boolean | null;
-    result: any | null;
-    playWhenNoAnimation: boolean;
 }
 declare abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnimation<BgaAnimationSettings> {
     settings: T;
