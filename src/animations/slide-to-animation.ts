@@ -19,9 +19,9 @@ class BgaSlideToAnimation<T extends BgaElementAnimationSettings> extends BgaElem
 
             this.wireUp(element, duration, success);
 
-            let {x, y} = getDeltaCoordinates(element, this.settings, animationManager);    
+            let {x, y} = getDeltaCoordinates(element, this.settings, animationManager);
 
-            element.style.zIndex = `${this.settings?.zIndex ?? 10}`;    
+            element.style.zIndex = `${this.settings?.zIndex ?? 10}`;
             element.offsetHeight;
             element.style.transition = `transform ${duration}ms ${transitionTimingFunction}`;
             element.offsetHeight;

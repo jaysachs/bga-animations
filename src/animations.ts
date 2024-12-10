@@ -20,7 +20,7 @@ interface BgaAnimationSettings {
     animationEnd?: (animation: IBgaAnimation<BgaAnimationSettings>) => any;
 }
 
-interface BgaElementAnimationSettings extends BgaAnimationSettings {  
+interface BgaElementAnimationSettings extends BgaAnimationSettings {
      /**
      * The animation CSS timing function, 'linear', 'ease-in-out' (default: linear).
      */
@@ -120,14 +120,14 @@ abstract class BgaElementAnimation<T extends BgaElementAnimationSettings> extend
     constructor(settings: T) { super(settings); }
     private timeoutId: number | null;
 
-    protected preAnimate(animationManager: AnimationManager): void { 
+    protected preAnimate(animationManager: AnimationManager): void {
         this.settings = {
             scale: this.settings?.scale ?? animationManager.getZoomManager()?.zoom ?? undefined,
             ...this.settings,
         };
         this.settings.element.classList.add(this.settings.animationClass ?? 'bga-animations_animated');
     }
-    protected postAnimate(animationManager: AnimationManager): void { 
+    protected postAnimate(animationManager: AnimationManager): void {
         this.settings.element.classList.remove(this.settings.animationClass ?? 'bga-animations_animated');
     }
 

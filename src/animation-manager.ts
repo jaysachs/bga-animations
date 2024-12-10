@@ -42,7 +42,7 @@ class AnimationManager {
 
     /**
      * Set the zoom manager, to get the scale of the current game.
-     * 
+     *
      * @param zoomManager the zoom manager
      */
     public setZoomManager(zoomManager: IZoomManager): void {
@@ -52,10 +52,10 @@ class AnimationManager {
     public getSettings(): AnimationManagerSettings | null | undefined {
         return this.settings;
     }
-    
+
     /**
      * Returns if the animations are active. Animation aren't active when the window is not visible (`document.visibilityState === 'hidden'`), or `game.instantaneousMode` is true.
-     * 
+     *
      * @returns if the animations are active.
      */
     public animationsActive(): boolean {
@@ -64,7 +64,7 @@ class AnimationManager {
 
     /**
      * Plays an animation if the animations are active. Animation aren't active when the window is not visible (`document.visibilityState === 'hidden'`), or `game.instantaneousMode` is true.
-     * 
+     *
      * @param animation the animation to play
      * @returns the animation promise.
      */
@@ -74,7 +74,7 @@ class AnimationManager {
 
     /**
      * Plays multiple animations in parallel.
-     * 
+     *
      * @param animations the animations to play
      * @returns a promise for all animations.
      */
@@ -84,7 +84,7 @@ class AnimationManager {
 
     /**
      * Plays multiple animations in sequence (the second when the first ends, ...).
-     * 
+     *
      * @param animations the animations to play
      * @returns a promise for all animations.
      */
@@ -98,7 +98,7 @@ class AnimationManager {
 
     /**
      * Plays multiple animations with a delay between each animation start.
-     * 
+     *
      * @param animations the animations to play
      * @param delay the delay (in ms)
      * @returns a promise for all animations.
@@ -117,13 +117,13 @@ class AnimationManager {
                 }, i * delay);
             }
         });
-    
+
         return promise;
     }
 
     /**
      * Attach an element to a parent, then play animation from element's origin to its new position.
-     * 
+     *
      * @param animation the animation function
      * @param attachElement the destination parent
      * @returns a promise when animation ends

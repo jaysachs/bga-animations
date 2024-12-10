@@ -33,7 +33,7 @@ function applyToMovedSquares(fn, max = 4) {
     for (let i=1; i<=max; i++) {
         const element = document.getElementById(`moved-square-${i}`);
         setTimeout(() => fn(element), 200 * (i - 1));
-    } 
+    }
 }
 
 function slideTo(toElement) {
@@ -43,7 +43,7 @@ function slideTo(toElement) {
     ));
 }
 
-function slideToScreenCenterThen(toElement) {    
+function slideToScreenCenterThen(toElement) {
     applyToMovedSquares(element => animationManager.play(
         new BgaCumulatedAnimation({ animations: [
             new BgaShowScreenCenterAnimation({ element, transitionTimingFunction: 'ease-in', }),
@@ -75,7 +75,7 @@ function slideToHereThenDelete(toElement) {
     applyToMovedSquares(element => animationManager.play(
         new BgaSlideAnimation({
             element,
-            fromElement: toElement, 
+            fromElement: toElement,
             scale: 1
         })
     ).then(() => element.remove()), 1);

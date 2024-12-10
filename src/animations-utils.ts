@@ -4,7 +4,7 @@ function shouldAnimate(settings?: BgaAnimationSettings): boolean {
 
 /**
  * Return the x and y delta, based on the animation settings;
- * 
+ *
  * @param settings an `AnimationSettings` object
  * @returns a promise when animation ends
  */

@@ -28,7 +28,7 @@ class BgaAttachWithAnimation<T extends BgaAttachWithAnimationSettings> extends B
     protected doAnimate(animationManager: AnimationManager): Promise<any> {
         const settings = this.settings;
         const element = settings.animation.settings.element;
-    
+
         const fromRect = animationManager.game.getBoundingClientRectIgnoreZoom(element);
         settings.animation.settings.fromRect = fromRect;
         settings.attachElement.appendChild(element);

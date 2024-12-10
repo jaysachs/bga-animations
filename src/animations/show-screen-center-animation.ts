@@ -15,10 +15,10 @@ class BgaShowScreenCenterAnimation<T extends BgaElementAnimationSettings> extend
             const element = this.settings.element;
 
             const elementBR = animationManager.game.getBoundingClientRectIgnoreZoom(element);
-    
+
             const xCenter = (elementBR.left + elementBR.right)/2;
             const yCenter = (elementBR.top + elementBR.bottom)/2;
-    
+
             const x = xCenter - (window.innerWidth / 2);
             const y = yCenter - (window.innerHeight / 2);
 
@@ -27,7 +27,7 @@ class BgaShowScreenCenterAnimation<T extends BgaElementAnimationSettings> extend
 
             this.wireUp(element, duration, success);
 
-            element.style.zIndex = `${this.settings?.zIndex ?? 10}`;    
+            element.style.zIndex = `${this.settings?.zIndex ?? 10}`;
             element.offsetHeight;
             element.style.transition = `transform ${duration}ms ${transitionTimingFunction}`;
             element.offsetHeight;
