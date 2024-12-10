@@ -15,7 +15,7 @@ interface BgaAttachWithAnimationSettings extends BgaElementAnimationSettings {
 /**
  * Just use playSequence from animationManager
  */
-class BgaAttachWithAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAnimation<any> {
+class BgaAttachWithAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaElementAnimation<any> {
     constructor(
         settings: BgaAnimationWithAttachAndOriginSettings,
     ) {

@@ -1,7 +1,7 @@
 /**
  * Show the element at the center of the screen
  */
-class BgaShowScreenCenterAnimation<BgaAnimation> extends BgaAnimation<any> {
+class BgaShowScreenCenterAnimation<BgaAnimation> extends BgaElementAnimation<any> {
     constructor(
         settings: BgaAnimation,
     ) {
@@ -27,8 +27,10 @@ class BgaShowScreenCenterAnimation<BgaAnimation> extends BgaAnimation<any> {
 
             this.wireUp(element, duration, success);
 
-            element.style.transition = `transform ${duration}ms ${transitionTimingFunction}`;
             element.style.zIndex = `${this.settings?.zIndex ?? 10}`;    
+            element.offsetHeight;
+            element.style.transition = `transform ${duration}ms ${transitionTimingFunction}`;
+            element.offsetHeight;
             element.style.transform = `translate(${-x}px, ${-y}px) rotate(${this.settings?.rotationDelta ?? 0}deg) scale(${this.settings.scale ?? 1})`;
         });
     }

@@ -1,3 +1,18 @@
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -52,35 +67,6 @@ var BgaAnimation = /** @class */ (function () {
         this.result = null;
         this.playWhenNoAnimation = false;
     }
-    BgaAnimation.prototype.wireUp = function (element, duration, success) {
-        var _this = this;
-        var originalZIndex = element.style.zIndex;
-        var originalTransition = element.style.transition;
-        var cleanOnTransitionEnd = function () {
-            element.style.zIndex = originalZIndex;
-            element.style.transition = originalTransition;
-            success();
-            element.removeEventListener('transitioncancel', cleanOnTransitionEnd);
-            element.removeEventListener('transitionend', cleanOnTransitionEnd);
-            document.removeEventListener('visibilitychange', cleanOnTransitionEnd);
-            if (_this.timeoutId) {
-                clearTimeout(_this.timeoutId);
-            }
-        };
-        var cleanOnTransitionCancel = function () {
-            element.style.transition = "";
-            element.offsetHeight;
-            // TODO: fix this.
-            element.style.transform = null; // this.settings?.finalTransform ?? null;
-            element.offsetHeight;
-            cleanOnTransitionEnd();
-        };
-        element.addEventListener('transitioncancel', cleanOnTransitionEnd);
-        element.addEventListener('transitionend', cleanOnTransitionEnd);
-        document.addEventListener('visibilitychange', cleanOnTransitionCancel);
-        // safety in case transitionend and transitioncancel are not called
-        this.timeoutId = setTimeout(cleanOnTransitionEnd, duration + 100);
-    };
     BgaAnimation.prototype.play = function (animationManager) {
         return __awaiter(this, void 0, void 0, function () {
             var settings, _a;
@@ -109,6 +95,42 @@ var BgaAnimation = /** @class */ (function () {
     };
     return BgaAnimation;
 }());
+var BgaElementAnimation = /** @class */ (function (_super) {
+    __extends(BgaElementAnimation, _super);
+    function BgaElementAnimation(settings) {
+        return _super.call(this, settings) || this;
+    }
+    BgaElementAnimation.prototype.wireUp = function (element, duration, success) {
+        var _this = this;
+        var originalZIndex = element.style.zIndex;
+        var originalTransition = element.style.transition;
+        var cleanOnTransitionEnd = function () {
+            element.style.zIndex = originalZIndex;
+            element.style.transition = originalTransition;
+            success();
+            element.removeEventListener('transitioncancel', cleanOnTransitionEnd);
+            element.removeEventListener('transitionend', cleanOnTransitionEnd);
+            document.removeEventListener('visibilitychange', cleanOnTransitionEnd);
+            if (_this.timeoutId) {
+                clearTimeout(_this.timeoutId);
+            }
+        };
+        var cleanOnTransitionCancel = function () {
+            var _a, _b;
+            element.style.transition = "";
+            element.offsetHeight;
+            element.style.transform = (_b = (_a = _this.settings) === null || _a === void 0 ? void 0 : _a.finalTransform) !== null && _b !== void 0 ? _b : null;
+            element.offsetHeight;
+            cleanOnTransitionEnd();
+        };
+        element.addEventListener('transitioncancel', cleanOnTransitionEnd);
+        element.addEventListener('transitionend', cleanOnTransitionEnd);
+        document.addEventListener('visibilitychange', cleanOnTransitionCancel);
+        // safety in case transitionend and transitioncancel are not called
+        this.timeoutId = setTimeout(cleanOnTransitionEnd, duration + 100);
+    };
+    return BgaElementAnimation;
+}(BgaAnimation));
 function shouldAnimate(settings) {
     var _a;
     return document.visibilityState !== 'hidden' && !((_a = settings === null || settings === void 0 ? void 0 : settings.game) === null || _a === void 0 ? void 0 : _a.instantaneousMode);
@@ -160,21 +182,6 @@ function logAnimation(animationManager, animation) {
 /**
  * Slide of the element from origin to destination.
  */
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var BgaSlideAnimation = /** @class */ (function (_super) {
     __extends(BgaSlideAnimation, _super);
     function BgaSlideAnimation(settings) {
@@ -228,7 +235,7 @@ var BgaSlideAnimation = /** @class */ (function (_super) {
         return promise;
     };
     return BgaSlideAnimation;
-}(BgaAnimation));
+}(BgaElementAnimation));
 /**
  * Slide of the element from destination to origin.
  */
@@ -246,16 +253,15 @@ var BgaSlideToAnimation = /** @class */ (function (_super) {
             var duration = (_c = (_b = _this.settings) === null || _b === void 0 ? void 0 : _b.duration) !== null && _c !== void 0 ? _c : 500;
             _this.wireUp(element, duration, success);
             var _j = getDeltaCoordinates(element, _this.settings, animationManager), x = _j.x, y = _j.y;
+            element.style.zIndex = "".concat((_e = (_d = _this.settings) === null || _d === void 0 ? void 0 : _d.zIndex) !== null && _e !== void 0 ? _e : 10);
             element.offsetHeight;
             element.style.transition = "transform ".concat(duration, "ms ").concat(transitionTimingFunction);
-            element.offsetHeight;
-            element.style.zIndex = "".concat((_e = (_d = _this.settings) === null || _d === void 0 ? void 0 : _d.zIndex) !== null && _e !== void 0 ? _e : 10);
             element.offsetHeight;
             element.style.transform = "translate(".concat(-x, "px, ").concat(-y, "px) rotate(").concat((_g = (_f = _this.settings) === null || _f === void 0 ? void 0 : _f.rotationDelta) !== null && _g !== void 0 ? _g : 0, "deg) scale(").concat((_h = _this.settings.scale) !== null && _h !== void 0 ? _h : 1, ")");
         });
     };
     return BgaSlideToAnimation;
-}(BgaAnimation));
+}(BgaElementAnimation));
 /**
  * Show the element at the center of the screen
  */
@@ -277,13 +283,15 @@ var BgaShowScreenCenterAnimation = /** @class */ (function (_super) {
             var transitionTimingFunction = (_a = _this.settings.transitionTimingFunction) !== null && _a !== void 0 ? _a : 'linear';
             var duration = (_c = (_b = _this.settings) === null || _b === void 0 ? void 0 : _b.duration) !== null && _c !== void 0 ? _c : 500;
             _this.wireUp(element, duration, success);
-            element.style.transition = "transform ".concat(duration, "ms ").concat(transitionTimingFunction);
             element.style.zIndex = "".concat((_e = (_d = _this.settings) === null || _d === void 0 ? void 0 : _d.zIndex) !== null && _e !== void 0 ? _e : 10);
+            element.offsetHeight;
+            element.style.transition = "transform ".concat(duration, "ms ").concat(transitionTimingFunction);
+            element.offsetHeight;
             element.style.transform = "translate(".concat(-x, "px, ").concat(-y, "px) rotate(").concat((_g = (_f = _this.settings) === null || _f === void 0 ? void 0 : _f.rotationDelta) !== null && _g !== void 0 ? _g : 0, "deg) scale(").concat((_h = _this.settings.scale) !== null && _h !== void 0 ? _h : 1, ")");
         });
     };
     return BgaShowScreenCenterAnimation;
-}(BgaAnimation));
+}(BgaElementAnimation));
 /**
  * Just does nothing for the duration
  */
@@ -324,7 +332,7 @@ var BgaAttachWithAnimation = /** @class */ (function (_super) {
         // return settings.animation.play(animationManager);
     };
     return BgaAttachWithAnimation;
-}(BgaAnimation));
+}(BgaElementAnimation));
 /**
  * Just use playSequence from animationManager
  */

@@ -69,6 +69,9 @@ interface BgaAnimationWithOriginSettings extends BgaElementAnimationSettings {
 }
 interface IBgaAnimation<T extends BgaAnimationSettings> {
     settings: T;
+    played: boolean | null;
+    result: any | null;
+    playWhenNoAnimation: boolean;
 }
 declare abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnimation<BgaAnimationSettings> {
     settings: T;
@@ -76,10 +79,13 @@ declare abstract class BgaAnimation<T extends BgaAnimationSettings> implements I
     result: any | null;
     playWhenNoAnimation: boolean;
     constructor(settings: T);
-    private timeoutId;
-    protected wireUp(element: HTMLElement, duration: number, success: (a: void) => any): void;
     protected abstract doAnimate(animationManager: AnimationManager): Promise<void>;
     play(animationManager: AnimationManager): Promise<any>;
+}
+declare abstract class BgaElementAnimation<T extends BgaElementAnimationSettings> extends BgaAnimation<T> {
+    constructor(settings: T);
+    private timeoutId;
+    protected wireUp(element: HTMLElement, duration: number, success: (a: void) => any): void;
 }
 declare function shouldAnimate(settings?: BgaAnimationSettings): boolean;
 /**
@@ -96,21 +102,21 @@ declare function logAnimation(animationManager: AnimationManager, animation: IBg
 /**
  * Slide of the element from origin to destination.
  */
-declare class BgaSlideAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAnimation<any> {
+declare class BgaSlideAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaElementAnimation<any> {
     constructor(settings: BgaAnimationWithAttachAndOriginSettings);
     protected doAnimate(animationManager: AnimationManager): Promise<any>;
 }
 /**
  * Slide of the element from destination to origin.
  */
-declare class BgaSlideToAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAnimation<any> {
+declare class BgaSlideToAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaElementAnimation<any> {
     constructor(settings: BgaAnimationWithAttachAndOriginSettings);
     protected doAnimate(animationManager: AnimationManager): Promise<any>;
 }
 /**
  * Show the element at the center of the screen
  */
-declare class BgaShowScreenCenterAnimation<BgaAnimation> extends BgaAnimation<any> {
+declare class BgaShowScreenCenterAnimation<BgaAnimation> extends BgaElementAnimation<any> {
     constructor(settings: BgaAnimation);
     protected doAnimate(animationManager: AnimationManager): Promise<void>;
 }
@@ -135,7 +141,7 @@ interface BgaAttachWithAnimationSettings extends BgaElementAnimationSettings {
 /**
  * Just use playSequence from animationManager
  */
-declare class BgaAttachWithAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAnimation<any> {
+declare class BgaAttachWithAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaElementAnimation<any> {
     constructor(settings: BgaAnimationWithAttachAndOriginSettings);
     protected doAnimate(animationManager: AnimationManager): Promise<any>;
 }

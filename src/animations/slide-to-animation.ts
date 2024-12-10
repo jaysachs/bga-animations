@@ -1,7 +1,7 @@
 /**
  * Slide of the element from destination to origin.
  */
-class BgaSlideToAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAnimation<any> {
+class BgaSlideToAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaElementAnimation<any> {
     constructor(
         settings: BgaAnimationWithAttachAndOriginSettings,
     ) {
@@ -21,10 +21,9 @@ class BgaSlideToAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAn
 
             let {x, y} = getDeltaCoordinates(element, this.settings, animationManager);    
 
+            element.style.zIndex = `${this.settings?.zIndex ?? 10}`;    
             element.offsetHeight;
             element.style.transition = `transform ${duration}ms ${transitionTimingFunction}`;
-            element.offsetHeight;
-            element.style.zIndex = `${this.settings?.zIndex ?? 10}`;    
             element.offsetHeight;
             element.style.transform = `translate(${-x}px, ${-y}px) rotate(${this.settings?.rotationDelta ?? 0}deg) scale(${this.settings.scale ?? 1})`;
         });

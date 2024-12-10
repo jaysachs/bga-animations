@@ -99,41 +99,6 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
     ) {
     }
 
-    private timeoutId: number | null;
-
-    protected wireUp(element: HTMLElement, duration: number, success: (a: void) => any): void {
-        const originalZIndex = element.style.zIndex;
-        const originalTransition = element.style.transition;
-
-        const cleanOnTransitionEnd = () => {
-            element.style.zIndex = originalZIndex;
-            element.style.transition = originalTransition;
-            success();
-            element.removeEventListener('transitioncancel', cleanOnTransitionEnd);
-            element.removeEventListener('transitionend', cleanOnTransitionEnd);
-            document.removeEventListener('visibilitychange', cleanOnTransitionEnd);
-            if (this.timeoutId) {
-                clearTimeout(this.timeoutId);
-            }
-        };
-
-        const cleanOnTransitionCancel = () => {
-            element.style.transition = ``;
-            element.offsetHeight;
-            // TODO: fix this.
-            element.style.transform = null; // this.settings?.finalTransform ?? null;
-            element.offsetHeight;
-            cleanOnTransitionEnd();
-        }
-
-        element.addEventListener('transitioncancel', cleanOnTransitionEnd);
-        element.addEventListener('transitionend', cleanOnTransitionEnd);
-        document.addEventListener('visibilitychange', cleanOnTransitionCancel);
-
-        // safety in case transitionend and transitioncancel are not called
-        this.timeoutId = setTimeout(cleanOnTransitionEnd, duration + 100);
-}
-
     protected abstract doAnimate(animationManager: AnimationManager): Promise<void>;
 
     public async play(animationManager: AnimationManager): Promise<any> {
@@ -157,4 +122,41 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
             return Promise.resolve(this);
         }
     }
+}
+
+abstract class BgaElementAnimation<T extends BgaElementAnimationSettings> extends BgaAnimation<T> {
+    constructor(settings: T) { super(settings); }
+    private timeoutId: number | null;
+
+    protected wireUp(element: HTMLElement, duration: number, success: (a: void) => any): void {
+        const originalZIndex = element.style.zIndex;
+        const originalTransition = element.style.transition;
+
+        const cleanOnTransitionEnd = () => {
+            element.style.zIndex = originalZIndex;
+            element.style.transition = originalTransition;
+            success();
+            element.removeEventListener('transitioncancel', cleanOnTransitionEnd);
+            element.removeEventListener('transitionend', cleanOnTransitionEnd);
+            document.removeEventListener('visibilitychange', cleanOnTransitionEnd);
+            if (this.timeoutId) {
+                clearTimeout(this.timeoutId);
+            }
+        };
+
+        const cleanOnTransitionCancel = () => {
+            element.style.transition = ``;
+            element.offsetHeight;
+            element.style.transform = this.settings?.finalTransform ?? null;
+            element.offsetHeight;
+            cleanOnTransitionEnd();
+        }
+
+        element.addEventListener('transitioncancel', cleanOnTransitionEnd);
+        element.addEventListener('transitionend', cleanOnTransitionEnd);
+        document.addEventListener('visibilitychange', cleanOnTransitionCancel);
+
+        // safety in case transitionend and transitioncancel are not called
+        this.timeoutId = setTimeout(cleanOnTransitionEnd, duration + 100);
+}
 }
