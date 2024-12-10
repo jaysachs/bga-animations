@@ -5,17 +5,28 @@
  * @param animation a `BgaAnimation` object
  * @returns a promise when animation ends
  */
-class BgaPauseAnimation<BgaAnimation> extends BgaAnimation<any> {
+function pauseAnimation(animationManager: AnimationManager, animation: IBgaAnimation<BgaAnimationSettings>): Promise<void> {
+        const promise = new Promise<void>((success) => {
+            const settings = animation.settings;
+    
+            const duration = settings?.duration ?? 500;
+    
+            setTimeout(() => success(), duration);
+        });
+        return promise;
+    }
+    
+    class BgaPauseAnimation<BgaAnimation> extends BgaAnimation<any> {
     constructor(
         settings: BgaAnimation,
     ) {
         super(
-            null,
+            pauseAnimation,
             settings,
         );
     }
 
-    public play(animationManager: AnimationManager): Promise<any> {
+    public play2(animationManager: AnimationManager): Promise<any> {
         console.log("play: ", this);
         // this.played = this.playWhenNoAnimation || animationManager.animationsActive();
         // if (this.played) {

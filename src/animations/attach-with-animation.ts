@@ -30,7 +30,7 @@ class BgaAttachWithAnimation<BgaAnimationWithAttachAndOriginSettings> extends Bg
         this.playWhenNoAnimation = true;
     }
 
-    protected async doAnimate(animationManager: AnimationManager, success: (a: void) => any) {
+    protected doAnimate(animationManager: AnimationManager): Promise<any> {
         const settings = this.settings;
         const element = settings.animation.settings.element;
     
@@ -38,6 +38,7 @@ class BgaAttachWithAnimation<BgaAnimationWithAttachAndOriginSettings> extends Bg
         settings.animation.settings.fromRect = fromRect;
         settings.attachElement.appendChild(element);
         settings.afterAttach?.(element, settings.attachElement);
-        await animationManager.play(settings.animation);
+        return animationManager.play(settings.animation);
+        // return settings.animation.play(animationManager);
      }
 }

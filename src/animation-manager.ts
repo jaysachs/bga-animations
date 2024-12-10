@@ -70,9 +70,9 @@ class AnimationManager {
      */
     async play(animation: BgaAnimation<BgaAnimationSettings>): Promise<BgaAnimation<BgaAnimationSettings>> {
         console.log("manager play: ", animation);
-        await animation.play(this);
-        console.log("manager played: ", animation);
-        return Promise.resolve(animation);
+        return animation.play(this);
+        // console.log("manager played: ", animation);
+        // return Promise.resolve(animation);
     }
 
     /**

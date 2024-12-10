@@ -140,8 +140,8 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
         this.timeoutId = setTimeout(cleanOnTransitionEnd, duration + 100);
 }
 
-    protected doAnimate(animationManager: AnimationManager, success: (a: void) => any): void { // Promise<void> {
-        this.animationFunction(animationManager, this);
+    protected doAnimate(animationManager: AnimationManager): Promise<void> {
+        return this.animationFunction(animationManager, this);
     }
 
     public async play(animationManager: AnimationManager): Promise<any> {
@@ -159,8 +159,7 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
                 ...this.settings,
             };
             console.log("awaiting: ", this);
-            this.result = await new Promise<void>((success) =>
-                 { console.log("doAnimate:", this); this.doAnimate(animationManager, success); console.log("doneAnimate: ", this); });
+            this.result = await this.doAnimate(animationManager);
 
             this.settings.animationEnd?.(this);
             settings.element?.classList.remove(settings.animationClass ?? 'bga-animations_animated');

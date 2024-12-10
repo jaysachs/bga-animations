@@ -21,9 +21,7 @@ class BgaCumulatedAnimation<BgaCumulatedAnimationsSettings> extends BgaAnimation
         this.playWhenNoAnimation = true;
     }
 
-    protected async doAnimate(animationManager: AnimationManager, success: (a: void) => any) {
-        await animationManager.playSequence(this.settings.animations);
-        success();
-        return Promise.resolve(this);
+    protected doAnimate(animationManager: AnimationManager): Promise<any> {
+        return animationManager.playSequence(this.settings.animations);
     }
 }

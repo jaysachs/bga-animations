@@ -15,19 +15,23 @@ class BgaSlideToAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAn
         );
     }
 
-    protected doAnimate(animationManager: AnimationManager, success: (a: void) => any): void { // Promise<void> {
-        console.log("doAnimate:", this);
-        const element = this.settings.element;
+    protected doAnimate(animationManager: AnimationManager): Promise<void> {
+        return new Promise<void>((success) => {
+            console.log("doAnimate:", this);
+            const element = this.settings.element;
 
-        const transitionTimingFunction = this.settings.transitionTimingFunction ?? 'linear';
-        const duration = this.settings?.duration ?? 500;
+            // , success: (a: void) => any
 
-        this.wireUp(element, duration, success);
+            const transitionTimingFunction = this.settings.transitionTimingFunction ?? 'linear';
+            const duration = this.settings?.duration ?? 500;
 
-        let {x, y} = getDeltaCoordinates(element, this.settings, animationManager);    
+            this.wireUp(element, duration, success);
 
-        element.style.transition = `transform ${duration}ms ${transitionTimingFunction}`;
-        element.style.zIndex = `${this.settings?.zIndex ?? 10}`;    
-        element.style.transform = `translate(${-x}px, ${-y}px) rotate(${this.settings?.rotationDelta ?? 0}deg) scale(${this.settings.scale ?? 1})`;
+            let {x, y} = getDeltaCoordinates(element, this.settings, animationManager);    
+
+            element.style.transition = `transform ${duration}ms ${transitionTimingFunction}`;
+            element.style.zIndex = `${this.settings?.zIndex ?? 10}`;    
+            element.style.transform = `translate(${-x}px, ${-y}px) rotate(${this.settings?.rotationDelta ?? 0}deg) scale(${this.settings.scale ?? 1})`;
+        });
     }
 }
