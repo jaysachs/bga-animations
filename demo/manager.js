@@ -69,8 +69,7 @@ function slideFromTitle(element) {
             element,
             fromElement: document.getElementById('instantaneousMode')
         })
-    );
-    console.log("end slideFromTitle", element);
+    ).then(() => console.log("end slideFromTitle", element));
 }
 
 function slideToHereThenDelete(toElement) {
