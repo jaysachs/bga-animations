@@ -63,12 +63,14 @@ function slideToScreenCenter(toElement) {
 }
 
 function slideFromTitle(element) {
+    console.log("start slideFromTitle", element);
     animationManager.play(
         new BgaSlideAnimation({
             element,
             fromElement: document.getElementById('instantaneousMode')
         })
     );
+    console.log("end slideFromTitle", element);
 }
 
 function slideToHereThenDelete(toElement) {
