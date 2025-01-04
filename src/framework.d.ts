@@ -5,7 +5,7 @@
 interface Game {
     // instantaneousMode?: boolean; // cannot add it here, else TS build will say Game interface isn't fulfilled
     getBoundingClientRectIgnoreZoom(element: Element): DOMRect;
-    
+
     setup: (gamedatas: any) => void;
     onEnteringState: (stateName: string, args: any) => void;
     onLeavingState: (stateName: string ) => void;
@@ -18,10 +18,10 @@ interface Notif<T> {
     args: T;
     log: string;
     move_id: number;
-    table_id: string;
+    table_id: number;
     time: number;
     type: string;
-    uid: string;
+    uid: number;
 }
 
 type Gamestate = {
