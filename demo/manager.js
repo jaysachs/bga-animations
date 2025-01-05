@@ -96,3 +96,14 @@ function fade(element) {
         })
     );
 }
+
+function slideTemp() {
+    animationManager.play(
+        new BgaSlideTempAnimation({
+            className: 'temp-square',
+            duration:2000,
+            parentId: 'game-table',
+            fromId: 'instantaneousMode',
+            toId: 'temp-slide'
+        }));
+}

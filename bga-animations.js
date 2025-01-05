@@ -79,12 +79,16 @@ var BgaAnimation = /** @class */ (function () {
                         if (!shouldPlay) return [3 /*break*/, 2];
                         (_b = (_a = this.settings).animationStart) === null || _b === void 0 ? void 0 : _b.call(_a, this);
                         this.settings = __assign({ duration: (_f = (_d = (_c = this.settings) === null || _c === void 0 ? void 0 : _c.duration) !== null && _d !== void 0 ? _d : (_e = animationManager.getSettings()) === null || _e === void 0 ? void 0 : _e.duration) !== null && _f !== void 0 ? _f : 500 }, this.settings);
+                        console.log("before preAnimate", this);
                         this.preAnimate(animationManager);
+                        console.log("before doAnimate", this);
                         _j = this;
                         return [4 /*yield*/, this.doAnimate(animationManager)];
                     case 1:
                         _j.result = _k.sent();
+                        console.log("beefore postAnimate", this);
                         this.postAnimate(animationManager);
+                        console.log("after postAnimate", this);
                         (_h = (_g = this.settings).animationEnd) === null || _h === void 0 ? void 0 : _h.call(_g, this);
                         return [3 /*break*/, 3];
                     case 2: return [2 /*return*/, Promise.resolve(this)];
@@ -278,6 +282,47 @@ var BgaSlideAnimation = /** @class */ (function (_super) {
     };
     return BgaSlideAnimation;
 }(BgaElementAnimation));
+/**
+ * Slide of the element from origin to destination.
+ */
+var BgaSlideTempAnimation = /** @class */ (function (_super) {
+    __extends(BgaSlideTempAnimation, _super);
+    function BgaSlideTempAnimation(settings) {
+        return _super.call(this, settings) || this;
+    }
+    BgaSlideTempAnimation.prototype.doAnimate = function (animationManager) {
+        var _this = this;
+        var delta = { x: 0, y: 0 };
+        return new Promise(function (success) {
+            var parent = document.getElementById(_this.settings.parentId);
+            var parentRect = parent.getBoundingClientRect();
+            var toRect = document.getElementById(_this.settings.toId).getBoundingClientRect();
+            var fromRect = document.getElementById(_this.settings.fromId).getBoundingClientRect();
+            var top = fromRect.top - parentRect.top;
+            var left = fromRect.left - parentRect.left;
+            var div = document.createElement('div');
+            div.id = "bbl_tmp_slideTmpDiv".concat(BgaSlideTempAnimation.lastId++);
+            div.className = _this.settings.className;
+            // Unclear why setting `style` attribute directly doesn't work.
+            div.style.position = 'absolute';
+            div.style.top = "".concat(top, "px");
+            div.style.left = "".concat(left, "px");
+            div.style.zIndex = '100';
+            parent.appendChild(div);
+            var divRect = div.getBoundingClientRect();
+            var toTop = toRect.top - parentRect.top + (toRect.height - divRect.height) / 2;
+            var toLeft = toRect.left - parentRect.left + (toRect.width - divRect.width) / 2;
+            delta = {
+                x: left - toLeft,
+                y: top - toTop
+            };
+            new BgaSlideAnimation({ element: div, fromDelta: delta }).play(animationManager)
+                .then(function () { return div.remove(); });
+        });
+    };
+    BgaSlideTempAnimation.lastId = 0;
+    return BgaSlideTempAnimation;
+}(BgaAnimation));
 /**
  * Show the element at the center of the screen
  */

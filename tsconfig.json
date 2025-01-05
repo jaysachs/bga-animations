@@ -15,6 +15,7 @@
       "src/animations-utils.ts",
       "src/animations/fade-animation.ts",
       "src/animations/slide-animation.ts",
+      "src/animations/slide-temporary.ts",
       "src/animations/show-screen-center-animation.ts",
       "src/animations/pause-animation.ts",
       "src/animations/attach-with-animation.ts",

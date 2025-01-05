@@ -6,6 +6,14 @@ h1, h2 {
     margin: 0.3rem;
 }
 
+.temp-square {
+    background: #ff0088;
+    display: inline-block;
+    position: relative;
+    width: 10px;
+    height: 20px;
+}
+
 .moved-square {
     background: lightgray;
     display: inline-block;
