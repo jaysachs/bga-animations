@@ -104,13 +104,9 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
                 ...this.settings,
             };
 
-            console.log("before preAnimate", this);
             this.preAnimate(animationManager);
-            console.log("before doAnimate", this);
             this.result = await this.doAnimate(animationManager);
-            console.log("beefore postAnimate", this);
             this.postAnimate(animationManager);
-            console.log("after postAnimate", this);
 
             this.settings.animationEnd?.(this);
         } else {
