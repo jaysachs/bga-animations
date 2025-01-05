@@ -17,15 +17,30 @@ class BgaSlideToAnimation<T extends BgaElementAnimationSettings> extends BgaElem
             const transitionTimingFunction = this.settings.transitionTimingFunction ?? 'linear';
             const duration = this.settings?.duration ?? 500;
 
-            this.wireUp(element, duration, success);
-
             let {x, y} = getDeltaCoordinates(element, this.settings, animationManager);
 
+            this.wireUp(element, duration, success);
+            // this gets saved/restored in wireUp
             element.style.zIndex = `${this.settings?.zIndex ?? 10}`;
-            element.offsetHeight;
-            element.style.transition = `transform ${duration}ms ${transitionTimingFunction}`;
-            element.offsetHeight;
-            element.style.transform = `translate(${-x}px, ${-y}px) rotate(${this.settings?.rotationDelta ?? 0}deg) scale(${this.settings.scale ?? 1})`;
+
+            let a = element.animate(
+             [
+               { transform: `translate3D(${-x}px, ${-y}px, 0)` },
+               { transform: `translate3D(0, 0, 0)` }
+             ],
+             {
+               duration: duration,
+               easing: transitionTimingFunction,
+                              fill: "forwards"
+             });
+             a.pause();
+             a.onfinish = e => {
+                          a.commitStyles();
+                          a.cancel();
+             //    element.style.transform = this.settings?.finalTransform ?? null;
+             // success();
+             };
+             a.play();
         });
     }
 }
