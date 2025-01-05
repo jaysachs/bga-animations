@@ -110,13 +110,6 @@ declare class BgaSlideAnimation<T extends BgaElementAnimationSettings> extends B
     protected doAnimate(animationManager: AnimationManager): Promise<any>;
 }
 /**
- * Slide of the element from destination to origin.
- */
-declare class BgaSlideToAnimation<T extends BgaElementAnimationSettings> extends BgaElementAnimation<T> {
-    constructor(settings: T);
-    protected doAnimate(animationManager: AnimationManager): Promise<any>;
-}
-/**
  * Show the element at the center of the screen
  */
 declare class BgaShowScreenCenterAnimation<T extends BgaElementAnimationSettings> extends BgaElementAnimation<T> {
