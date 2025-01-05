@@ -15,7 +15,14 @@
             <div id="game-table">
                 <input id="instantaneousMode" type="checkbox" onclick="game.instantaneousMode = this.checked;">
                 <label for="instantaneousMode">game.instantaneousMode</label>
-                
+
+                <h1>Fade</h1>
+                <div>
+                  <div id="to-fade" class="moved-square"><span>Thing To Fade</span>
+                    <button onclick="fade(this.parentElement.firstElementChild)">fade it</button>
+                  </div>
+                </div>
+
                 <h1>Basic slide using manager</h1>
                 <div>
                     <div id="moved-square-1" class="moved-square">Moved element 1</div>

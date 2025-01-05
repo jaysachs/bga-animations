@@ -191,6 +191,53 @@ function logAnimation(animationManager, animation) {
     return Promise.resolve(false);
 }
 /**
+ * Fade the element.
+ */
+var BgaFadeAnimation = /** @class */ (function (_super) {
+    __extends(BgaFadeAnimation, _super);
+    function BgaFadeAnimation(settings) {
+        return _super.call(this, settings) || this;
+    }
+    BgaFadeAnimation.prototype.doAnimate = function (animationManager) {
+        var _this = this;
+        return new Promise(function (success) {
+            var _a, _b, _c, _d, _e;
+            var element = _this.settings.element;
+            var duration = (_b = (_a = _this.settings) === null || _a === void 0 ? void 0 : _a.duration) !== null && _b !== void 0 ? _b : 500;
+            _this.wireUp(element, duration, success);
+            // this gets saved/restored in wireUp
+            element.style.zIndex = "".concat((_d = (_c = _this.settings) === null || _c === void 0 ? void 0 : _c.zIndex) !== null && _d !== void 0 ? _d : 10);
+            var direction = "normal";
+            var iterations = 1;
+            if (_this.settings.kind == "in") {
+                direction = "reverse";
+            }
+            else if (_this.settings.kind == "outin") {
+                direction = "alternate";
+                iterations = 2;
+            }
+            var a = element.animate([
+                { opacity: 1 },
+                { opacity: 0 }
+            ], {
+                duration: duration,
+                easing: (_e = _this.settings.transitionTimingFunction) !== null && _e !== void 0 ? _e : 'linear',
+                direction: direction,
+                iterations: iterations,
+            });
+            a.pause();
+            a.onfinish = function (e) {
+                // a.commitStyles();
+                // a.cancel();
+                //    element.style.transform = this.settings?.finalTransform ?? null;
+                // success();
+            };
+            a.play();
+        });
+    };
+    return BgaFadeAnimation;
+}(BgaElementAnimation));
+/**
  * Slide of the element from origin to destination.
  */
 var BgaSlideAnimation = /** @class */ (function (_super) {
@@ -240,17 +287,30 @@ var BgaSlideToAnimation = /** @class */ (function (_super) {
     BgaSlideToAnimation.prototype.doAnimate = function (animationManager) {
         var _this = this;
         return new Promise(function (success) {
-            var _a, _b, _c, _d, _e, _f, _g, _h;
+            var _a, _b, _c, _d, _e;
             var element = _this.settings.element;
             var transitionTimingFunction = (_a = _this.settings.transitionTimingFunction) !== null && _a !== void 0 ? _a : 'linear';
             var duration = (_c = (_b = _this.settings) === null || _b === void 0 ? void 0 : _b.duration) !== null && _c !== void 0 ? _c : 500;
+            var _f = getDeltaCoordinates(element, _this.settings, animationManager), x = _f.x, y = _f.y;
             _this.wireUp(element, duration, success);
-            var _j = getDeltaCoordinates(element, _this.settings, animationManager), x = _j.x, y = _j.y;
+            // this gets saved/restored in wireUp
             element.style.zIndex = "".concat((_e = (_d = _this.settings) === null || _d === void 0 ? void 0 : _d.zIndex) !== null && _e !== void 0 ? _e : 10);
-            element.offsetHeight;
-            element.style.transition = "transform ".concat(duration, "ms ").concat(transitionTimingFunction);
-            element.offsetHeight;
-            element.style.transform = "translate(".concat(-x, "px, ").concat(-y, "px) rotate(").concat((_g = (_f = _this.settings) === null || _f === void 0 ? void 0 : _f.rotationDelta) !== null && _g !== void 0 ? _g : 0, "deg) scale(").concat((_h = _this.settings.scale) !== null && _h !== void 0 ? _h : 1, ")");
+            var a = element.animate([
+                { transform: "translate3D(".concat(-x, "px, ").concat(-y, "px, 0)") },
+                { transform: "translate3D(0, 0, 0)" }
+            ], {
+                duration: duration,
+                easing: transitionTimingFunction,
+                fill: "forwards"
+            });
+            a.pause();
+            a.onfinish = function (e) {
+                a.commitStyles();
+                a.cancel();
+                //    element.style.transform = this.settings?.finalTransform ?? null;
+                // success();
+            };
+            a.play();
         });
     };
     return BgaSlideToAnimation;

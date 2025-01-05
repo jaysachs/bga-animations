@@ -41,10 +41,6 @@ interface BgaElementAnimationSettings extends BgaAnimationSettings {
      * The transform property to set after the animation.
      */
     finalTransform?: string;
-    /**
-     * If the card is rotated at the start of animation.
-     */
-    rotationDelta?: number;
 }
 interface BgaAnimationWithOriginSettings extends BgaElementAnimationSettings {
     /**
@@ -96,6 +92,16 @@ declare function getDeltaCoordinates(element: HTMLElement, settings: BgaAnimatio
     y: number;
 };
 declare function logAnimation(animationManager: AnimationManager, animation: IBgaAnimation<BgaCumulatedAnimationsSettings>): Promise<any>;
+/**
+ * Fade the element.
+ */
+interface BgaFadeAnimationSettings extends BgaElementAnimationSettings {
+    kind: "in" | "out" | "outin";
+}
+declare class BgaFadeAnimation<T extends BgaFadeAnimationSettings> extends BgaElementAnimation<T> {
+    constructor(settings: T);
+    protected doAnimate(animationManager: AnimationManager): Promise<any>;
+}
 /**
  * Slide of the element from origin to destination.
  */

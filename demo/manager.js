@@ -81,3 +81,13 @@ function slideToHereThenDelete(toElement) {
         })
     ).then(() => element.remove()), 1);
 }
+
+function fade(element) {
+    animationManager.play(
+        new BgaFadeAnimation({
+            element,
+            duration: 1000,
+            kind: "outin",
+        })
+    );
+}
