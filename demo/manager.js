@@ -38,7 +38,10 @@ function applyToMovedSquares(fn, max = 4) {
 
 function slideTo(toElement) {
     applyToMovedSquares(element => animationManager.attachWithAnimation(
-        new BgaSlideAnimation({ element }),
+        new BgaSlideAnimation({
+            element,
+            direction: "reverse",
+        }),
         toElement
     ));
 }
@@ -49,7 +52,7 @@ function slideToScreenCenterThen(toElement) {
             new BgaShowScreenCenterAnimation({ element, transitionTimingFunction: 'ease-in', }),
             new BgaPauseAnimation({ element }),
             new BgaAttachWithAnimation({
-                animation: new BgaSlideAnimation({ element, transitionTimingFunction: 'ease-out' }),
+                animation: new BgaSlideAnimation({ direction: 'reverse', element, transitionTimingFunction: 'ease-out' }),
                 attachElement: toElement
             })
         ]})
@@ -67,6 +70,7 @@ function slideFromTitle(element) {
     animationManager.play(
         new BgaSlideAnimation({
             element,
+            direction: "reverse",
             fromElement: document.getElementById('instantaneousMode')
         })
     ).then(() => console.log("end slideFromTitle", element));
@@ -76,6 +80,7 @@ function slideToHereThenDelete(toElement) {
     applyToMovedSquares(element => animationManager.play(
         new BgaSlideAnimation({
             element,
+            direction: "reverse",
             fromElement: toElement,
             scale: 1
         })

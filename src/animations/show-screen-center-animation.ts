@@ -32,7 +32,7 @@ class BgaShowScreenCenterAnimation<T extends BgaElementAnimationSettings> extend
             // element.offsetHeight;
             let a = element.animate(
              [
-               // { transform: `translate3D(0, 0, 0)` },
+               { transform: `translate3D(0, 0, 0)` },
                { transform: `translate3D(${-x}px, ${-y}px, 0)` }
                // { transform: `translate3D(0, 0, 0)` }
              ],

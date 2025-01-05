@@ -2,7 +2,7 @@
  * Slide of the element from origin to destination.
  */
 
-class BgaSlideAnimation<T extends BgaElementAnimationSettings> extends BgaElementAnimation<T> {
+class BgaSlideAnimation<T extends BgaSlideAnimationSettings> extends BgaElementAnimation<T> {
     constructor(
         settings: T,
     ) {
@@ -25,10 +25,12 @@ class BgaSlideAnimation<T extends BgaElementAnimationSettings> extends BgaElemen
 
             let a = element.animate(
              [
-               { transform: `translate3D(${-x}px, ${-y}px, 0)` },
-               { transform: `translate3D(0, 0, 0)` }
+               { transform: `translate3D(0, 0, 0)` },
+               { transform: `translate3D(${-x}px, ${-y}px, 0)` }
              ],
              {
+               iterations: this.settings.iterations,
+               direction: this.settings.direction,
                duration: duration,
                easing: transitionTimingFunction,
                               fill: "forwards"

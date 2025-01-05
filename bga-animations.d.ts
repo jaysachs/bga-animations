@@ -59,6 +59,10 @@ interface BgaAnimationWithOriginSettings extends BgaElementAnimationSettings {
      */
     fromElement?: HTMLElement;
 }
+interface BgaSlideAnimationSettings extends BgaElementAnimationSettings {
+    direction?: "normal" | "reverse" | "alternate";
+    iterations?: number;
+}
 interface IBgaAnimation<T extends BgaAnimationSettings> {
     settings: T;
     play(animationManager: AnimationManager): Promise<any>;
@@ -105,7 +109,7 @@ declare class BgaFadeAnimation<T extends BgaFadeAnimationSettings> extends BgaEl
 /**
  * Slide of the element from origin to destination.
  */
-declare class BgaSlideAnimation<T extends BgaElementAnimationSettings> extends BgaElementAnimation<T> {
+declare class BgaSlideAnimation<T extends BgaSlideAnimationSettings> extends BgaElementAnimation<T> {
     constructor(settings: T);
     protected doAnimate(animationManager: AnimationManager): Promise<any>;
 }

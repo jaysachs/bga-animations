@@ -70,6 +70,12 @@ interface BgaAnimationWithOriginSettings extends BgaElementAnimationSettings {
     fromElement?: HTMLElement;
 }
 
+interface BgaSlideAnimationSettings extends BgaElementAnimationSettings {
+    direction?: "normal" | "reverse" | "alternate";
+
+    iterations?: number;
+}
+
 interface IBgaAnimation<T extends BgaAnimationSettings> {
     settings: T;
     play(animationManager: AnimationManager): Promise<any>;
