@@ -50,11 +50,6 @@ interface BgaElementAnimationSettings extends BgaAnimationSettings {
      * The transform property to set after the animation.
      */
     finalTransform?: string;
-
-    /**
-     * If the card is rotated at the start of animation.
-     */
-    rotationDelta?: number;
 }
 
 interface BgaAnimationWithOriginSettings extends BgaElementAnimationSettings {
