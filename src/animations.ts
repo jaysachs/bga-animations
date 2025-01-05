@@ -96,9 +96,7 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
     public async play(animationManager: AnimationManager): Promise<any> {
         const shouldPlay = this.playWhenNoAnimation || animationManager.animationsActive();
         if (shouldPlay) {
-            const settings = this.settings;
-
-            settings.animationStart?.(this);
+            this.settings.animationStart?.(this);
 
             this.settings = {
                 duration: this.settings?.duration ?? animationManager.getSettings()?.duration ?? 500,
@@ -141,6 +139,7 @@ abstract class BgaElementAnimation<T extends BgaElementAnimationSettings> extend
             success();
             element.removeEventListener('transitioncancel', cleanOnTransitionEnd);
             element.removeEventListener('transitionend', cleanOnTransitionEnd);
+            element.removeEventListener("animationend", cleanOnTransitionEnd);
             document.removeEventListener('visibilitychange', cleanOnTransitionEnd);
             if (this.timeoutId) {
                 clearTimeout(this.timeoutId);
@@ -155,6 +154,7 @@ abstract class BgaElementAnimation<T extends BgaElementAnimationSettings> extend
             cleanOnTransitionEnd();
         }
 
+        element.addEventListener("animationend", cleanOnTransitionEnd, false);
         element.addEventListener('transitioncancel', cleanOnTransitionEnd);
         element.addEventListener('transitionend', cleanOnTransitionEnd);
         document.addEventListener('visibilitychange', cleanOnTransitionCancel);

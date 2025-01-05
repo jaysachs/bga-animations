@@ -28,11 +28,27 @@ class BgaShowScreenCenterAnimation<T extends BgaElementAnimationSettings> extend
             this.wireUp(element, duration, success);
 
             element.style.zIndex = `${this.settings?.zIndex ?? 10}`;
-            element.offsetHeight;
-            element.style.transition = `transform ${duration}ms ${transitionTimingFunction}`;
-            element.offsetHeight;
-            element.style.transform = `translate(${-x}px, ${-y}px) rotate(${this.settings?.rotationDelta ?? 0}deg) scale(${this.settings.scale ?? 1})`;
-        });
+
+            // element.offsetHeight;
+            let a = element.animate(
+             [
+               // { transform: `translate3D(0, 0, 0)` },
+               { transform: `translate3D(${-x}px, ${-y}px, 0)` }
+               // { transform: `translate3D(0, 0, 0)` }
+             ],
+             {
+               duration: duration,
+               fill: "forwards",
+               easing: transitionTimingFunction
+             });
+            a.pause();
+            // element.offsetHeight;
+            a.onfinish = e => {
+              a.commitStyles();
+              a.cancel();
+              // element.style.transform = this.settings?.finalTransform ?? null;
+            };
+            a.play();
+         });
     }
 }
-
