@@ -161,6 +161,7 @@ declare class BgaAttachWithAnimation<T extends BgaAttachWithAnimationSettings> e
 }
 interface BgaCumulatedAnimationsSettings extends BgaAnimationSettings {
     animations: IBgaAnimation<BgaAnimationSettings>[];
+    mode: "parallel" | "sequential";
 }
 /**
  * Just use playSequence from animationManager

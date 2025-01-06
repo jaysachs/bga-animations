@@ -107,3 +107,57 @@ async function slideTemp() {
             toId: 'temp-slide'
         }));
 }
+
+async function combinedTest() {
+    await animationManager.play(
+        new BgaCumulatedAnimation(
+            {
+                mode: "sequential",
+                animations: [
+                    new BgaCumulatedAnimation(
+                        {
+                            mode: "parallel",
+                            animations: [
+                                new BgaFadeAnimation(
+                                    {
+                                        element: document.getElementById('moved-square-1'),
+                                        kind: "outin",
+                                        duration: 1200,
+                                    }
+                                ),
+                                new BgaFadeAnimation(
+                                    {
+                                        element: document.getElementById('moved-square-3'),
+                                        kind: "outin",
+                                        duration: 1200,
+                                    }
+                                )
+                            ],
+                        }
+                    ),
+                    new BgaCumulatedAnimation(
+                        {
+                            mode: "parallel",
+                            animations: [
+                                new BgaFadeAnimation(
+                                    {
+                                        element: document.getElementById('moved-square-2'),
+                                        kind: "outin",
+                                        duration: 1200,
+                                    }
+                                ),
+                                new BgaFadeAnimation(
+                                    {
+                                        element: document.getElementById('moved-square-4'),
+                                        kind: "outin",
+                                        duration: 1200,
+                                    }
+                                )
+                            ],
+                        }
+                    )
+                ],
+            }
+        )
+    );
+}

@@ -417,7 +417,12 @@ var BgaCumulatedAnimation = /** @class */ (function (_super) {
         return _this;
     }
     BgaCumulatedAnimation.prototype.doAnimate = function (animationManager) {
-        return animationManager.playSequence(this.settings.animations);
+        if (this.settings.mode == "parallel") {
+            return animationManager.playParallel(this.settings.animations);
+        }
+        else {
+            return animationManager.playSequence(this.settings.animations);
+        }
     };
     return BgaCumulatedAnimation;
 }(BgaAnimation));
