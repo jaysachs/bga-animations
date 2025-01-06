@@ -1,4 +1,4 @@
-interface BgaCumulatedAnimationsSettings extends BgaAnimationSettings {
+interface BgaCompoundAnimationsSettings extends BgaAnimationSettings {
     animations: IBgaAnimation<BgaAnimationSettings>[];
     mode: "parallel" | "sequential";
 }
@@ -7,7 +7,7 @@ interface BgaCumulatedAnimationsSettings extends BgaAnimationSettings {
  * Just use playSequence from animationManager
  */
 
-class BgaCumulatedAnimation<T extends BgaCumulatedAnimationsSettings> extends BgaAnimation<T> {
+class BgaCompoundAnimation<T extends BgaCompoundAnimationsSettings> extends BgaAnimation<T> {
     constructor(
         settings: T,
     ) {

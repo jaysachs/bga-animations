@@ -95,7 +95,7 @@ declare function getDeltaCoordinates(element: HTMLElement, settings: BgaAnimatio
     x: number;
     y: number;
 };
-declare function logAnimation(animationManager: AnimationManager, animation: IBgaAnimation<BgaCumulatedAnimationsSettings>): Promise<any>;
+declare function logAnimation(animationManager: AnimationManager, animation: IBgaAnimation<BgaCompoundAnimationsSettings>): Promise<any>;
 /**
  * Fade the element.
  */
@@ -159,14 +159,14 @@ declare class BgaAttachWithAnimation<T extends BgaAttachWithAnimationSettings> e
     constructor(settings: T);
     protected doAnimate(animationManager: AnimationManager): Promise<any>;
 }
-interface BgaCumulatedAnimationsSettings extends BgaAnimationSettings {
+interface BgaCompoundAnimationsSettings extends BgaAnimationSettings {
     animations: IBgaAnimation<BgaAnimationSettings>[];
     mode: "parallel" | "sequential";
 }
 /**
  * Just use playSequence from animationManager
  */
-declare class BgaCumulatedAnimation<T extends BgaCumulatedAnimationsSettings> extends BgaAnimation<T> {
+declare class BgaCompoundAnimation<T extends BgaCompoundAnimationsSettings> extends BgaAnimation<T> {
     constructor(settings: T);
     protected doAnimate(animationManager: AnimationManager): Promise<any>;
 }

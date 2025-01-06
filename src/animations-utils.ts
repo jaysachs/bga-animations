@@ -40,7 +40,7 @@ function getDeltaCoordinates(element: HTMLElement, settings: BgaAnimationWithOri
     return {x, y};
 }
 
-function logAnimation(animationManager: AnimationManager, animation: IBgaAnimation<BgaCumulatedAnimationsSettings>): Promise<any> {
+function logAnimation(animationManager: AnimationManager, animation: IBgaAnimation<BgaCompoundAnimationsSettings>): Promise<any> {
     const settings = (animation as any).settings;
     const element = (settings as any).element;
     if (element) {

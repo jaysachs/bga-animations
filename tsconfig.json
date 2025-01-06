@@ -19,7 +19,7 @@
       "src/animations/show-screen-center-animation.ts",
       "src/animations/pause-animation.ts",
       "src/animations/attach-with-animation.ts",
-      "src/animations/cumulated-animations.ts",
+      "src/animations/compound-animation.ts",
       "src/animation-manager.ts",
       "src/define.ts"
     ]

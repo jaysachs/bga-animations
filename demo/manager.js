@@ -48,7 +48,7 @@ function slideTo(toElement) {
 
 function slideToScreenCenterThen(toElement) {
     applyToMovedSquares(element => animationManager.play(
-        new BgaCumulatedAnimation({ animations: [
+        new BgaCompoundAnimation({ animations: [
             new BgaShowScreenCenterAnimation({ element, transitionTimingFunction: 'ease-in', }),
             new BgaPauseAnimation({ element }),
             new BgaAttachWithAnimation({
@@ -108,13 +108,13 @@ async function slideTemp() {
         }));
 }
 
-async function combinedTest() {
+async function compoundTest() {
     await animationManager.play(
-        new BgaCumulatedAnimation(
+        new BgaCompoundAnimation(
             {
                 mode: "sequential",
                 animations: [
-                    new BgaCumulatedAnimation(
+                    new BgaCompoundAnimation(
                         {
                             mode: "parallel",
                             animations: [
@@ -135,7 +135,7 @@ async function combinedTest() {
                             ],
                         }
                     ),
-                    new BgaCumulatedAnimation(
+                    new BgaCompoundAnimation(
                         {
                             mode: "parallel",
                             animations: [

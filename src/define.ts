@@ -1,6 +1,6 @@
 declare const define;
 
-define({ 
+define({
     // utils functions
     shouldAnimate,
     getDeltaCoordinates,
@@ -9,6 +9,7 @@ define({
     BgaSlideAnimation,
     BgaShowScreenCenterAnimation,
     BgaPauseAnimation,
-    BgaCumulatedAnimation,
+    BgaCompoundAnimation,
     BgaAttachWithAnimation,
+    BgaFadeAnimation,
  });

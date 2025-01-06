@@ -409,14 +409,14 @@ var BgaAttachWithAnimation = /** @class */ (function (_super) {
 /**
  * Just use playSequence from animationManager
  */
-var BgaCumulatedAnimation = /** @class */ (function (_super) {
-    __extends(BgaCumulatedAnimation, _super);
-    function BgaCumulatedAnimation(settings) {
+var BgaCompoundAnimation = /** @class */ (function (_super) {
+    __extends(BgaCompoundAnimation, _super);
+    function BgaCompoundAnimation(settings) {
         var _this = _super.call(this, settings) || this;
         _this.playWhenNoAnimation = true;
         return _this;
     }
-    BgaCumulatedAnimation.prototype.doAnimate = function (animationManager) {
+    BgaCompoundAnimation.prototype.doAnimate = function (animationManager) {
         if (this.settings.mode == "parallel") {
             return animationManager.playParallel(this.settings.animations);
         }
@@ -424,7 +424,7 @@ var BgaCumulatedAnimation = /** @class */ (function (_super) {
             return animationManager.playSequence(this.settings.animations);
         }
     };
-    return BgaCumulatedAnimation;
+    return BgaCompoundAnimation;
 }(BgaAnimation));
 var AnimationManager = /** @class */ (function () {
     /**
@@ -576,6 +576,7 @@ define({
     BgaSlideAnimation: BgaSlideAnimation,
     BgaShowScreenCenterAnimation: BgaShowScreenCenterAnimation,
     BgaPauseAnimation: BgaPauseAnimation,
-    BgaCumulatedAnimation: BgaCumulatedAnimation,
+    BgaCompoundAnimation: BgaCompoundAnimation,
     BgaAttachWithAnimation: BgaAttachWithAnimation,
+    BgaFadeAnimation: BgaFadeAnimation,
 });
