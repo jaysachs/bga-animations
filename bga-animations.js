@@ -200,36 +200,38 @@ var BgaFadeAnimation = /** @class */ (function (_super) {
     BgaFadeAnimation.prototype.doAnimate = function (animationManager) {
         var _this = this;
         return new Promise(function (success) {
-            var _a, _b, _c, _d, _e;
+            var _a, _b;
             var element = _this.settings.element;
             var duration = (_b = (_a = _this.settings) === null || _a === void 0 ? void 0 : _a.duration) !== null && _b !== void 0 ? _b : 500;
             _this.wireUp(element, duration, success);
             // this gets saved/restored in wireUp
-            element.style.zIndex = "".concat((_d = (_c = _this.settings) === null || _c === void 0 ? void 0 : _c.zIndex) !== null && _d !== void 0 ? _d : 10);
-            var direction = "normal";
-            var iterations = 1;
-            if (_this.settings.kind == "in") {
-                direction = "reverse";
+            // element.style.zIndex = `${this.settings?.zIndex ?? 10}`;
+            var frames = [];
+            switch (_this.settings.kind) {
+                case "in":
+                    frames.push({ opacity: 1 });
+                    break;
+                case "out":
+                    frames.push({ opacity: 0 });
+                    break;
+                case "outin":
+                    frames.push({ opacity: 1 }, { opacity: 0 }, { opacity: 1 });
+                    break;
             }
-            else if (_this.settings.kind == "outin") {
-                direction = "alternate";
-                iterations = 2;
-            }
-            var a = element.animate([
-                { opacity: 1 },
-                { opacity: 0 }
-            ], {
+            //            var direction: "reverse" | "normal" | "alternate"  = "normal";
+            //            var iterations = 1;
+            //            if (this.settings.kind == "in") { direction = "reverse"; }
+            //            else if (this.settings.kind == "outin") { direction = "alternate"; iterations = 2 }
+            var a = new Animation(new KeyframeEffect(element, frames, {
                 duration: duration,
-                easing: (_e = _this.settings.transitionTimingFunction) !== null && _e !== void 0 ? _e : 'linear',
-                direction: direction,
-                iterations: iterations,
-            });
-            a.pause();
+                //             easing: this.settings.transitionTimingFunction ?? 'linear',
+                //               direction: direction,
+                fill: "forwards",
+                iterations: 1,
+            }));
             a.onfinish = function (e) {
-                // a.commitStyles();
-                // a.cancel();
+                a.commitStyles();
                 //    element.style.transform = this.settings?.finalTransform ?? null;
-                // success();
             };
             a.play();
         });
@@ -255,7 +257,7 @@ var BgaSlideAnimation = /** @class */ (function (_super) {
             _this.wireUp(element, duration, success);
             // this gets saved/restored in wireUp
             element.style.zIndex = "".concat((_e = (_d = _this.settings) === null || _d === void 0 ? void 0 : _d.zIndex) !== null && _e !== void 0 ? _e : 10);
-            var a = element.animate([
+            var a = new Animation(new KeyframeEffect(element, [
                 { transform: "translate3D(0, 0, 0)" },
                 { transform: "translate3D(".concat(-x, "px, ").concat(-y, "px, 0)") }
             ], {
@@ -264,13 +266,10 @@ var BgaSlideAnimation = /** @class */ (function (_super) {
                 duration: duration,
                 easing: transitionTimingFunction,
                 fill: "forwards"
-            });
-            a.pause();
+            }));
             a.onfinish = function (e) {
                 a.commitStyles();
-                a.cancel();
                 //    element.style.transform = this.settings?.finalTransform ?? null;
-                // success();
             };
             a.play();
         });
@@ -344,7 +343,7 @@ var BgaShowScreenCenterAnimation = /** @class */ (function (_super) {
             _this.wireUp(element, duration, success);
             element.style.zIndex = "".concat((_e = (_d = _this.settings) === null || _d === void 0 ? void 0 : _d.zIndex) !== null && _e !== void 0 ? _e : 10);
             // element.offsetHeight;
-            var a = element.animate([
+            var a = new Animation(new KeyframeEffect(element, [
                 { transform: "translate3D(0, 0, 0)" },
                 { transform: "translate3D(".concat(-x, "px, ").concat(-y, "px, 0)") }
                 // { transform: `translate3D(0, 0, 0)` }
@@ -352,12 +351,10 @@ var BgaShowScreenCenterAnimation = /** @class */ (function (_super) {
                 duration: duration,
                 fill: "forwards",
                 easing: transitionTimingFunction
-            });
-            a.pause();
+            }));
             // element.offsetHeight;
             a.onfinish = function (e) {
                 a.commitStyles();
-                a.cancel();
                 // element.style.transform = this.settings?.finalTransform ?? null;
             };
             a.play();

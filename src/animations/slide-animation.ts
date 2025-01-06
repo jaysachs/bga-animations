@@ -23,7 +23,7 @@ class BgaSlideAnimation<T extends BgaSlideAnimationSettings> extends BgaElementA
             // this gets saved/restored in wireUp
             element.style.zIndex = `${this.settings?.zIndex ?? 10}`;
 
-            let a = element.animate(
+            let a = new Animation(new KeyframeEffect(element,
              [
                { transform: `translate3D(0, 0, 0)` },
                { transform: `translate3D(${-x}px, ${-y}px, 0)` }
@@ -34,13 +34,10 @@ class BgaSlideAnimation<T extends BgaSlideAnimationSettings> extends BgaElementA
                duration: duration,
                easing: transitionTimingFunction,
                               fill: "forwards"
-             });
-             a.pause();
+             }));
              a.onfinish = e => {
                           a.commitStyles();
-                          a.cancel();
              //    element.style.transform = this.settings?.finalTransform ?? null;
-             // success();
              };
              a.play();
         });

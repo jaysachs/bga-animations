@@ -87,12 +87,32 @@ function slideToHereThenDelete(toElement) {
     ).then(() => element.remove()), 1);
 }
 
-function fade(element) {
+function fadeOutIn(element) {
     animationManager.play(
         new BgaFadeAnimation({
             element,
             duration: 1000,
             kind: "outin",
+        })
+    );
+}
+
+function fadeOut(element) {
+    animationManager.play(
+        new BgaFadeAnimation({
+            element,
+            duration: 1000,
+            kind: "out",
+        })
+    );
+}
+
+function fadeIn(element) {
+    animationManager.play(
+        new BgaFadeAnimation({
+            element,
+            duration: 1000,
+            kind: "in",
         })
     );
 }

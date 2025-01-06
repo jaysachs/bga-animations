@@ -30,7 +30,7 @@ class BgaShowScreenCenterAnimation<T extends BgaElementAnimationSettings> extend
             element.style.zIndex = `${this.settings?.zIndex ?? 10}`;
 
             // element.offsetHeight;
-            let a = element.animate(
+            let a = new Animation(new KeyframeEffect(element,
              [
                { transform: `translate3D(0, 0, 0)` },
                { transform: `translate3D(${-x}px, ${-y}px, 0)` }
@@ -40,12 +40,10 @@ class BgaShowScreenCenterAnimation<T extends BgaElementAnimationSettings> extend
                duration: duration,
                fill: "forwards",
                easing: transitionTimingFunction
-             });
-            a.pause();
+             }));
             // element.offsetHeight;
             a.onfinish = e => {
               a.commitStyles();
-              a.cancel();
               // element.style.transform = this.settings?.finalTransform ?? null;
             };
             a.play();
