@@ -79,16 +79,12 @@ var BgaAnimation = /** @class */ (function () {
                         if (!shouldPlay) return [3 /*break*/, 2];
                         (_b = (_a = this.settings).animationStart) === null || _b === void 0 ? void 0 : _b.call(_a, this);
                         this.settings = __assign({ duration: (_f = (_d = (_c = this.settings) === null || _c === void 0 ? void 0 : _c.duration) !== null && _d !== void 0 ? _d : (_e = animationManager.getSettings()) === null || _e === void 0 ? void 0 : _e.duration) !== null && _f !== void 0 ? _f : 500 }, this.settings);
-                        console.log("before preAnimate", this);
                         this.preAnimate(animationManager);
-                        console.log("before doAnimate", this);
                         _j = this;
                         return [4 /*yield*/, this.doAnimate(animationManager)];
                     case 1:
                         _j.result = _k.sent();
-                        console.log("beefore postAnimate", this);
                         this.postAnimate(animationManager);
-                        console.log("after postAnimate", this);
                         (_h = (_g = this.settings).animationEnd) === null || _h === void 0 ? void 0 : _h.call(_g, this);
                         return [3 /*break*/, 3];
                     case 2: return [2 /*return*/, Promise.resolve(this)];
@@ -97,23 +93,7 @@ var BgaAnimation = /** @class */ (function () {
             });
         });
     };
-    return BgaAnimation;
-}());
-var BgaElementAnimation = /** @class */ (function (_super) {
-    __extends(BgaElementAnimation, _super);
-    function BgaElementAnimation(settings) {
-        return _super.call(this, settings) || this;
-    }
-    BgaElementAnimation.prototype.preAnimate = function (animationManager) {
-        var _a, _b, _c, _d, _e;
-        this.settings = __assign({ scale: (_d = (_b = (_a = this.settings) === null || _a === void 0 ? void 0 : _a.scale) !== null && _b !== void 0 ? _b : (_c = animationManager.getZoomManager()) === null || _c === void 0 ? void 0 : _c.zoom) !== null && _d !== void 0 ? _d : undefined }, this.settings);
-        this.settings.element.classList.add((_e = this.settings.animationClass) !== null && _e !== void 0 ? _e : 'bga-animations_animated');
-    };
-    BgaElementAnimation.prototype.postAnimate = function (animationManager) {
-        var _a;
-        this.settings.element.classList.remove((_a = this.settings.animationClass) !== null && _a !== void 0 ? _a : 'bga-animations_animated');
-    };
-    BgaElementAnimation.prototype.wireUp = function (element, duration, success) {
+    BgaAnimation.prototype.wireUp = function (element, duration, success) {
         var _this = this;
         var originalZIndex = element.style.zIndex;
         var originalTransition = element.style.transition;
@@ -130,10 +110,9 @@ var BgaElementAnimation = /** @class */ (function (_super) {
             }
         };
         var cleanOnTransitionCancel = function () {
-            var _a, _b;
             element.style.transition = "";
             element.offsetHeight;
-            element.style.transform = (_b = (_a = _this.settings) === null || _a === void 0 ? void 0 : _a.finalTransform) !== null && _b !== void 0 ? _b : null;
+            //            element.style.transform = this.settings?.finalTransform ?? null;
             element.offsetHeight;
             cleanOnTransitionEnd();
         };
@@ -143,6 +122,22 @@ var BgaElementAnimation = /** @class */ (function (_super) {
         document.addEventListener('visibilitychange', cleanOnTransitionCancel);
         // safety in case transitionend and transitioncancel are not called
         this.timeoutId = setTimeout(cleanOnTransitionEnd, duration + 100);
+    };
+    return BgaAnimation;
+}());
+var BgaElementAnimation = /** @class */ (function (_super) {
+    __extends(BgaElementAnimation, _super);
+    function BgaElementAnimation(settings) {
+        return _super.call(this, settings) || this;
+    }
+    BgaElementAnimation.prototype.preAnimate = function (animationManager) {
+        var _a, _b, _c, _d, _e;
+        this.settings = __assign({ scale: (_d = (_b = (_a = this.settings) === null || _a === void 0 ? void 0 : _a.scale) !== null && _b !== void 0 ? _b : (_c = animationManager.getZoomManager()) === null || _c === void 0 ? void 0 : _c.zoom) !== null && _d !== void 0 ? _d : undefined }, this.settings);
+        this.settings.element.classList.add((_e = this.settings.animationClass) !== null && _e !== void 0 ? _e : 'bga-animations_animated');
+    };
+    BgaElementAnimation.prototype.postAnimate = function (animationManager) {
+        var _a;
+        this.settings.element.classList.remove((_a = this.settings.animationClass) !== null && _a !== void 0 ? _a : 'bga-animations_animated');
     };
     return BgaElementAnimation;
 }(BgaAnimation));
@@ -293,14 +288,16 @@ var BgaSlideTempAnimation = /** @class */ (function (_super) {
     BgaSlideTempAnimation.prototype.doAnimate = function (animationManager) {
         var _this = this;
         var delta = { x: 0, y: 0 };
+        var div;
         return new Promise(function (success) {
+            var _a, _b;
             var parent = document.getElementById(_this.settings.parentId);
             var parentRect = parent.getBoundingClientRect();
             var toRect = document.getElementById(_this.settings.toId).getBoundingClientRect();
             var fromRect = document.getElementById(_this.settings.fromId).getBoundingClientRect();
             var top = fromRect.top - parentRect.top;
             var left = fromRect.left - parentRect.left;
-            var div = document.createElement('div');
+            div = document.createElement('div');
             div.id = "bbl_tmp_slideTmpDiv".concat(BgaSlideTempAnimation.lastId++);
             div.className = _this.settings.className;
             // Unclear why setting `style` attribute directly doesn't work.
@@ -309,6 +306,8 @@ var BgaSlideTempAnimation = /** @class */ (function (_super) {
             div.style.left = "".concat(left, "px");
             div.style.zIndex = '100';
             parent.appendChild(div);
+            var duration = (_b = (_a = _this.settings) === null || _a === void 0 ? void 0 : _a.duration) !== null && _b !== void 0 ? _b : 500;
+            _this.wireUp(div, duration, success);
             var divRect = div.getBoundingClientRect();
             var toTop = toRect.top - parentRect.top + (toRect.height - divRect.height) / 2;
             var toLeft = toRect.left - parentRect.left + (toRect.width - divRect.width) / 2;
@@ -316,8 +315,7 @@ var BgaSlideTempAnimation = /** @class */ (function (_super) {
                 x: left - toLeft,
                 y: top - toTop
             };
-            new BgaSlideAnimation({ element: div, fromDelta: delta }).play(animationManager)
-                .then(function () { return div.remove(); });
+            return new BgaSlideAnimation({ duration: duration, element: div, fromDelta: delta }).play(animationManager).then(function () { return div.remove(); });
         });
     };
     BgaSlideTempAnimation.lastId = 0;

@@ -113,22 +113,6 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
             return Promise.resolve(this);
         }
     }
-}
-
-abstract class BgaElementAnimation<T extends BgaElementAnimationSettings> extends BgaAnimation<T> {
-    constructor(settings: T) { super(settings); }
-    private timeoutId: number | null;
-
-    protected preAnimate(animationManager: AnimationManager): void {
-        this.settings = {
-            scale: this.settings?.scale ?? animationManager.getZoomManager()?.zoom ?? undefined,
-            ...this.settings,
-        };
-        this.settings.element.classList.add(this.settings.animationClass ?? 'bga-animations_animated');
-    }
-    protected postAnimate(animationManager: AnimationManager): void {
-        this.settings.element.classList.remove(this.settings.animationClass ?? 'bga-animations_animated');
-    }
 
     protected wireUp(element: HTMLElement, duration: number, success: (a: void) => any): void {
         const originalZIndex = element.style.zIndex;
@@ -150,7 +134,7 @@ abstract class BgaElementAnimation<T extends BgaElementAnimationSettings> extend
         const cleanOnTransitionCancel = () => {
             element.style.transition = ``;
             element.offsetHeight;
-            element.style.transform = this.settings?.finalTransform ?? null;
+            //            element.style.transform = this.settings?.finalTransform ?? null;
             element.offsetHeight;
             cleanOnTransitionEnd();
         }
@@ -162,5 +146,22 @@ abstract class BgaElementAnimation<T extends BgaElementAnimationSettings> extend
 
         // safety in case transitionend and transitioncancel are not called
         this.timeoutId = setTimeout(cleanOnTransitionEnd, duration + 100);
+    }
+    private timeoutId: number | null;
 }
+
+abstract class BgaElementAnimation<T extends BgaElementAnimationSettings> extends BgaAnimation<T> {
+    constructor(settings: T) { super(settings); }
+
+    protected preAnimate(animationManager: AnimationManager): void {
+        this.settings = {
+            scale: this.settings?.scale ?? animationManager.getZoomManager()?.zoom ?? undefined,
+            ...this.settings,
+        };
+        this.settings.element.classList.add(this.settings.animationClass ?? 'bga-animations_animated');
+    }
+    protected postAnimate(animationManager: AnimationManager): void {
+        this.settings.element.classList.remove(this.settings.animationClass ?? 'bga-animations_animated');
+    }
+
 }

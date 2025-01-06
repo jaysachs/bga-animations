@@ -97,8 +97,8 @@ function fade(element) {
     );
 }
 
-function slideTemp() {
-    animationManager.play(
+async function slideTemp() {
+    await animationManager.play(
         new BgaSlideTempAnimation({
             className: 'temp-square',
             duration:2000,

@@ -18,6 +18,8 @@ class BgaSlideTempAnimation<T extends BgaSlideTempAnimationSettings> extends Bga
 
     protected doAnimate(animationManager: AnimationManager): Promise<any> {
         var delta = { x: 0, y: 0 };
+        var div: HTMLElement;
+
         return new Promise<void>((success) => {
             const parent = document.getElementById(this.settings.parentId);
 
@@ -28,7 +30,7 @@ class BgaSlideTempAnimation<T extends BgaSlideTempAnimationSettings> extends Bga
             const top = fromRect.top - parentRect.top;
             const left = fromRect.left - parentRect.left;
 
-            const div = document.createElement('div');
+            div = document.createElement('div');
             div.id = `bbl_tmp_slideTmpDiv${BgaSlideTempAnimation.lastId++}`;
             div.className = this.settings.className;
             // Unclear why setting `style` attribute directly doesn't work.
@@ -38,6 +40,10 @@ class BgaSlideTempAnimation<T extends BgaSlideTempAnimationSettings> extends Bga
             div.style.zIndex = '100';
             parent.appendChild(div);
 
+            const duration = this.settings?.duration ?? 500;
+
+            this.wireUp(div, duration, success);
+
             const divRect = div.getBoundingClientRect();
             const toTop = toRect.top - parentRect.top + (toRect.height - divRect.height)/2;
             const toLeft = toRect.left - parentRect.left + (toRect.width - divRect.width)/2
@@ -46,9 +52,7 @@ class BgaSlideTempAnimation<T extends BgaSlideTempAnimationSettings> extends Bga
                 x: left - toLeft,
                 y: top - toTop
             };
-
-            new BgaSlideAnimation({ element: div, fromDelta: delta }).play(animationManager)
-                .then(() => div.remove());
+            return new BgaSlideAnimation({ duration: duration, element: div, fromDelta: delta }).play(animationManager).then(() => div.remove());
         });
     }
 }

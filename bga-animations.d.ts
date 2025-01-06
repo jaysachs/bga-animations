@@ -76,13 +76,13 @@ declare abstract class BgaAnimation<T extends BgaAnimationSettings> implements I
     protected postAnimate(animationManager: AnimationManager): void;
     protected abstract doAnimate(animationManager: AnimationManager): Promise<void>;
     play(animationManager: AnimationManager): Promise<any>;
+    protected wireUp(element: HTMLElement, duration: number, success: (a: void) => any): void;
+    private timeoutId;
 }
 declare abstract class BgaElementAnimation<T extends BgaElementAnimationSettings> extends BgaAnimation<T> {
     constructor(settings: T);
-    private timeoutId;
     protected preAnimate(animationManager: AnimationManager): void;
     protected postAnimate(animationManager: AnimationManager): void;
-    protected wireUp(element: HTMLElement, duration: number, success: (a: void) => any): void;
 }
 declare function shouldAnimate(settings?: BgaAnimationSettings): boolean;
 /**
