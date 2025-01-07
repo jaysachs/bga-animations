@@ -117,6 +117,17 @@ function fadeIn(element) {
     );
 }
 
+async function spinGrow(id) {
+    await animationManager.play(
+        new BgaSpinGrowAnimation({
+            text: "100",
+            parentId: id,
+            duration: 3000,
+            className: "",
+            color: 'red',
+        }));
+}
+
 async function slideTemp() {
     await animationManager.play(
         new BgaSlideTempAnimation({

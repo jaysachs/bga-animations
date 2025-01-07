@@ -69,25 +69,27 @@ var BgaAnimation = /** @class */ (function () {
     BgaAnimation.prototype.preAnimate = function (animationManager) { };
     BgaAnimation.prototype.postAnimate = function (animationManager) { };
     BgaAnimation.prototype.play = function (animationManager) {
-        var _a, _b, _c, _d, _e, _f, _g, _h;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
         return __awaiter(this, void 0, void 0, function () {
-            var shouldPlay, _j;
-            return __generator(this, function (_k) {
-                switch (_k.label) {
+            var shouldPlay, _l;
+            return __generator(this, function (_m) {
+                switch (_m.label) {
                     case 0:
                         shouldPlay = this.playWhenNoAnimation || animationManager.animationsActive();
                         if (!shouldPlay) return [3 /*break*/, 2];
                         (_b = (_a = this.settings).animationStart) === null || _b === void 0 ? void 0 : _b.call(_a, this);
                         this.settings = __assign({ duration: (_f = (_d = (_c = this.settings) === null || _c === void 0 ? void 0 : _c.duration) !== null && _d !== void 0 ? _d : (_e = animationManager.getSettings()) === null || _e === void 0 ? void 0 : _e.duration) !== null && _f !== void 0 ? _f : 500 }, this.settings);
                         this.preAnimate(animationManager);
-                        _j = this;
+                        _l = this;
                         return [4 /*yield*/, this.doAnimate(animationManager)];
                     case 1:
-                        _j.result = _k.sent();
+                        _l.result = _m.sent();
                         this.postAnimate(animationManager);
                         (_h = (_g = this.settings).animationEnd) === null || _h === void 0 ? void 0 : _h.call(_g, this);
                         return [3 /*break*/, 3];
-                    case 2: return [2 /*return*/, Promise.resolve(this)];
+                    case 2:
+                        (_k = (_j = this.settings).animationEnd) === null || _k === void 0 ? void 0 : _k.call(_j, this);
+                        return [2 /*return*/, Promise.resolve(this)];
                     case 3: return [2 /*return*/];
                 }
             });
@@ -362,6 +364,89 @@ var BgaShowScreenCenterAnimation = /** @class */ (function (_super) {
     };
     return BgaShowScreenCenterAnimation;
 }(BgaElementAnimation));
+/**
+ * spin/grow temp text.
+ */
+var BgaSpinGrowAnimation = /** @class */ (function (_super) {
+    __extends(BgaSpinGrowAnimation, _super);
+    function BgaSpinGrowAnimation(settings) {
+        return _super.call(this, settings) || this;
+    }
+    BgaSpinGrowAnimation.prototype.doAnimate = function (animationManager) {
+        var _this = this;
+        var delta = { x: 0, y: 0 };
+        var div;
+        return new Promise(function (success) {
+            var _a, _b;
+            var parent = document.getElementById(_this.settings.parentId);
+            var id = "bbl_tmp_spinGrowFx-".concat(BgaSpinGrowAnimation.lastId++);
+            var outer = document.createElement('span');
+            outer.id = id;
+            outer.append(_this.settings.text);
+            parent.appendChild(outer);
+            outer.style.color = "blue";
+            outer.style.color = "transparent";
+            outer.style.position = "absolute";
+            outer.style.fontSize = (_this.settings.fontSize || 128) + "pt";
+            outer.style.display = "inline-block";
+            outer.style.justifyContent = "center";
+            outer.style.alignItems = "center";
+            outer.style.display = "flex";
+            // probably should allow a class to be passed in and used for these two
+            outer.style.fontFamily = "Helvetica";
+            outer.style.fontStyle = "bold";
+            // get the ultimate dimensions of the container span
+            var nrect = outer.getBoundingClientRect();
+            outer.style.width = "".concat(nrect.width);
+            outer.style.height = "".concat(nrect.height);
+            // center the container on the center of the appropriate node
+            var centerNode = document.getElementById(_this.settings.centeredOnId || _this.settings.parentId);
+            var prect = parent.getBoundingClientRect();
+            var crect = centerNode.getBoundingClientRect();
+            var left = (crect.left + crect.width / 2 - nrect.width / 2 - prect.left);
+            var top = (crect.top + crect.height / 2 - nrect.height / 2 - prect.top);
+            outer.style.left = left + "px";
+            outer.style.top = top + "px";
+            // now create the node we're animating
+            var node = document.createElement('span');
+            node.append(_this.settings.text);
+            outer.append(node);
+            node.style.position = "absolute";
+            node.style.display = "inline-block";
+            node.style.justifyContent = "center";
+            node.style.alignItems = "center";
+            node.style.display = "flex";
+            node.style.color = _this.settings.color || 'black';
+            // text not viewable
+            // node.style.fontSize = "0pt";
+            // keep on top
+            // node.style.zIndex = "100";
+            // this maybe ought to be a parameter, or part of the incoming class.
+            // it also causes multiples of the text to show up!?!?
+            // node.style.textShadow = "-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000";
+            var duration = (_b = (_a = _this.settings) === null || _a === void 0 ? void 0 : _a.duration) !== null && _b !== void 0 ? _b : 1000;
+            var fontSize = _this.settings.fontSize || 90;
+            var degrees = 360; // (this.settings.spinCount || 2) * 360;
+            _this.wireUp(node, duration, success);
+            node.style.fontSize = "1pt";
+            var a = new Animation(new KeyframeEffect(node, [
+                { transform: "rotate(0deg) scale(0.01)" },
+                { opacity: 1, transform: "rotate(".concat(degrees, "deg) scale(").concat(fontSize, ")") },
+                { opacity: 0, transform: "rotate(".concat(degrees, "deg) scale(").concat(fontSize, ")") },
+            ], {
+                duration: duration,
+                //                iterations: 1,
+            }));
+            a.onfinish = function (e) {
+                //    element.style.transform = this.settings?.finalTransform ?? null;
+                outer.remove();
+            };
+            a.play();
+        });
+    };
+    BgaSpinGrowAnimation.lastId = 0;
+    return BgaSpinGrowAnimation;
+}(BgaAnimation));
 /**
  * Just does nothing for the duration
  */

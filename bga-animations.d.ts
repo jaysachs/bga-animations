@@ -135,6 +135,23 @@ declare class BgaShowScreenCenterAnimation<T extends BgaElementAnimationSettings
     protected doAnimate(animationManager: AnimationManager): Promise<void>;
 }
 /**
+ * spin/grow temp text.
+ */
+interface BgaSpinGrowAnimationSettings extends BgaAnimationSettings {
+    className: string;
+    text: string;
+    centeredOnId?: string;
+    parentId: string;
+    fontSize?: number;
+    spinCount?: number;
+    color?: string;
+}
+declare class BgaSpinGrowAnimation<T extends BgaSpinGrowAnimationSettings> extends BgaAnimation<T> {
+    constructor(settings: T);
+    private static lastId;
+    protected doAnimate(animationManager: AnimationManager): Promise<any>;
+}
+/**
  * Just does nothing for the duration
  */
 declare class BgaPauseAnimation<T extends BgaAnimationSettings> extends BgaAnimation<T> {

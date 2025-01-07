@@ -110,6 +110,7 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
 
             this.settings.animationEnd?.(this);
         } else {
+            this.settings.animationEnd?.(this);
             return Promise.resolve(this);
         }
     }
