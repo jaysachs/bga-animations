@@ -81,7 +81,7 @@ class BgaSpinGrowAnimation<T extends BgaSpinGrowAnimationSettings> extends BgaAn
             const duration = this.settings?.duration ?? 1000;
 
             const fontSize = this.settings.fontSize || 90;
-            const degrees = 360; // (this.settings.spinCount || 2) * 360;
+            const degrees = (this.settings.spinCount || 2) * 360;
             this.wireUp(node, duration, success);
 
             node.style.fontSize = "1pt";
