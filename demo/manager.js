@@ -91,7 +91,8 @@ function fadeOutIn(element) {
     animationManager.play(
         new BgaFadeAnimation({
             element,
-            duration: 1000,
+            duration: 1400,
+            iterations: 3,
             kind: "outin",
         })
     );

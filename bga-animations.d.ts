@@ -101,6 +101,7 @@ declare function logAnimation(animationManager: AnimationManager, animation: IBg
  */
 interface BgaFadeAnimationSettings extends BgaElementAnimationSettings {
     kind: "in" | "out" | "outin";
+    iterations?: number;
 }
 declare class BgaFadeAnimation<T extends BgaFadeAnimationSettings> extends BgaElementAnimation<T> {
     constructor(settings: T);
