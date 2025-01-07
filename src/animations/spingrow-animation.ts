@@ -68,33 +68,27 @@ class BgaSpinGrowAnimation<T extends BgaSpinGrowAnimationSettings> extends BgaAn
             node.style.alignItems = "center";
             node.style.display = "flex";
             node.style.color = this.settings.color || 'black';
-            // text not viewable
-            // node.style.fontSize = "0pt";
-            // keep on top
-            // node.style.zIndex = "100";
-
 
             // this maybe ought to be a parameter, or part of the incoming class.
             // it also causes multiples of the text to show up!?!?
             // node.style.textShadow = "-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000";
+            node.style['-webkit-text-stroke'] = 'thin black';
+
+            const fontSize = this.settings.fontSize || 190;
+            node.style.fontSize = `${fontSize}pt`;
+            node.style.opacity = '0';
 
             const duration = this.settings?.duration ?? 1000;
-
-            const fontSize = this.settings.fontSize || 90;
             const degrees = (this.settings.spinCount || 2) * 360;
             this.wireUp(node, duration, success);
 
-            node.style.fontSize = "1pt";
             let a = new Animation(new KeyframeEffect(node,
             [
-              { transform: `rotate(0deg) scale(0.01)` },
-              { opacity: 1, transform: `rotate(${degrees}deg) scale(${fontSize})` },
-              { opacity: 0, transform: `rotate(${degrees}deg) scale(${fontSize})` },
+              { opacity: 1, transform: `rotate(0deg) scale(0.01)` },
+              { opacity: 1, transform: `rotate(${degrees}deg) scale(1)` },
+              { opacity: 0, transform: `rotate(${degrees}deg) scale(1)` },
             ],
-            {
-                    duration: duration,
-                    //                iterations: 1,
-             }));
+            { duration: duration }));
              a.onfinish = e => {
              //    element.style.transform = this.settings?.finalTransform ?? null;
               outer.remove();

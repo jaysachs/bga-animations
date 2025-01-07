@@ -419,15 +419,17 @@ var BgaSpinGrowAnimation = /** @class */ (function (_super) {
             // this maybe ought to be a parameter, or part of the incoming class.
             // it also causes multiples of the text to show up!?!?
             // node.style.textShadow = "-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000";
+            var fontSize = _this.settings.fontSize || 190;
+            node.style.fontSize = "".concat(fontSize, "pt");
+            node.style['-webkit-text-stroke'] = 'thin black';
+            node.style.opacity = '0';
             var duration = (_b = (_a = _this.settings) === null || _a === void 0 ? void 0 : _a.duration) !== null && _b !== void 0 ? _b : 1000;
-            var fontSize = _this.settings.fontSize || 90;
             var degrees = (_this.settings.spinCount || 2) * 360;
             _this.wireUp(node, duration, success);
-            node.style.fontSize = "1pt";
             var a = new Animation(new KeyframeEffect(node, [
-                { transform: "rotate(0deg) scale(0.01)" },
-                { opacity: 1, transform: "rotate(".concat(degrees, "deg) scale(").concat(fontSize, ")") },
-                { opacity: 0, transform: "rotate(".concat(degrees, "deg) scale(").concat(fontSize, ")") },
+                { opacity: 1, transform: "rotate(0deg) scale(0.01)" },
+                { opacity: 1, transform: "rotate(".concat(degrees, "deg) scale(1)") },
+                { opacity: 0, transform: "rotate(".concat(degrees, "deg) scale(1)") },
             ], {
                 duration: duration,
                 //                iterations: 1,
