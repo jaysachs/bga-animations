@@ -80,7 +80,6 @@ var BgaAnimation = /** @class */ (function () {
                         (_b = (_a = this.settings).animationStart) === null || _b === void 0 ? void 0 : _b.call(_a, this);
                         this.settings = __assign({ duration: (_f = (_d = (_c = this.settings) === null || _c === void 0 ? void 0 : _c.duration) !== null && _d !== void 0 ? _d : (_e = animationManager.getSettings()) === null || _e === void 0 ? void 0 : _e.duration) !== null && _f !== void 0 ? _f : 500 }, this.settings);
                         this.preAnimate(animationManager);
-                        console.log('doAnimate', this);
                         _l = this;
                         return [4 /*yield*/, this.doAnimate(animationManager)];
                     case 1:
