@@ -421,7 +421,7 @@ var BgaSpinGrowAnimation = /** @class */ (function (_super) {
             // node.style.textShadow = "-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000";
             var duration = (_b = (_a = _this.settings) === null || _a === void 0 ? void 0 : _a.duration) !== null && _b !== void 0 ? _b : 1000;
             var fontSize = _this.settings.fontSize || 90;
-            var degrees = 360; // (this.settings.spinCount || 2) * 360;
+            var degrees = (_this.settings.spinCount || 2) * 360;
             _this.wireUp(node, duration, success);
             node.style.fontSize = "1pt";
             var a = new Animation(new KeyframeEffect(node, [
