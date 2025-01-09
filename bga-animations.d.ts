@@ -192,7 +192,9 @@ interface AnimationManagerSettings {
     zoomManager?: IZoomManager;
 }
 declare class AnimationManager {
-    game: BgaGame;
+    game: {
+        getBoundingClientRectIgnoreZoom(element: Element): DOMRect;
+    };
     private settings?;
     /**
      * The zoom manager, providing the current scale.
@@ -202,7 +204,9 @@ declare class AnimationManager {
      * @param game the BGA game class, usually it will be `this`
      * @param settings: a `AnimationManagerSettings` object
      */
-    constructor(game: BgaGame, settings?: AnimationManagerSettings);
+    constructor(game: {
+        getBoundingClientRectIgnoreZoom(element: Element): DOMRect;
+    }, settings?: AnimationManagerSettings);
     getZoomManager(): IZoomManager;
     /**
      * Set the zoom manager, to get the scale of the current game.

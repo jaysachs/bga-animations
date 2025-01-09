@@ -1,5 +1,4 @@
 interface BgaGame {
-    // instantaneousMode?: boolean; // cannot add it here, else TS build will say BgaGame interface isn't fulfilled
     getBoundingClientRectIgnoreZoom(element: Element): DOMRect;
 }
 
@@ -33,7 +32,11 @@ class AnimationManager {
      * @param game the BGA game class, usually it will be `this`
      * @param settings: a `AnimationManagerSettings` object
      */
-    constructor(public game: BgaGame, private settings?: AnimationManagerSettings) {
+    constructor(public game: {
+        getBoundingClientRectIgnoreZoom(element: Element): DOMRect;
+        // cannot add it here, else TS build will say BgaGame interface isn't fulfilled
+        // instantaneousMode?: boolean;
+        }, private settings?: AnimationManagerSettings) {
         this.zoomManager = settings?.zoomManager;
 
         if (!game) {
