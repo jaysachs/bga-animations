@@ -3,10 +3,10 @@
  */
 
 interface BgaSlideTempAnimationSettings extends BgaAnimationSettings {
-  className: string;
-  parentId: string;
-  fromId: string;
-  toId: string;
+    className: string;
+    parentId: string;
+    fromId: string;
+    toId: string;
 }
 
 class BgaSlideTempAnimation<T extends BgaSlideTempAnimationSettings> extends BgaAnimation<T> {
@@ -45,8 +45,8 @@ class BgaSlideTempAnimation<T extends BgaSlideTempAnimationSettings> extends Bga
             this.wireUp(div, duration, success);
 
             const divRect = div.getBoundingClientRect();
-            const toTop = toRect.top - parentRect.top + (toRect.height - divRect.height)/2;
-            const toLeft = toRect.left - parentRect.left + (toRect.width - divRect.width)/2
+            const toTop = toRect.top - parentRect.top + (toRect.height - divRect.height) / 2;
+            const toLeft = toRect.left - parentRect.left + (toRect.width - divRect.width) / 2
 
             delta = {
                 x: left - toLeft,

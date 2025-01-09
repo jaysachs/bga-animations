@@ -2,51 +2,51 @@
  * Show the element at the center of the screen
  */
 class BgaShowScreenCenterAnimation<T extends BgaElementAnimationSettings> extends BgaElementAnimation<T> {
-    constructor(
-        settings: T,
-    ) {
-        super(
-            settings,
-        );
-    }
+  constructor(
+    settings: T,
+  ) {
+    super(
+      settings,
+    );
+  }
 
-    protected doAnimate(animationManager: AnimationManager): Promise<void> {
-        return new Promise<void>((success) => {
-            const element = this.settings.element;
+  protected doAnimate(animationManager: AnimationManager): Promise<void> {
+    return new Promise<void>((success) => {
+      const element = this.settings.element;
 
-            const elementBR = animationManager.game.getBoundingClientRectIgnoreZoom(element);
+      const elementBR = animationManager.game.getBoundingClientRectIgnoreZoom(element);
 
-            const xCenter = (elementBR.left + elementBR.right)/2;
-            const yCenter = (elementBR.top + elementBR.bottom)/2;
+      const xCenter = (elementBR.left + elementBR.right) / 2;
+      const yCenter = (elementBR.top + elementBR.bottom) / 2;
 
-            const x = xCenter - (window.innerWidth / 2);
-            const y = yCenter - (window.innerHeight / 2);
+      const x = xCenter - (window.innerWidth / 2);
+      const y = yCenter - (window.innerHeight / 2);
 
-            const transitionTimingFunction = this.settings.transitionTimingFunction ?? 'linear';
-            const duration = this.settings?.duration ?? 500;
+      const transitionTimingFunction = this.settings.transitionTimingFunction ?? 'linear';
+      const duration = this.settings?.duration ?? 500;
 
-            this.wireUp(element, duration, success);
+      this.wireUp(element, duration, success);
 
-            element.style.zIndex = `${this.settings?.zIndex ?? 10}`;
+      element.style.zIndex = `${this.settings?.zIndex ?? 10}`;
 
-            // element.offsetHeight;
-            let a = new Animation(new KeyframeEffect(element,
-             [
-               { transform: `translate3D(0, 0, 0)` },
-               { transform: `translate3D(${-x}px, ${-y}px, 0)` }
-               // { transform: `translate3D(0, 0, 0)` }
-             ],
-             {
-               duration: duration,
-               fill: "forwards",
-               easing: transitionTimingFunction
-             }));
-            // element.offsetHeight;
-            a.onfinish = e => {
-              a.commitStyles();
-              // element.style.transform = this.settings?.finalTransform ?? null;
-            };
-            a.play();
-         });
-    }
+      // element.offsetHeight;
+      let a = new Animation(new KeyframeEffect(element,
+        [
+          { transform: `translate3D(0, 0, 0)` },
+          { transform: `translate3D(${-x}px, ${-y}px, 0)` }
+          // { transform: `translate3D(0, 0, 0)` }
+        ],
+        {
+          duration: duration,
+          fill: "forwards",
+          easing: transitionTimingFunction
+        }));
+      // element.offsetHeight;
+      a.onfinish = e => {
+        a.commitStyles();
+        // element.style.transform = this.settings?.finalTransform ?? null;
+      };
+      a.play();
+    });
+  }
 }

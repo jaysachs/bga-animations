@@ -28,12 +28,12 @@ class BgaAttachWithAnimation<T extends BgaAttachWithAnimationSettings> extends B
     protected doAnimate(animationManager: AnimationManager): Promise<any> {
         const settings = this.settings;
         const element = settings.animation.settings.element;
-                    element.offsetHeight;
+        element.offsetHeight;
 
         const fromRect = animationManager.game.getBoundingClientRectIgnoreZoom(element);
         settings.animation.settings.fromRect = fromRect;
         settings.attachElement.appendChild(element);
         settings.afterAttach?.(element, settings.attachElement);
         return animationManager.play(settings.animation);
-     }
+    }
 }

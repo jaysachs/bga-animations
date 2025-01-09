@@ -16,14 +16,14 @@ interface BgaAnimationSettings {
 }
 
 interface BgaElementAnimationSettings extends BgaAnimationSettings {
-     /**
-     * The animation CSS timing function, 'linear', 'ease-in-out' (default: linear).
-     */
-     transitionTimingFunction?: string;
+    /**
+    * The animation CSS timing function, 'linear', 'ease-in-out' (default: linear).
+    */
+    transitionTimingFunction?: string;
 
-     /**
-     * The cumulated scale of the element to animate (default: 1).
-     */
+    /**
+    * The cumulated scale of the element to animate (default: 1).
+    */
     scale?: number;
 
     /**
@@ -52,7 +52,7 @@ interface BgaAnimationWithOriginSettings extends BgaElementAnimationSettings {
     /**
      * A delta coordinates (object with x and y properties).
      */
-    fromDelta?: {x: number, y: number};
+    fromDelta?: { x: number, y: number };
 
     /**
      * An initial Rect position. Can be the moved object BoundingClientRect itself, before being attached.
@@ -83,7 +83,7 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
 
     constructor(
         public settings: T,
-    ) {}
+    ) { }
 
     protected preAnimate(animationManager: AnimationManager): void { }
     protected postAnimate(animationManager: AnimationManager): void { }
