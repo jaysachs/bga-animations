@@ -12,7 +12,6 @@
     "files": [
       "src/framework.d.ts",
       "src/animations.ts",
-      "src/animations-utils.ts",
       "src/animations/fade-animation.ts",
       "src/animations/slide-animation.ts",
       "src/animations/slide-temporary.ts",

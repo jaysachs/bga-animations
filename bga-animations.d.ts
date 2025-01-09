@@ -84,18 +84,6 @@ declare abstract class BgaElementAnimation<T extends BgaElementAnimationSettings
     protected preAnimate(animationManager: AnimationManager): void;
     protected postAnimate(animationManager: AnimationManager): void;
 }
-declare function shouldAnimate(settings?: BgaAnimationSettings): boolean;
-/**
- * Return the x and y delta, based on the animation settings;
- *
- * @param settings an `AnimationSettings` object
- * @returns a promise when animation ends
- */
-declare function getDeltaCoordinates(element: HTMLElement, settings: BgaAnimationWithOriginSettings, animationManager: AnimationManager): {
-    x: number;
-    y: number;
-};
-declare function logAnimation(animationManager: AnimationManager, animation: IBgaAnimation<BgaCompoundAnimationsSettings>): Promise<any>;
 /**
  * Fade the element.
  */
@@ -267,5 +255,15 @@ declare class AnimationManager {
      * @returns a promise when animation ends
      */
     attachWithAnimation(animation: IBgaAnimation<BgaAnimationWithOriginSettings>, attachElement: HTMLElement): Promise<IBgaAnimation<any>>;
+    /**
+     * Return the x and y delta, based on the animation settings;
+     *
+     * @param settings an `AnimationSettings` object
+     * @returns a promise when animation ends
+     */
+    getDeltaCoordinates(element: HTMLElement, settings: BgaAnimationWithOriginSettings): {
+        x: number;
+        y: number;
+    };
 }
 declare const define: any;

@@ -17,7 +17,7 @@ class BgaSlideAnimation<T extends BgaSlideAnimationSettings> extends BgaElementA
             const transitionTimingFunction = this.settings.transitionTimingFunction ?? 'linear';
             const duration = this.settings?.duration ?? 500;
 
-            let {x, y} = getDeltaCoordinates(element, this.settings, animationManager);
+            let {x, y} = animationManager.getDeltaCoordinates(element, this.settings);
 
             this.wireUp(element, duration, success);
             // this gets saved/restored in wireUp
