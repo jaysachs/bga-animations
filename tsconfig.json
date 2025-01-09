@@ -10,7 +10,7 @@
       "composite": true,
     },
     "files": [
-      "src/animations.ts",
+      "src/base.ts",
       "src/animations/fade-animation.ts",
       "src/animations/slide-animation.ts",
       "src/animations/slide-temporary.ts",
