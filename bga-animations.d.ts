@@ -1,9 +1,5 @@
 interface BgaAnimationSettings {
     /**
-     * The game class. Used to know if the game is in instantaneous mode (replay) becausewe don't want animations in this case.
-     */
-    game?: GameGui;
-    /**
      * The animation duration, in ms (default: 500).
      */
     duration?: number;
