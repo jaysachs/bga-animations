@@ -149,14 +149,15 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
 abstract class BgaElementAnimation<T extends BgaElementAnimationSettings> extends BgaAnimation<T> {
     constructor(settings: T) { super(settings); }
 
-    protected preAnimate(animationManager: AnimationManager): void {
+    protected override preAnimate(animationManager: AnimationManager): void {
         this.settings = {
             scale: this.settings?.scale ?? animationManager.getZoomManager()?.zoom ?? undefined,
             ...this.settings,
         };
         this.settings.element.classList.add(this.settings.animationClass ?? 'bga-animations_animated');
     }
-    protected postAnimate(animationManager: AnimationManager): void {
+
+    protected override postAnimate(animationManager: AnimationManager): void {
         this.settings.element.classList.remove(this.settings.animationClass ?? 'bga-animations_animated');
     }
 
