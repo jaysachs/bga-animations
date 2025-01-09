@@ -2,7 +2,7 @@ interface BgaAnimationSettings {
     /**
      * The game class. Used to know if the game is in instantaneous mode (replay) becausewe don't want animations in this case.
      */
-    game?: Game;
+    game?: GameGui;
     /**
      * The animation duration, in ms (default: 500).
      */
@@ -193,7 +193,7 @@ interface AnimationManagerSettings {
     zoomManager?: IZoomManager;
 }
 declare class AnimationManager {
-    game: Game;
+    game: GameGui;
     private settings?;
     /**
      * The zoom manager, providing the current scale.
@@ -203,7 +203,7 @@ declare class AnimationManager {
      * @param game the BGA game class, usually it will be `this`
      * @param settings: a `AnimationManagerSettings` object
      */
-    constructor(game: Game, settings?: AnimationManagerSettings);
+    constructor(game: GameGui, settings?: AnimationManagerSettings);
     getZoomManager(): IZoomManager;
     /**
      * Set the zoom manager, to get the scale of the current game.

@@ -28,7 +28,7 @@ class AnimationManager {
      * @param game the BGA game class, usually it will be `this`
      * @param settings: a `AnimationManagerSettings` object
      */
-    constructor(public game: Game, private settings?: AnimationManagerSettings) {
+    constructor(public game: GameGui, private settings?: AnimationManagerSettings) {
         this.zoomManager = settings?.zoomManager;
 
         if (!game) {
