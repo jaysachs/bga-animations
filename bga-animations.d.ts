@@ -172,6 +172,9 @@ declare class BgaCompoundAnimation<T extends BgaCompoundAnimationsSettings> exte
     constructor(settings: T);
     protected doAnimate(animationManager: AnimationManager): Promise<any>;
 }
+interface BgaGame {
+    getBoundingClientRectIgnoreZoom(element: Element): DOMRect;
+}
 interface IZoomManager {
     /**
      * Returns the zoom level
@@ -189,7 +192,7 @@ interface AnimationManagerSettings {
     zoomManager?: IZoomManager;
 }
 declare class AnimationManager {
-    game: GameGui;
+    game: BgaGame;
     private settings?;
     /**
      * The zoom manager, providing the current scale.
@@ -199,7 +202,7 @@ declare class AnimationManager {
      * @param game the BGA game class, usually it will be `this`
      * @param settings: a `AnimationManagerSettings` object
      */
-    constructor(game: GameGui, settings?: AnimationManagerSettings);
+    constructor(game: BgaGame, settings?: AnimationManagerSettings);
     getZoomManager(): IZoomManager;
     /**
      * Set the zoom manager, to get the scale of the current game.
