@@ -17,9 +17,9 @@ class BgaSlideTempAnimation<T extends BgaSlideTempAnimationSettings> extends Bga
     private static lastId: number = 0;
 
     private boundingRectForId(id: string): DOMRect {
-        const elem = document.getElementById(this.settings.parentId);
+        const elem = document.getElementById(id);
         if (!elem) {
-            throw new Error(`Unable to find parent ${this.settings.parentId}`);
+            throw new Error(`Unable to find parent ${id}`);
         }
         return elem.getBoundingClientRect();
     }
