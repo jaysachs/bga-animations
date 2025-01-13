@@ -16,16 +16,27 @@ class BgaSlideTempAnimation<T extends BgaSlideTempAnimationSettings> extends Bga
 
     private static lastId: number = 0;
 
+    private boundingRectForId(id: string): DOMRect {
+        const elem = document.getElementById(this.settings.parentId);
+        if (!elem) {
+            throw new Error(`Unable to find parent ${this.settings.parentId}`);
+        }
+        return elem.getBoundingClientRect();
+    }
+
     protected doAnimate(animationManager: AnimationManager): Promise<any> {
         var delta = { x: 0, y: 0 };
         var div: HTMLElement;
 
         return new Promise<void>((success) => {
             const parent = document.getElementById(this.settings.parentId);
+            if (!parent) {
+                throw new Error(`Unable to find parent ${this.settings.parentId}`);
+            }
 
             const parentRect = parent.getBoundingClientRect();
-            const toRect = document.getElementById(this.settings.toId).getBoundingClientRect();
-            const fromRect = document.getElementById(this.settings.fromId).getBoundingClientRect();
+            const toRect = this.boundingRectForId(this.settings.toId);
+            const fromRect = this.boundingRectForId(this.settings.fromId);
 
             const top = fromRect.top - parentRect.top;
             const left = fromRect.left - parentRect.left;

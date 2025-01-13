@@ -44,7 +44,7 @@ class AnimationManager {
         }
     }
 
-    public getZoomManager(): IZoomManager {
+    public getZoomManager(): IZoomManager | undefined {
         return this.zoomManager;
     }
 
@@ -114,9 +114,9 @@ class AnimationManager {
     async playWithDelay(animations: IBgaAnimation<BgaAnimationSettings>[], delay: number): Promise<IBgaAnimation<BgaAnimationSettings>[]> {
         const promise = new Promise<IBgaAnimation<BgaAnimationSettings>[]>((success) => {
             let promises: Promise<IBgaAnimation<BgaAnimationSettings>>[] = [];
-            for (let i = 0; i < animations.length; i++) {
+            for (let [i, animation] of animations.entries()) {
                 setTimeout(() => {
-                    promises.push(this.play(animations[i]));
+                    promises.push(this.play(animation));
                     if (i == animations.length - 1) {
                         Promise.all(promises).then(result => {
                             success(result);
@@ -139,7 +139,7 @@ class AnimationManager {
     public attachWithAnimation(animation: IBgaAnimation<BgaAnimationWithOriginSettings>, attachElement: HTMLElement): Promise<IBgaAnimation<any>> {
         const attachWithAnimation = new BgaAttachWithAnimation({
             animation,
-            duration: null,
+            duration: undefined,
             attachElement
         });
         return this.play(attachWithAnimation);
@@ -163,7 +163,7 @@ class AnimationManager {
             x = settings.fromDelta.x;
             y = settings.fromDelta.y;
         } else {
-            const originBR = settings.fromRect ?? this.game.getBoundingClientRectIgnoreZoom(settings.fromElement);
+            const originBR = settings.fromRect ?? this.game.getBoundingClientRectIgnoreZoom(settings.fromElement!);
 
             // TODO make it an option ?
             const originalTransform = element.style.transform;

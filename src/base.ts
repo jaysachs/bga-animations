@@ -143,7 +143,7 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
         // safety in case transitionend and transitioncancel are not called
         this.timeoutId = setTimeout(cleanOnTransitionEnd, duration + 100);
     }
-    private timeoutId: number | null;
+    private timeoutId: number | null = null;
 }
 
 abstract class BgaElementAnimation<T extends BgaElementAnimationSettings> extends BgaAnimation<T> {

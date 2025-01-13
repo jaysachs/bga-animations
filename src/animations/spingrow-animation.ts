@@ -25,7 +25,9 @@ class BgaSpinGrowAnimation<T extends BgaSpinGrowAnimationSettings> extends BgaAn
 
     return new Promise<void>((success) => {
       const parent = document.getElementById(this.settings.parentId);
-
+      if (!parent) {
+        throw new Error(`No parent element with id ${this.settings.parentId}`);
+      }
       const id = `bbl_tmp_spinGrowFx-${BgaSpinGrowAnimation.lastId++}`;
       const outer = document.createElement('span');
       outer.id = id;
@@ -51,6 +53,9 @@ class BgaSpinGrowAnimation<T extends BgaSpinGrowAnimationSettings> extends BgaAn
 
       // center the container on the center of the appropriate node
       const centerNode = document.getElementById(this.settings.centeredOnId || this.settings.parentId);
+      if (!centerNode) {
+        throw new Error(`No center node found for ${this.settings}`);
+      }
       const prect = parent.getBoundingClientRect();
       const crect = centerNode.getBoundingClientRect();
       const left = (crect.left + crect.width / 2 - nrect.width / 2 - prect.left);
@@ -72,7 +77,7 @@ class BgaSpinGrowAnimation<T extends BgaSpinGrowAnimationSettings> extends BgaAn
       // this maybe ought to be a parameter, or part of the incoming class.
       // it also causes multiples of the text to show up!?!?
       // node.style.textShadow = "-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000";
-      node.style['-webkit-text-stroke'] = 'thin black';
+      node.style.setProperty('-webkit-text-stroke', 'thin black');
 
       const fontSize = this.settings.fontSize || 190;
       node.style.fontSize = `${fontSize}pt`;
