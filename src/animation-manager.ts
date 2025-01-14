@@ -100,7 +100,7 @@ class AnimationManager {
      * @returns a promise for all animations.
      */
     async playSequence(animations: IBgaAnimation<BgaAnimationSettings>[]): Promise<IBgaAnimation<BgaAnimationSettings>[]> {
-        const result = [];
+        const result: IBgaAnimation<BgaAnimationSettings>[] = [];
         for (const a of animations) {
             result.push(await this.play(a));
         }

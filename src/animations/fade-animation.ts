@@ -23,7 +23,7 @@ class BgaFadeAnimation<T extends BgaFadeAnimationSettings> extends BgaElementAni
             this.wireUp(element, duration, success);
             // this gets saved/restored in wireUp
             // element.style.zIndex = `${this.settings?.zIndex ?? 10}`;
-            let frames = [];
+            const frames:{ opacity: number }[] = [];
             switch      (this.settings.kind) {
             case "in":  frames.push({ opacity: 0 }, { opacity: 1 }); break;
             case "out": frames.push({ opacity: 1 }, { opacity: 0 }); break;
