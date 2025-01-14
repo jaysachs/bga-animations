@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -65,6 +66,7 @@ var BgaAnimation = /** @class */ (function () {
         this.settings = settings;
         this.result = null;
         this.playWhenNoAnimation = false;
+        this.timeoutId = null;
     }
     BgaAnimation.prototype.preAnimate = function (animationManager) { };
     BgaAnimation.prototype.postAnimate = function (animationManager) { };
@@ -210,8 +212,8 @@ var BgaSlideAnimation = /** @class */ (function (_super) {
                 { transform: "translate3D(0, 0, 0)" },
                 { transform: "translate3D(".concat(-x, "px, ").concat(-y, "px, 0)") }
             ], {
-                iterations: _this.settings.iterations,
-                direction: _this.settings.direction,
+                iterations: _this.settings.iterations || 1,
+                direction: _this.settings.direction || "normal",
                 duration: duration,
                 easing: transitionTimingFunction,
                 fill: "forwards"
@@ -233,6 +235,13 @@ var BgaSlideTempAnimation = /** @class */ (function (_super) {
     function BgaSlideTempAnimation(settings) {
         return _super.call(this, settings) || this;
     }
+    BgaSlideTempAnimation.prototype.boundingRectForId = function (id) {
+        var elem = document.getElementById(id);
+        if (!elem) {
+            throw new Error("Unable to find parent ".concat(id));
+        }
+        return elem.getBoundingClientRect();
+    };
     BgaSlideTempAnimation.prototype.doAnimate = function (animationManager) {
         var _this = this;
         var delta = { x: 0, y: 0 };
@@ -240,9 +249,12 @@ var BgaSlideTempAnimation = /** @class */ (function (_super) {
         return new Promise(function (success) {
             var _a, _b;
             var parent = document.getElementById(_this.settings.parentId);
+            if (!parent) {
+                throw new Error("Unable to find parent ".concat(_this.settings.parentId));
+            }
             var parentRect = parent.getBoundingClientRect();
-            var toRect = document.getElementById(_this.settings.toId).getBoundingClientRect();
-            var fromRect = document.getElementById(_this.settings.fromId).getBoundingClientRect();
+            var toRect = _this.boundingRectForId(_this.settings.toId);
+            var fromRect = _this.boundingRectForId(_this.settings.fromId);
             var top = fromRect.top - parentRect.top;
             var left = fromRect.left - parentRect.left;
             div = document.createElement('div');
@@ -326,6 +338,9 @@ var BgaSpinGrowAnimation = /** @class */ (function (_super) {
         return new Promise(function (success) {
             var _a, _b;
             var parent = document.getElementById(_this.settings.parentId);
+            if (!parent) {
+                throw new Error("No parent element with id ".concat(_this.settings.parentId));
+            }
             var id = "bbl_tmp_spinGrowFx-".concat(BgaSpinGrowAnimation.lastId++);
             var outer = document.createElement('span');
             outer.id = id;
@@ -348,6 +363,9 @@ var BgaSpinGrowAnimation = /** @class */ (function (_super) {
             outer.style.height = "".concat(nrect.height);
             // center the container on the center of the appropriate node
             var centerNode = document.getElementById(_this.settings.centeredOnId || _this.settings.parentId);
+            if (!centerNode) {
+                throw new Error("No center node found for ".concat(_this.settings));
+            }
             var prect = parent.getBoundingClientRect();
             var crect = centerNode.getBoundingClientRect();
             var left = (crect.left + crect.width / 2 - nrect.width / 2 - prect.left);
@@ -367,7 +385,7 @@ var BgaSpinGrowAnimation = /** @class */ (function (_super) {
             // this maybe ought to be a parameter, or part of the incoming class.
             // it also causes multiples of the text to show up!?!?
             // node.style.textShadow = "-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000";
-            node.style['-webkit-text-stroke'] = 'thin black';
+            node.style.setProperty('-webkit-text-stroke', 'thin black');
             var fontSize = _this.settings.fontSize || 190;
             node.style.fontSize = "".concat(fontSize, "pt");
             node.style.opacity = '0';
@@ -450,6 +468,39 @@ var BgaCompoundAnimation = /** @class */ (function (_super) {
     };
     return BgaCompoundAnimation;
 }(BgaAnimation));
+var __values = (this && this.__values) || function(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var NoopZoomManager = /** @class */ (function () {
+    function NoopZoomManager() {
+        this.zoom = 1;
+    }
+    return NoopZoomManager;
+}());
 var AnimationManager = /** @class */ (function () {
     /**
      * @param game the BGA game class, usually it will be `this`
@@ -458,7 +509,7 @@ var AnimationManager = /** @class */ (function () {
     function AnimationManager(game, settings) {
         this.game = game;
         this.settings = settings;
-        this.zoomManager = settings === null || settings === void 0 ? void 0 : settings.zoomManager;
+        this.zoomManager = (settings === null || settings === void 0 ? void 0 : settings.zoomManager) || new NoopZoomManager();
         if (!game) {
             throw new Error('You must set your game as the first parameter of AnimationManager');
         }
@@ -520,25 +571,40 @@ var AnimationManager = /** @class */ (function () {
      */
     AnimationManager.prototype.playSequence = function (animations) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, _i, animations_1, a, _a, _b;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            var result, animations_1, animations_1_1, a, _a, _b, e_1_1;
+            var e_1, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
                         result = [];
-                        _i = 0, animations_1 = animations;
-                        _c.label = 1;
+                        _d.label = 1;
                     case 1:
-                        if (!(_i < animations_1.length)) return [3 /*break*/, 4];
-                        a = animations_1[_i];
+                        _d.trys.push([1, 6, 7, 8]);
+                        animations_1 = __values(animations), animations_1_1 = animations_1.next();
+                        _d.label = 2;
+                    case 2:
+                        if (!!animations_1_1.done) return [3 /*break*/, 5];
+                        a = animations_1_1.value;
                         _b = (_a = result).push;
                         return [4 /*yield*/, this.play(a)];
-                    case 2:
-                        _b.apply(_a, [_c.sent()]);
-                        _c.label = 3;
                     case 3:
-                        _i++;
-                        return [3 /*break*/, 1];
-                    case 4: return [2 /*return*/, Promise.resolve(result)];
+                        _b.apply(_a, [_d.sent()]);
+                        _d.label = 4;
+                    case 4:
+                        animations_1_1 = animations_1.next();
+                        return [3 /*break*/, 2];
+                    case 5: return [3 /*break*/, 8];
+                    case 6:
+                        e_1_1 = _d.sent();
+                        e_1 = { error: e_1_1 };
+                        return [3 /*break*/, 8];
+                    case 7:
+                        try {
+                            if (animations_1_1 && !animations_1_1.done && (_c = animations_1.return)) _c.call(animations_1);
+                        }
+                        finally { if (e_1) throw e_1.error; }
+                        return [7 /*endfinally*/];
+                    case 8: return [2 /*return*/, Promise.resolve(result)];
                 }
             });
         });
@@ -556,10 +622,11 @@ var AnimationManager = /** @class */ (function () {
             var _this = this;
             return __generator(this, function (_a) {
                 promise = new Promise(function (success) {
+                    var e_2, _a;
                     var promises = [];
-                    var _loop_1 = function (i) {
+                    var _loop_1 = function (i, animation) {
                         setTimeout(function () {
-                            promises.push(_this.play(animations[i]));
+                            promises.push(_this.play(animation));
                             if (i == animations.length - 1) {
                                 Promise.all(promises).then(function (result) {
                                     success(result);
@@ -567,8 +634,18 @@ var AnimationManager = /** @class */ (function () {
                             }
                         }, i * delay);
                     };
-                    for (var i = 0; i < animations.length; i++) {
-                        _loop_1(i);
+                    try {
+                        for (var _b = __values(animations.entries()), _c = _b.next(); !_c.done; _c = _b.next()) {
+                            var _d = __read(_c.value, 2), i = _d[0], animation = _d[1];
+                            _loop_1(i, animation);
+                        }
+                    }
+                    catch (e_2_1) { e_2 = { error: e_2_1 }; }
+                    finally {
+                        try {
+                            if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+                        }
+                        finally { if (e_2) throw e_2.error; }
                     }
                 });
                 return [2 /*return*/, promise];
@@ -585,7 +662,7 @@ var AnimationManager = /** @class */ (function () {
     AnimationManager.prototype.attachWithAnimation = function (animation, attachElement) {
         var attachWithAnimation = new BgaAttachWithAnimation({
             animation: animation,
-            duration: null,
+            duration: undefined,
             attachElement: attachElement
         });
         return this.play(attachWithAnimation);
@@ -625,14 +702,3 @@ var AnimationManager = /** @class */ (function () {
     };
     return AnimationManager;
 }());
-define({
-    // animation classes
-    BgaSlideAnimation: BgaSlideAnimation,
-    BgaShowScreenCenterAnimation: BgaShowScreenCenterAnimation,
-    BgaPauseAnimation: BgaPauseAnimation,
-    BgaCompoundAnimation: BgaCompoundAnimation,
-    BgaAttachWithAnimation: BgaAttachWithAnimation,
-    BgaFadeAnimation: BgaFadeAnimation,
-    BgaSpinGrowAnimation: BgaSpinGrowAnimation,
-    BgaSlideTempAnimation: BgaSlideTempAnimation,
-});

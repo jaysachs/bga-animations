@@ -13,31 +13,34 @@ interface AnimationManagerSettings {
     /**
      * The default animation duration, in ms (default: 500).
      */
-    duration?: number;
+    duration?: number | undefined;
 
     /**
      * The zoom manager, providing the current scale.
      */
-    zoomManager?: IZoomManager;
+    zoomManager?: IZoomManager | undefined;
 }
 
+class NoopZoomManager implements IZoomManager {
+    zoom = 1;
+}
 
 class AnimationManager {
     /**
      * The zoom manager, providing the current scale.
      */
-    private zoomManager?: IZoomManager;
+    private zoomManager: IZoomManager;
 
     /**
      * @param game the BGA game class, usually it will be `this`
      * @param settings: a `AnimationManagerSettings` object
      */
     constructor(public game: {
-        getBoundingClientRectIgnoreZoom(element: Element): DOMRect;
-        // cannot add it here, else TS build will say BgaGame interface isn't fulfilled
-        // instantaneousMode?: boolean;
-        }, private settings?: AnimationManagerSettings) {
-        this.zoomManager = settings?.zoomManager;
+          getBoundingClientRectIgnoreZoom(element: Element): DOMRect;
+          instantaneousMode?: boolean;
+        },
+        private settings?: AnimationManagerSettings) {
+        this.zoomManager = settings?.zoomManager || new NoopZoomManager();
 
         if (!game) {
             throw new Error('You must set your game as the first parameter of AnimationManager');
@@ -67,7 +70,7 @@ class AnimationManager {
      * @returns if the animations are active.
      */
     public animationsActive(): boolean {
-        return document.visibilityState !== 'hidden' && !(this.game as any).instantaneousMode;
+        return document.visibilityState !== 'hidden' && !this.game.instantaneousMode;
     }
 
     /**

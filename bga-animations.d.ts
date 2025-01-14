@@ -2,7 +2,7 @@ interface BgaAnimationSettings {
     /**
      * The animation duration, in ms (default: 500).
      */
-    duration?: number;
+    duration?: number | undefined;
     /**
      * A function called when animation starts (for example to add a zoom effect on a card during a reveal animation).
      */
@@ -110,6 +110,7 @@ interface BgaSlideTempAnimationSettings extends BgaAnimationSettings {
 declare class BgaSlideTempAnimation<T extends BgaSlideTempAnimationSettings> extends BgaAnimation<T> {
     constructor(settings: T);
     private static lastId;
+    private boundingRectForId;
     protected doAnimate(animationManager: AnimationManager): Promise<any>;
 }
 /**
@@ -185,29 +186,34 @@ interface AnimationManagerSettings {
     /**
      * The default animation duration, in ms (default: 500).
      */
-    duration?: number;
+    duration?: number | undefined;
     /**
      * The zoom manager, providing the current scale.
      */
-    zoomManager?: IZoomManager;
+    zoomManager?: IZoomManager | undefined;
+}
+declare class NoopZoomManager implements IZoomManager {
+    zoom: number;
 }
 declare class AnimationManager {
     game: {
         getBoundingClientRectIgnoreZoom(element: Element): DOMRect;
+        instantaneousMode?: boolean;
     };
     private settings?;
     /**
      * The zoom manager, providing the current scale.
      */
-    private zoomManager?;
+    private zoomManager;
     /**
      * @param game the BGA game class, usually it will be `this`
      * @param settings: a `AnimationManagerSettings` object
      */
     constructor(game: {
         getBoundingClientRectIgnoreZoom(element: Element): DOMRect;
-    }, settings?: AnimationManagerSettings);
-    getZoomManager(): IZoomManager;
+        instantaneousMode?: boolean;
+    }, settings?: AnimationManagerSettings | undefined);
+    getZoomManager(): IZoomManager | undefined;
     /**
      * Set the zoom manager, to get the scale of the current game.
      *
@@ -269,4 +275,3 @@ declare class AnimationManager {
         y: number;
     };
 }
-declare const define: any;

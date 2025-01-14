@@ -29,8 +29,8 @@ class BgaSlideAnimation<T extends BgaSlideAnimationSettings> extends BgaElementA
                     { transform: `translate3D(${-x}px, ${-y}px, 0)` }
                 ],
                 {
-                    iterations: this.settings.iterations,
-                    direction: this.settings.direction,
+                    iterations: this.settings.iterations || 1,
+                    direction: this.settings.direction || "normal",
                     duration: duration,
                     easing: transitionTimingFunction,
                     fill: "forwards"

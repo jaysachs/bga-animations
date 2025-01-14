@@ -2,7 +2,7 @@ interface BgaAnimationSettings {
     /**
      * The animation duration, in ms (default: 500).
      */
-    duration?: number;
+    duration?: number | undefined;
 
     /**
      * A function called when animation starts (for example to add a zoom effect on a card during a reveal animation).

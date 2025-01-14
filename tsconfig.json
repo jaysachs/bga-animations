@@ -26,6 +26,6 @@
       "src/animations/attach-with-animation.ts",
       "src/animations/compound-animation.ts",
       "src/animation-manager.ts",
-      "src/define.ts"
+//      "src/define.ts"
     ]
 }
