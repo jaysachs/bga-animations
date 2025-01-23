@@ -259,7 +259,14 @@ var BgaSlideTempAnimation = /** @class */ (function (_super) {
             var left = fromRect.left - parentRect.left;
             div = document.createElement('div');
             div.id = "bbl_tmp_slideTmpDiv".concat(BgaSlideTempAnimation.lastId++);
-            div.className = _this.settings.className;
+            if (_this.settings.className) {
+                div.className = _this.settings.className;
+            }
+            if (_this.settings.attrs) {
+                for (var name_1 in _this.settings.attrs) {
+                    div.attributes[name_1] = _this.settings.attrs[name_1];
+                }
+            }
             // Unclear why setting `style` attribute directly doesn't work.
             div.style.position = 'absolute';
             div.style.top = "".concat(top, "px");

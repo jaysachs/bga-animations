@@ -102,7 +102,8 @@ declare class BgaSlideAnimation<T extends BgaSlideAnimationSettings> extends Bga
  * Slide of the element from origin to destination.
  */
 interface BgaSlideTempAnimationSettings extends BgaAnimationSettings {
-    className: string;
+    attrs?: Record<string, string>;
+    className?: string;
     parentId: string;
     fromId: string;
     toId: string;

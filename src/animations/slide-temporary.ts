@@ -3,7 +3,8 @@
  */
 
 interface BgaSlideTempAnimationSettings extends BgaAnimationSettings {
-    className: string;
+    attrs?: Record<string, string>;
+    className?: string;
     parentId: string;
     fromId: string;
     toId: string;
@@ -43,7 +44,14 @@ class BgaSlideTempAnimation<T extends BgaSlideTempAnimationSettings> extends Bga
 
             div = document.createElement('div');
             div.id = `bbl_tmp_slideTmpDiv${BgaSlideTempAnimation.lastId++}`;
-            div.className = this.settings.className;
+            if (this.settings.className) {
+                div.className = this.settings.className;
+            }
+            if (this.settings.attrs) {
+                for (const name in this.settings.attrs) {
+                    div.attributes[name] = this.settings.attrs[name];
+                }
+            }
             // Unclear why setting `style` attribute directly doesn't work.
             div.style.position = 'absolute';
             div.style.top = `${top}px`;

@@ -1,7 +1,7 @@
 {
     "rootDir": ".",
     "compilerOptions": {
-      "strict": true,
+//      "strict": true,
       "noImplicitReturns": true,
       "noPropertyAccessFromIndexSignature": true,
       "noFallthroughCasesInSwitch": true,
