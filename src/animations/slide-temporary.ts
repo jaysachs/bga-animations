@@ -49,7 +49,7 @@ class BgaSlideTempAnimation<T extends BgaSlideTempAnimationSettings> extends Bga
             }
             if (this.settings.attrs) {
                 for (const name in this.settings.attrs) {
-                    div.attributes[name] = this.settings.attrs[name];
+                    div.setAttribute(name, this.settings.attrs[name]!);
                 }
             }
             // Unclear why setting `style` attribute directly doesn't work.
