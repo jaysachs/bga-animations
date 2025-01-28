@@ -34,18 +34,17 @@ class BgaSpinGrowAnimation<T extends BgaSpinGrowAnimationSettings> extends BgaAn
       outer.id = id;
       outer.append(this.settings.text);
       parent.appendChild(outer);
-
-      outer.style.color = "blue";
-      outer.style.color = "transparent";
-      outer.style.position = "absolute";
+      if (this.settings.className) {
+        outer.className = this.settings.className;
+      }
       outer.style.fontSize = (this.settings.fontSize || 128) + "pt";
+      outer.style.color = "transparent";
+      outer.style.webkitTextStrokeColor = "transparent";
+      outer.style.position = "absolute";
       outer.style.display = "inline-block";
       outer.style.justifyContent = "center";
       outer.style.alignItems = "center";
       outer.style.display = "flex";
-      // probably should allow a class to be passed in and used for these two
-      outer.style.fontFamily = "Helvetica";
-      outer.style.fontStyle = "bold";
 
       // get the ultimate dimensions of the container span
       const nrect = outer.getBoundingClientRect();
@@ -57,12 +56,12 @@ class BgaSpinGrowAnimation<T extends BgaSpinGrowAnimationSettings> extends BgaAn
       if (!centerNode) {
         throw new Error(`No center node found for ${this.settings}`);
       }
-      const prect = parent.getBoundingClientRect();
       const crect = centerNode.getBoundingClientRect();
+      const prect = parent.getBoundingClientRect();
       const left = (crect.left + crect.width / 2 - nrect.width / 2 - prect.left);
       const top = (crect.top + crect.height / 2 - nrect.height / 2 - prect.top);
-      outer.style.left = left + "px";
-      outer.style.top = top + "px";
+      outer.style.left = `${left}px`;
+      outer.style.top = `${top}px`;
 
       // now create the node we're animating
       const node = document.createElement('span');
@@ -74,7 +73,6 @@ class BgaSpinGrowAnimation<T extends BgaSpinGrowAnimationSettings> extends BgaAn
       node.style.alignItems = "center";
       node.style.display = "flex";
       node.style.color = this.settings.color || 'black';
-
       if (this.settings.className) {
         node.className = this.settings.className;
       }
@@ -84,17 +82,12 @@ class BgaSpinGrowAnimation<T extends BgaSpinGrowAnimationSettings> extends BgaAn
         }
       }
 
-      // this maybe ought to be a parameter, or part of the incoming class.
-      // it also causes multiples of the text to show up!?!?
-      // node.style.textShadow = "-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000";
-      node.style.setProperty('-webkit-text-stroke', 'thin black');
-
       const fontSize = this.settings.fontSize || 190;
       node.style.fontSize = `${fontSize}pt`;
       node.style.opacity = '0';
 
-      const duration = this.settings?.duration ?? 1000;
-      const degrees = (this.settings.spinCount || 2) * 360;
+      const duration = this.settings?.duration ?? 500;
+      const degrees = (this.settings.spinCount || 1) * 360;
       this.wireUp(node, duration, success);
 
       let a = new Animation(new KeyframeEffect(node,
