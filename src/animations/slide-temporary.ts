@@ -43,7 +43,7 @@ class BgaSlideTempAnimation<T extends BgaSlideTempAnimationSettings> extends Bga
             const left = fromRect.left - parentRect.left;
 
             div = document.createElement('div');
-            div.id = `bbl_tmp_slideTmpDiv${BgaSlideTempAnimation.lastId++}`;
+            div.id = `bgaanim_tmp_slideTmpDiv${BgaSlideTempAnimation.lastId++}`;
             if (this.settings.className) {
                 div.className = this.settings.className;
             }

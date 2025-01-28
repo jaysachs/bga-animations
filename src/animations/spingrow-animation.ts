@@ -3,7 +3,8 @@
  */
 
 interface BgaSpinGrowAnimationSettings extends BgaAnimationSettings {
-  className: string;
+  attrs?: Record<string, string>;
+  className?: string;
   text: string;
   centeredOnId?: string;
   parentId: string;
@@ -28,7 +29,7 @@ class BgaSpinGrowAnimation<T extends BgaSpinGrowAnimationSettings> extends BgaAn
       if (!parent) {
         throw new Error(`No parent element with id ${this.settings.parentId}`);
       }
-      const id = `bbl_tmp_spinGrowFx-${BgaSpinGrowAnimation.lastId++}`;
+      const id = `bgaanim_tmp_spinGrowFx-${BgaSpinGrowAnimation.lastId++}`;
       const outer = document.createElement('span');
       outer.id = id;
       outer.append(this.settings.text);
@@ -73,6 +74,15 @@ class BgaSpinGrowAnimation<T extends BgaSpinGrowAnimationSettings> extends BgaAn
       node.style.alignItems = "center";
       node.style.display = "flex";
       node.style.color = this.settings.color || 'black';
+
+      if (this.settings.className) {
+        node.className = this.settings.className;
+      }
+      if (this.settings.attrs) {
+        for (const name in this.settings.attrs) {
+            node.setAttribute(name, this.settings.attrs[name]!);
+        }
+      }
 
       // this maybe ought to be a parameter, or part of the incoming class.
       // it also causes multiples of the text to show up!?!?
