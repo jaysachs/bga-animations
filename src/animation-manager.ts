@@ -6,14 +6,14 @@ interface IZoomManager {
     /**
      * Returns the zoom level
      */
-    zoom: number;
+    zoom?: number | undefined;
 }
 
 interface AnimationManagerSettings {
     /**
      * The default animation duration, in ms (default: 500).
      */
-    duration?: number | undefined;
+    defaultDuration?: number;
 
     /**
      * The zoom manager, providing the current scale.
@@ -22,7 +22,7 @@ interface AnimationManagerSettings {
 }
 
 class NoopZoomManager implements IZoomManager {
-    zoom = 1;
+    zoom = undefined;
 }
 
 class AnimationManager {
@@ -35,7 +35,7 @@ class AnimationManager {
      * @param game the BGA game class, usually it will be `this`
      * @param settings: a `AnimationManagerSettings` object
      */
-    constructor(public game: {
+    constructor(private game: {
           getBoundingClientRectIgnoreZoom(element: Element): DOMRect;
           instantaneousMode?: boolean;
         },
@@ -47,21 +47,20 @@ class AnimationManager {
         }
     }
 
-    public getZoomManager(): IZoomManager | undefined {
-        return this.zoomManager;
+    public getBoundingClientRectIgnoreZoom(e : Element | string): DOMRect {
+        const elem = e instanceof Element ? e : document.getElementById(e);
+        if (!elem) {
+            throw new Error(`Unable to find parent ${e}`);
+        }
+        return this.game.getBoundingClientRectIgnoreZoom(elem);
     }
 
-    /**
-     * Set the zoom manager, to get the scale of the current game.
-     *
-     * @param zoomManager the zoom manager
-     */
-    public setZoomManager(zoomManager: IZoomManager): void {
-        this.zoomManager = zoomManager;
+    public getDefaultDuration(): number {
+        return 500; // this.settings?.defaultDuration || 500;
     }
 
-    public getSettings(): AnimationManagerSettings | null | undefined {
-        return this.settings;
+    public getZoom(): number | undefined {
+      return this.zoomManager.zoom;
     }
 
     /**

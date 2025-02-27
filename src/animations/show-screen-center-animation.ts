@@ -14,7 +14,7 @@ class BgaShowScreenCenterAnimation<T extends BgaElementAnimationSettings> extend
     return new Promise<void>((success) => {
       const element = this.settings.element;
 
-      const elementBR = animationManager.game.getBoundingClientRectIgnoreZoom(element);
+      const elementBR = animationManager.getBoundingClientRectIgnoreZoom(element);
 
       const xCenter = (elementBR.left + elementBR.right) / 2;
       const yCenter = (elementBR.top + elementBR.bottom) / 2;

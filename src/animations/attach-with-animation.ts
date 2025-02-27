@@ -30,7 +30,7 @@ class BgaAttachWithAnimation<T extends BgaAttachWithAnimationSettings> extends B
         const element = settings.animation.settings.element;
         element.offsetHeight;
 
-        const fromRect = animationManager.game.getBoundingClientRectIgnoreZoom(element);
+        const fromRect = animationManager.getBoundingClientRectIgnoreZoom(element);
         settings.animation.settings.fromRect = fromRect;
         settings.attachElement.appendChild(element);
         settings.afterAttach?.(element, settings.attachElement);

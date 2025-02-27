@@ -17,14 +17,6 @@ class BgaSlideTempAnimation<T extends BgaSlideTempAnimationSettings> extends Bga
 
     private static lastId: number = 0;
 
-    private boundingRectFor(animationManager: AnimationManager, e: Element | string): DOMRect {
-        const elem = e instanceof Element ? e : document.getElementById(e);
-        if (!elem) {
-            throw new Error(`Unable to find parent ${e}`);
-        }
-        return animationManager.game.getBoundingClientRectIgnoreZoom(elem);
-    }
-
     protected doAnimate(animationManager: AnimationManager): Promise<any> {
         var delta = { x: 0, y: 0 };
         var div: HTMLElement;
@@ -35,9 +27,9 @@ class BgaSlideTempAnimation<T extends BgaSlideTempAnimationSettings> extends Bga
                 throw new Error(`Unable to find parent ${this.settings.parentId}`);
             }
 
-            const parentRect = this.boundingRectFor(animationManager, parent);
-            const toRect = this.boundingRectFor(animationManager, this.settings.toId);
-            const fromRect = this.boundingRectFor(animationManager, this.settings.fromId);
+            const parentRect = animationManager.getBoundingClientRectIgnoreZoom(parent);
+            const toRect = animationManager.getBoundingClientRectIgnoreZoom(this.settings.toId);
+            const fromRect = animationManager.getBoundingClientRectIgnoreZoom(this.settings.fromId);
 
             const top = fromRect.top - parentRect.top;
             const left = fromRect.left - parentRect.left;
@@ -63,7 +55,7 @@ class BgaSlideTempAnimation<T extends BgaSlideTempAnimationSettings> extends Bga
 
             this.wireUp(div, duration, success);
 
-            const divRect = this.boundingRectFor(animationManager, div);
+            const divRect = animationManager.getBoundingClientRectIgnoreZoom(div);
             const toTop = toRect.top - parentRect.top + (toRect.height - divRect.height) / 2;
             const toLeft = toRect.left - parentRect.left + (toRect.width - divRect.width) / 2
 

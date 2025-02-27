@@ -47,7 +47,7 @@ class BgaSpinGrowAnimation<T extends BgaSpinGrowAnimationSettings> extends BgaAn
       outer.style.display = "flex";
 
       // get the ultimate dimensions of the container span
-      const nrect = animationManager.game.getBoundingClientRectIgnoreZoom(outer);
+      const nrect = animationManager.getBoundingClientRectIgnoreZoom(outer);
       outer.style.width = `${nrect.width}`;
       outer.style.height = `${nrect.height}`;
 
@@ -56,8 +56,8 @@ class BgaSpinGrowAnimation<T extends BgaSpinGrowAnimationSettings> extends BgaAn
       if (!centerNode) {
         throw new Error(`No center node found for ${this.settings}`);
       }
-      const crect = animationManager.game.getBoundingClientRectIgnoreZoom(centerNode);
-      const prect = animationManager.game.getBoundingClientRectIgnoreZoom(parent);
+      const crect = animationManager.getBoundingClientRectIgnoreZoom(centerNode);
+      const prect = animationManager.getBoundingClientRectIgnoreZoom(parent);
       const left = (crect.left + crect.width / 2 - nrect.width / 2 - prect.left);
       const top = (crect.top + crect.height / 2 - nrect.height / 2 - prect.top);
       outer.style.left = `${left}px`;

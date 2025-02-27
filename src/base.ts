@@ -95,7 +95,7 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
             this.settings.animationStart?.(this);
 
             this.settings = {
-                duration: this.settings?.duration ?? animationManager.getSettings()?.duration ?? 500,
+                duration: this.settings?.duration ?? animationManager.getDefaultDuration(),
                 ...this.settings,
             };
 
@@ -151,7 +151,7 @@ abstract class BgaElementAnimation<T extends BgaElementAnimationSettings> extend
 
     protected override preAnimate(animationManager: AnimationManager): void {
         this.settings = {
-            scale: this.settings?.scale ?? animationManager.getZoomManager()?.zoom ?? undefined,
+            scale: this.settings?.scale ?? animationManager.getZoom(),
             ...this.settings,
         };
         this.settings.element.classList.add(this.settings.animationClass ?? 'bga-animations_animated');
