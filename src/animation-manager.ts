@@ -50,13 +50,13 @@ class AnimationManager {
     public getBoundingClientRectIgnoreZoom(e : Element | string): DOMRect {
         const elem = e instanceof Element ? e : document.getElementById(e);
         if (!elem) {
-            throw new Error(`Unable to find parent ${e}`);
+            throw new Error(`Unable to find element ${e}`);
         }
         return this.game.getBoundingClientRectIgnoreZoom(elem);
     }
 
     public getDefaultDuration(): number {
-        return 500; // this.settings?.defaultDuration || 500;
+        return this.settings?.defaultDuration || 500;
     }
 
     public getZoom(): number | undefined {
