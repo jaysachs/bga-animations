@@ -11,10 +11,10 @@ class BgaCompoundAnimation<T extends BgaCompoundAnimationsSettings> extends BgaA
     constructor(
         settings: T,
     ) {
-        super(
-            settings,
-        );
-        this.playWhenNoAnimation = true;
+        super({
+            playWhenNoAnimation: true,
+            ...settings
+        });
     }
 
     protected doAnimate(animationManager: AnimationManager): Promise<any> {

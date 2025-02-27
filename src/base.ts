@@ -13,6 +13,11 @@ interface BgaAnimationSettings {
      * A function called when animation ends.
      */
     animationEnd?: (animation: IBgaAnimation<BgaAnimationSettings>) => any;
+
+    /*
+     * Whether to play when animtions are normally disabled (default false).
+     */
+    playWhenNoAnimation?: boolean;
 }
 
 interface BgaElementAnimationSettings extends BgaAnimationSettings {
@@ -79,8 +84,6 @@ interface IBgaAnimation<T extends BgaAnimationSettings> {
 abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnimation<T> {
     public result: any | null = null;
 
-    public playWhenNoAnimation: boolean = false;
-
     constructor(
         public settings: T,
     ) { }
@@ -90,7 +93,7 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
     protected abstract doAnimate(animationManager: AnimationManager): Promise<void>;
 
     public async play(animationManager: AnimationManager): Promise<any> {
-        const shouldPlay = this.playWhenNoAnimation || animationManager.animationsActive();
+        const shouldPlay = this.settings.playWhenNoAnimation || animationManager.animationsActive();
         if (shouldPlay) {
             this.settings.animationStart?.(this);
 

@@ -19,10 +19,10 @@ class BgaAttachWithAnimation<T extends BgaAttachWithAnimationSettings> extends B
     constructor(
         settings: T,
     ) {
-        super(
-            settings,
-        );
-        this.playWhenNoAnimation = true;
+        super({
+            playWhenNoAnimation: true,
+            ...settings
+        });
     }
 
     protected doAnimate(animationManager: AnimationManager): Promise<any> {
