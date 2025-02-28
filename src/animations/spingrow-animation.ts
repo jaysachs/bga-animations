@@ -37,14 +37,14 @@ class BgaSpinGrowAnimation<T extends BgaSpinGrowAnimationSettings> extends BgaAn
       if (this.settings.className) {
         outer.className = this.settings.className;
       }
-      outer.style.fontSize = (this.settings.fontSize || 128) + "pt";
-      outer.style.color = "transparent";
-      outer.style.webkitTextStrokeColor = "transparent";
-      outer.style.position = "absolute";
-      outer.style.display = "inline-block";
-      outer.style.justifyContent = "center";
-      outer.style.alignItems = "center";
-      outer.style.display = "flex";
+      outer.style.fontSize = (this.settings.fontSize || 128) + 'pt';
+      outer.style.color = 'transparent';
+      outer.style.webkitTextStrokeColor = 'transparent';
+      outer.style.position = 'absolute';
+      outer.style.display = 'inline-block';
+      outer.style.justifyContent = 'center';
+      outer.style.alignItems = 'center';
+      outer.style.display = 'flex';
 
       // get the ultimate dimensions of the container span
       const nrect = animationManager.getBoundingClientRectIgnoreZoom(outer);
@@ -67,11 +67,11 @@ class BgaSpinGrowAnimation<T extends BgaSpinGrowAnimationSettings> extends BgaAn
       const node = document.createElement('span');
       node.append(this.settings.text);
       outer.append(node);
-      node.style.position = "absolute";
-      node.style.display = "inline-block";
-      node.style.justifyContent = "center";
-      node.style.alignItems = "center";
-      node.style.display = "flex";
+      node.style.position = 'absolute';
+      node.style.display = 'inline-block';
+      node.style.justifyContent = 'center';
+      node.style.alignItems = 'center';
+      node.style.display = 'flex';
       node.style.color = this.settings.color || 'black';
       if (this.settings.className) {
         node.className = this.settings.className;

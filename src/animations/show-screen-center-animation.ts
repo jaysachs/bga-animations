@@ -38,7 +38,7 @@ class BgaShowScreenCenterAnimation<T extends BgaElementAnimationSettings> extend
         ],
         {
           duration: duration,
-          fill: "forwards",
+          fill: 'forwards',
           easing: transitionTimingFunction
         }));
       // element.offsetHeight;

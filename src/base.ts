@@ -71,7 +71,7 @@ interface BgaAnimationWithOriginSettings extends BgaElementAnimationSettings {
 }
 
 interface BgaSlideAnimationSettings extends BgaElementAnimationSettings {
-    direction?: "normal" | "reverse" | "alternate";
+    direction?: 'normal' | 'reverse' | 'alternate';
 
     iterations?: number;
 }
@@ -123,7 +123,7 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
             success();
             element.removeEventListener('transitioncancel', cleanOnTransitionEnd);
             element.removeEventListener('transitionend', cleanOnTransitionEnd);
-            element.removeEventListener("animationend", cleanOnTransitionEnd);
+            element.removeEventListener('animationend', cleanOnTransitionEnd);
             document.removeEventListener('visibilitychange', cleanOnTransitionEnd);
             if (this.timeoutId) {
                 clearTimeout(this.timeoutId);
@@ -138,7 +138,7 @@ abstract class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnima
             cleanOnTransitionEnd();
         }
 
-        element.addEventListener("animationend", cleanOnTransitionEnd, false);
+        element.addEventListener('animationend', cleanOnTransitionEnd, false);
         element.addEventListener('transitioncancel', cleanOnTransitionEnd);
         element.addEventListener('transitionend', cleanOnTransitionEnd);
         document.addEventListener('visibilitychange', cleanOnTransitionCancel);

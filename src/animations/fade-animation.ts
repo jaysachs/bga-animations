@@ -3,7 +3,7 @@
  */
 
 interface BgaFadeAnimationSettings extends BgaElementAnimationSettings {
-   kind: "in" | "out" | "outin";
+   kind: 'in' | 'out' | 'outin';
    iterations?: number;
 }
 
@@ -25,9 +25,9 @@ class BgaFadeAnimation<T extends BgaFadeAnimationSettings> extends BgaElementAni
             // element.style.zIndex = `${this.settings?.zIndex ?? 10}`;
             const frames:{ opacity: number }[] = [];
             switch      (this.settings.kind) {
-            case "in":  frames.push({ opacity: 0 }, { opacity: 1 }); break;
-            case "out": frames.push({ opacity: 1 }, { opacity: 0 }); break;
-            case "outin": frames.push({opacity: 1}, { opacity: 0 }, { opacity: 1 }); break;
+            case 'in':  frames.push({ opacity: 0 }, { opacity: 1 }); break;
+            case 'out': frames.push({ opacity: 1 }, { opacity: 0 }); break;
+            case 'outin': frames.push({opacity: 1}, { opacity: 0 }, { opacity: 1 }); break;
             }
             let a = new Animation(
               new KeyframeEffect(
@@ -36,7 +36,7 @@ class BgaFadeAnimation<T extends BgaFadeAnimationSettings> extends BgaElementAni
                 {
                   duration: duration,
                   easing: this.settings.transitionTimingFunction ?? 'linear',
-                  fill: "forwards",
+                  fill: 'forwards',
                   iterations: this.settings.iterations ?? 1,
                 }));
              a.onfinish = e => {

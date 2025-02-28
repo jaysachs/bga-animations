@@ -1,6 +1,6 @@
 interface BgaCompoundAnimationsSettings extends BgaAnimationSettings {
     animations: IBgaAnimation<BgaAnimationSettings>[];
-    mode: "parallel" | "sequential";
+    mode: 'parallel' | 'sequential';
 }
 
 /**
@@ -18,7 +18,7 @@ class BgaCompoundAnimation<T extends BgaCompoundAnimationsSettings> extends BgaA
     }
 
     protected doAnimate(animationManager: AnimationManager): Promise<any> {
-        if (this.settings.mode == "parallel") {
+        if (this.settings.mode == 'parallel') {
             return animationManager.playParallel(this.settings.animations);
         } else {
             return animationManager.playSequence(this.settings.animations);

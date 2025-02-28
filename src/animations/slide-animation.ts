@@ -30,10 +30,10 @@ class BgaSlideAnimation<T extends BgaSlideAnimationSettings> extends BgaElementA
                 ],
                 {
                     iterations: this.settings.iterations || 1,
-                    direction: this.settings.direction || "normal",
+                    direction: this.settings.direction || 'normal',
                     duration: duration,
                     easing: transitionTimingFunction,
-                    fill: "forwards"
+                    fill: 'forwards'
                 }));
             a.onfinish = e => {
                 a.commitStyles();
